@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.app.bl.model;
+package de.fatalix.bookery.bl.model;
 
-import de.fatalix.app.bl.authentication.AppUserAuthenticationInfo;
-import de.fatalix.app.bl.authentication.AppUserAuthorizationInfo;
+import de.fatalix.bookery.bl.authentication.AppUserAuthenticationInfo;
+import de.fatalix.bookery.bl.authentication.AppUserAuthorizationInfo;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 

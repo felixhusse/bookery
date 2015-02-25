@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.app;
+package de.fatalix.bookery;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
@@ -13,9 +14,9 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
-import de.fatalix.app.view.home.HomeView;
-import de.fatalix.app.view.login.LoginView;
-import de.fatalix.app.view.login.UserLoggedInEvent;
+import de.fatalix.bookery.view.home.HomeView;
+import de.fatalix.bookery.view.login.LoginView;
+import de.fatalix.bookery.view.login.UserLoggedInEvent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import org.apache.shiro.SecurityUtils;
@@ -28,6 +29,7 @@ import org.vaadin.cdiviewmenu.ViewMenuUI;
  */
 @CDIUI("")
 @Theme("mytheme")
+@Title("Bookery")
 public class App extends ViewMenuUI{
 
     private Button logout;

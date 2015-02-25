@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.app;
+package de.fatalix.bookery;
 
 import com.vaadin.cdi.access.JaasAccessControl;
 import javax.enterprise.inject.Specializes;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.app.view.home;
+package de.fatalix.bookery.view.home;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.navigator.View;
@@ -11,7 +11,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import de.fatalix.app.view.AbstractView;
+import de.fatalix.bookery.view.AbstractView;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**

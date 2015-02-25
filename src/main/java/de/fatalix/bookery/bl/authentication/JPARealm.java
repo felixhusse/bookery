@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.app.bl.authentication;
+package de.fatalix.bookery.bl.authentication;
 
-import de.fatalix.app.bl.model.AppUser;
+import de.fatalix.bookery.bl.model.AppUser;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.apache.shiro.authc.AuthenticationException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.app.view.login;
+package de.fatalix.bookery.view.login;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.event.ShortcutAction;
@@ -23,7 +23,7 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.app.view.AbstractView;
+import de.fatalix.bookery.view.AbstractView;
 import javax.inject.Inject;
 import org.apache.shiro.authc.AuthenticationException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
@@ -117,7 +117,7 @@ public class LoginView extends AbstractView implements View{
         CssLayout loginInformation = new CssLayout();
         loginInformation.setStyleName("login-information");
         Label loginInfoText = new Label(
-                "<h1>Welcome to Bookshelf</h1>"
+                "<h1>Welcome to Bookery</h1>"
                         + "Please provide your login to access your library. If you have problems logging in, please contact your administrator.",
                 ContentMode.HTML);
         loginInformation.addComponent(loginInfoText);

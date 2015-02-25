@@ -14,6 +14,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+import de.fatalix.bookery.bl.model.AppUser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -25,6 +26,8 @@ import javax.annotation.PostConstruct;
 public class AppUserCard extends CssLayout{
     
     private final List<Listener> listeners = new ArrayList<>();
+    
+    private AppUser appUser;
     
     private Label captionLabel;
     private TextField usernameField;
@@ -75,6 +78,15 @@ public class AppUserCard extends CssLayout{
         return userCardContent;
     }
     
+    public void loadAppUser(AppUser user) {
+        this.appUser = user;
+        usernameField.setValue(user.getUsername());
+        passwordField.setValue(user.getPassword());
+        fullnameField.setValue(user.getFullname());
+        eMailField.setValue(user.geteMail());
+        roles.setValue(user.getRoles());
+        captionLabel.setValue(user.getUsername());
+    }
     
     public void addListener(Listener listener) {
         listeners.add(listener);

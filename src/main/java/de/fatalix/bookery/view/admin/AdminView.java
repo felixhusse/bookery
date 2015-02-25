@@ -8,10 +8,15 @@ package de.fatalix.bookery.view.admin;
 import com.vaadin.cdi.CDIView;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.AbstractView;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
@@ -24,11 +29,23 @@ import org.vaadin.cdiviewmenu.ViewMenuItem;
 public class AdminView extends AbstractView {
     
     public static final String id = "admin";
-
+    @Inject
+    private AdminPresenter presenter;
+    
+    @Inject
+    private Instance<AppUserCard> appUserCardInstances;
+    
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         VerticalLayout root = new VerticalLayout();
-        root.addComponent(new Label("Admin"));
+        
+        List<AppUser> userList = presenter.loadUserList();
+        for (AppUser appUser : userList) {
+            AppUserCard appUserCard = appUserCardInstances.get();
+            appUserCard.loadAppUser(appUser);
+            root.addComponent(appUserCard);
+            
+        }
         this.setCompositionRoot(root);
     }
     

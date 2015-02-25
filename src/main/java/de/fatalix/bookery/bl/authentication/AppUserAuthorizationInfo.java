@@ -26,7 +26,7 @@ public class AppUserAuthorizationInfo implements AuthorizationInfo{
     
     @Override
     public Collection<String> getRoles() {
-        return Collections.unmodifiableCollection(Arrays.asList(new String[]{"admin","user"}));
+        return Collections.unmodifiableCollection(Arrays.asList(user.getRoles().split(",")));
     }
 
     @Override

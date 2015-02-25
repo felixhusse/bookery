@@ -25,11 +25,18 @@ public class AppStartup {
     @PostConstruct
     private void init() {
         if (service.getAllAppUser().isEmpty()) {
+            AppUser defaultAdminUser = new AppUser();
+            defaultAdminUser.setUsername("admin");
+            defaultAdminUser.setPassword("password");
+            defaultAdminUser.setFullname("Administrator");
+            defaultAdminUser.setRoles("admin,user,visitor");
+            service.createUser(defaultAdminUser);
+            
             AppUser defaultUser = new AppUser();
-            defaultUser.setUsername("admin");
+            defaultUser.setUsername("user");
             defaultUser.setPassword("password");
-            defaultUser.setFullname("Administrator");
-            defaultUser.setRoles("admin,user,visitor");
+            defaultUser.setFullname("User");
+            defaultUser.setRoles("user");
             service.createUser(defaultUser);
         }
     }

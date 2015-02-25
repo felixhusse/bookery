@@ -3,32 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.bookery.view.home;
+package de.fatalix.bookery.view.admin;
 
 import com.vaadin.cdi.CDIView;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import de.fatalix.bookery.view.AbstractView;
+import javax.annotation.security.RolesAllowed;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
  *
- * @author Fatalix
+ * @author felix.husse
  */
-@CDIView(HomeView.id)
-@ViewMenuItem(title = "Home",icon = FontAwesome.HOME,order = ViewMenuItem.BEGINNING)
-public class HomeView extends AbstractView implements View{
-    public static final String id = "home";
+@CDIView(AdminView.id)
+@RolesAllowed({"admin"})
+@ViewMenuItem(title = "Admin",icon = FontAwesome.GEARS,order = ViewMenuItem.END)
+public class AdminView extends AbstractView {
+    
+    public static final String id = "admin";
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         VerticalLayout root = new VerticalLayout();
-        
-        root.addComponent(new Label("Home"));
-        
+        root.addComponent(new Label("Admin"));
         this.setCompositionRoot(root);
     }
+    
+    
+    
 }

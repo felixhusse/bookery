@@ -5,6 +5,7 @@
  */
 package de.fatalix.bookery.bl.authentication;
 
+import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.model.AppUser;
 import javax.ejb.EJB;
 import javax.inject.Inject;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.bookery.bl.authentication;
+package de.fatalix.bookery.bl;
 
 import de.fatalix.bookery.bl.model.AppUser;
 import javax.ejb.Stateless;

@@ -5,8 +5,11 @@
  */
 package de.fatalix.bookery.bl;
 
+import de.fatalix.bookery.bl.dao.AppUserDAO;
 import de.fatalix.bookery.bl.model.AppUser;
+import java.util.List;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 /**
  *
@@ -15,15 +18,18 @@ import javax.ejb.Stateless;
 @Stateless
 public class AppUserService {
     
+    @Inject private AppUserDAO appUserDao;
     
     public AppUser getAppUser(String username) {
-        if (username.equals("admin")) {
-            AppUser user = new AppUser();
-            user.setPassword("password");
-            user.setUsername("admin");
-            return user;
-        }
-        return null;
+        return appUserDao.findByUserName(username);
+    }
+    
+    public List<AppUser> getAllAppUser() {
+        return appUserDao.findAll();
+    }
+    
+    public AppUser createUser(AppUser user) {
+        return appUserDao.save(user);
     }
     
 }

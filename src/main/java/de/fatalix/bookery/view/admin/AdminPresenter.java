@@ -28,6 +28,10 @@ public class AdminPresenter {
         return service.updateUser(user);
     }
     
+    public AppUser updatePassword(AppUser user, String password) {
+        return service.updateUserPassword(user, password);
+    }
+    
     public AppUser createNewUser() {
         AppUser user = new AppUser();
         user.setUsername("newuser");

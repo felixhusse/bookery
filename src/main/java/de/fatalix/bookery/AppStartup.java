@@ -34,7 +34,7 @@ public class AppStartup {
             
             AppUser defaultUser = new AppUser();
             defaultUser.setUsername("user");
-            defaultUser.setPassword("password");
+            defaultUser.setPassword("felix");
             defaultUser.setFullname("User");
             defaultUser.setRoles("user");
             service.createUser(defaultUser);

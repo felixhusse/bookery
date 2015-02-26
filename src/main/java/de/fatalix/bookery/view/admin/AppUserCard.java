@@ -25,128 +25,145 @@ import javax.inject.Inject;
  *
  * @author felix.husse
  */
-public class AppUserCard extends CssLayout{
-    
+public class AppUserCard extends CssLayout {
+
     private final List<Listener> listeners = new ArrayList<>();
-    
-    @Inject private AdminPresenter presenter;
-    
+
+    @Inject
+    private AdminPresenter presenter;
+
     private AppUser appUser;
-    
+
     private Label captionLabel;
     private TextField usernameField;
     private PasswordField passwordField;
     private TextField fullnameField;
     private TextField eMailField;
     private TextField roles;
-    
+
     @PostConstruct
     private void postInit() {
         addStyleName("card");
-        addComponents(createHeader(),createContent());
+        addComponents(createHeader(), createContent());
     }
-    
+
     private HorizontalLayout createHeader() {
         captionLabel = new Label("some.user");
         Button deleteUser = new Button(null, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                
+
             }
         });
         deleteUser.setIcon(FontAwesome.TIMES_CIRCLE);
         deleteUser.addStyleName("borderless");
         deleteUser.addStyleName("icon-only");
-        
+
         HorizontalLayout captionLayout = new HorizontalLayout();
         captionLayout.addStyleName("v-panel-caption");
         captionLayout.setWidth("100%");
-        captionLayout.addComponents(captionLabel,deleteUser);
+        captionLayout.addComponents(captionLabel, deleteUser);
         captionLayout.setExpandRatio(captionLabel, 1);
-        
+
         return captionLayout;
     }
-    
+
     private FormLayout createContent() {
-        usernameField = new TextField("Username","some.user");
+        usernameField = new TextField("Username", "some.user");
         passwordField = new PasswordField("Password", "password");
-        fullnameField = new TextField("Fullname","Some User");
-        eMailField = new TextField("EMail","user@some.de");
-        roles = new TextField("Roles","user");
-        
-        FormLayout userCardContent = new FormLayout(usernameField,passwordField,fullnameField,eMailField,roles);
+        fullnameField = new TextField("Fullname", "Some User");
+        eMailField = new TextField("EMail", "user@some.de");
+        roles = new TextField("Roles", "user");
+
+        FormLayout userCardContent = new FormLayout(usernameField, passwordField, fullnameField, eMailField, roles);
         userCardContent.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
         userCardContent.setMargin(true);
-        
+
         return userCardContent;
     }
-    
+
     public void loadAppUser(AppUser user) {
         this.appUser = user;
         setUserFields();
 
         usernameField.addBlurListener(new FieldEvents.BlurListener() {
+
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                appUser.setUsername(usernameField.getValue());
-                updateUser();
+                if(!appUser.getUsername().equals(usernameField.getValue())) {
+                    appUser.setUsername(usernameField.getValue());
+                    updateUser();
+                }
             }
         });
 
         passwordField.addBlurListener(new FieldEvents.BlurListener() {
+
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                appUser.setPassword(passwordField.getValue());
-                updateUser();
+                if(!passwordField.getValue().equals("nopeNopeNope")) {
+                    presenter.updatePassword(appUser, passwordField.getValue());
+                    updateUser();
+                }
             }
         });
 
         fullnameField.addBlurListener(new FieldEvents.BlurListener() {
+
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                appUser.setFullname(fullnameField.getValue());
-                updateUser();
+                if(!appUser.getFullname().equals(fullnameField.getValue())) {
+                    appUser.setFullname(fullnameField.getValue());
+                    updateUser();
+                }
             }
         });
 
         eMailField.addBlurListener(new FieldEvents.BlurListener() {
+
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                appUser.seteMail(eMailField.getValue());
-                updateUser();
+                if(!appUser.geteMail().equals(eMailField.getValue())) {
+                    appUser.seteMail(eMailField.getValue());
+                    updateUser();
+                }
             }
         });
 
         roles.addBlurListener(new FieldEvents.BlurListener() {
+
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                appUser.setRoles(roles.getValue());
-                updateUser();
+                if(!appUser.getRoles().equals(roles.getValue())) {
+                    appUser.setRoles(roles.getValue());
+                    updateUser();
+                }
             }
         });
 
     }
-    
+
     private void setUserFields() {
         usernameField.setValue(appUser.getUsername());
         fullnameField.setValue(appUser.getFullname());
-        passwordField.setValue(appUser.getPassword());
+        passwordField.setValue("nopeNopeNope");
         eMailField.setValue(appUser.geteMail());
         roles.setValue(appUser.getRoles());
         captionLabel.setValue(appUser.getUsername());
     }
-    
+
     protected void updateUser() {
         appUser = presenter.updateUser(appUser);
         setUserFields();
     }
-    
+
     public void addListener(Listener listener) {
         listeners.add(listener);
     }
-    
+
     public interface Listener {
+
         void userDeleted(AppUserCard appUserCard);
     }
 }

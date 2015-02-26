@@ -17,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.crypto.hash.Sha512Hash;
 
 /**
  *
@@ -64,10 +65,6 @@ public class AppUser implements EntityIntf, Serializable{
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String geteMail() {
         return eMail;
     }
@@ -98,6 +95,33 @@ public class AppUser implements EntityIntf, Serializable{
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+    
+    /**
+     * Sets the password in human readable format. The password will internally
+     * be hashed.
+     * 
+     * @param password
+     */
+    public void setHumanReadablePassword(String password) {
+        this.password = new Sha512Hash(password, AppUserAuthenticationInfo.PW_SALT)
+                .toHex();
+    }
+
+    /*
+     * This getter shouldn't exist but it's here because apache commons bean
+     * utils will fail otherwise.
+     */
+    public String getHumanReadablePassword() {
+        return null;
+    }
+
+    public void setPassword(String password) {
+        if (password.length() != 128) {
+            setHumanReadablePassword(password);
+        } else {
+            this.password = password;
+        }
     }
     
     public AuthenticationInfo getAsAuthenticationInfo() {

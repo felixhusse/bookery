@@ -24,9 +24,6 @@ import org.apache.shiro.subject.PrincipalCollection;
  */
 public class JPARealm extends AuthorizingRealm {
 
-    public static final String REALM_NAME = "MY_REALM";
-    public static final int HASH_ITERATIONS = 200;
-
     @Inject
     private AppUserService service;
 
@@ -60,10 +57,5 @@ public class JPARealm extends AuthorizingRealm {
         throw new AuthenticationException("Failed to authenticate!");
     }
 
-    @Override
-    @Inject
-    public void setCredentialsMatcher(final CredentialsMatcher credentialsMatcher) {
-        super.setCredentialsMatcher(credentialsMatcher);
-    }
 
 }

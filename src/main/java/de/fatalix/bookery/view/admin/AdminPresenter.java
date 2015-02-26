@@ -25,7 +25,7 @@ public class AdminPresenter {
     }
     
     public AppUser updateUser(AppUser user) {
-        return null;
+        return service.updateUser(user);
     }
     
     public AppUser createNewUser() {

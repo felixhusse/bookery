@@ -32,4 +32,8 @@ public class AppUserService {
         return appUserDao.save(user);
     }
     
+    public AppUser updateUser(AppUser user) {
+        return appUserDao.update(user);
+    }
+    
 }

@@ -24,7 +24,7 @@ import org.apache.shiro.subject.PrincipalCollection;
  */
 public class JPARealm extends AuthorizingRealm {
 
-    @EJB
+    @Inject
     private AppUserService service;
 
     @Override
@@ -41,16 +41,20 @@ public class JPARealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        System.out.println("Doing some crazy access stuff");
         if(token == null) {
             throw new AuthenticationException("PrincipalCollection method argument cannot be null.");
         }
 
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken)token;
         AppUser user = service.getAppUser(usernamePasswordToken.getUsername());
+        System.out.println("User: " + user.getUsername() + " found!");
         if (user == null) {
             throw new AuthenticationException("Could not find user");
         }
+        System.out.println("PW: " + user.getPassword()+ " --> " + usernamePasswordToken.getPassword());
         if (getCredentialsMatcher().doCredentialsMatch(usernamePasswordToken,user.getAsAuthenticationInfo())) {
+            
             return user.getAsAuthenticationInfo();
         }
         

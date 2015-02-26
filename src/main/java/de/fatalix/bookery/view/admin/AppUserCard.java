@@ -5,6 +5,7 @@
  */
 package de.fatalix.bookery.view.admin;
 
+import com.vaadin.event.FieldEvents;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
@@ -18,6 +19,7 @@ import de.fatalix.bookery.bl.model.AppUser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  *
@@ -26,6 +28,8 @@ import javax.annotation.PostConstruct;
 public class AppUserCard extends CssLayout{
     
     private final List<Listener> listeners = new ArrayList<>();
+    
+    @Inject private AdminPresenter presenter;
     
     private AppUser appUser;
     
@@ -80,12 +84,62 @@ public class AppUserCard extends CssLayout{
     
     public void loadAppUser(AppUser user) {
         this.appUser = user;
-        usernameField.setValue(user.getUsername());
-        passwordField.setValue(user.getPassword());
-        fullnameField.setValue(user.getFullname());
-        eMailField.setValue(user.geteMail());
-        roles.setValue(user.getRoles());
-        captionLabel.setValue(user.getUsername());
+        setUserFields();
+
+        usernameField.addBlurListener(new FieldEvents.BlurListener() {
+            @Override
+            public void blur(FieldEvents.BlurEvent event) {
+                appUser.setUsername(usernameField.getValue());
+                updateUser();
+            }
+        });
+
+        passwordField.addBlurListener(new FieldEvents.BlurListener() {
+            @Override
+            public void blur(FieldEvents.BlurEvent event) {
+                appUser.setPassword(passwordField.getValue());
+                updateUser();
+            }
+        });
+
+        fullnameField.addBlurListener(new FieldEvents.BlurListener() {
+            @Override
+            public void blur(FieldEvents.BlurEvent event) {
+                appUser.setFullname(fullnameField.getValue());
+                updateUser();
+            }
+        });
+
+        eMailField.addBlurListener(new FieldEvents.BlurListener() {
+            @Override
+            public void blur(FieldEvents.BlurEvent event) {
+                appUser.seteMail(eMailField.getValue());
+                updateUser();
+            }
+        });
+
+        roles.addBlurListener(new FieldEvents.BlurListener() {
+            @Override
+            public void blur(FieldEvents.BlurEvent event) {
+                appUser.setRoles(roles.getValue());
+                updateUser();
+            }
+        });
+
+    }
+    
+    private void setUserFields() {
+        usernameField.setValue(appUser.getUsername());
+        fullnameField.setValue(appUser.getFullname());
+        passwordField.setValue(appUser.getPassword());
+        eMailField.setValue(appUser.geteMail());
+        roles.setValue(appUser.getRoles());
+        captionLabel.setValue(appUser.getUsername());
+    }
+    
+    protected void updateUser() {
+        appUser = presenter.updateUser(appUser);
+        setUserFields();
     }
     
     public void addListener(Listener listener) {

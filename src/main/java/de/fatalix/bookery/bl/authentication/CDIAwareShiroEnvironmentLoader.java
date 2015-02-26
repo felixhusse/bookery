@@ -27,12 +27,10 @@ public class CDIAwareShiroEnvironmentLoader extends EnvironmentLoaderListener{
 
     @Override
     protected WebEnvironment createEnvironment(ServletContext sc) {
+        System.out.println("Loading JPA REALM");
         WebEnvironment webEnvironment = super.createEnvironment(sc);
 
         RealmSecurityManager rsm = (RealmSecurityManager) webEnvironment.getSecurityManager();
-        SimpleCredentialsMatcher credentialsMatcher = new SimpleCredentialsMatcher();
-        
-        jpaRealm.setCredentialsMatcher(credentialsMatcher);
         Collection<Realm> realms = rsm.getRealms();
         realms.add(jpaRealm);
         rsm.setRealms(realms);

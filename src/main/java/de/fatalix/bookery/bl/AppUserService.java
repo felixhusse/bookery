@@ -5,6 +5,7 @@
  */
 package de.fatalix.bookery.bl;
 
+import de.fatalix.bookery.bl.authentication.JPASecurityUtil;
 import de.fatalix.bookery.bl.dao.AppUserDAO;
 import de.fatalix.bookery.bl.model.AppUser;
 import java.util.List;
@@ -29,7 +30,16 @@ public class AppUserService {
     }
     
     public AppUser createUser(AppUser user) {
+        String password = user.getPassword();
+        user.setSalt(JPASecurityUtil.getSalt());
+        user.setPassword(JPASecurityUtil.hashPassword(password, user.getSalt()));
         return appUserDao.save(user);
+    }
+    
+    public AppUser updateUserPassword(AppUser user, String password) {
+        user.setSalt(JPASecurityUtil.getSalt());
+        user.setPassword(JPASecurityUtil.hashPassword(password, user.getSalt()));
+        return appUserDao.update(user);
     }
     
     public AppUser updateUser(AppUser user) {

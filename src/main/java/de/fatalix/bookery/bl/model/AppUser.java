@@ -40,6 +40,7 @@ public class AppUser implements EntityIntf, Serializable{
     private String eMail;
     private String fullname;
     private String roles;
+    private String salt;
     
     @Override
     public Integer getId() {
@@ -89,6 +90,14 @@ public class AppUser implements EntityIntf, Serializable{
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
     
     public AuthenticationInfo getAsAuthenticationInfo() {

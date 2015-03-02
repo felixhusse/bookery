@@ -79,7 +79,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
     background: $editor-background-color;
 
     @if $login-background-image {
-      background-image: url(#{$login-background-image});
+      background-image: url($login-background-image);
       background-size: cover;
       background-position: 50% 50%;
     }

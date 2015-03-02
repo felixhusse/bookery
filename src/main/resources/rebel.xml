@@ -4,12 +4,12 @@
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com"
              xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd">
 	<classpath>
-		<dir name="F:\stash\template-app\target\classes"/>
+		<dir name="F:\stash\bookery\target\classes"/>
 
 	</classpath>
 	<web>
 		<link target="/">
-			<dir name="F:/stash/template-app/src/main/webapp"/>
+			<dir name="F:/stash/bookery/src/main/webapp"/>
 		</link>
 	</web>  
 </application>  

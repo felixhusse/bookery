@@ -26,7 +26,7 @@ public class HomeView extends AbstractView implements View{
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         VerticalLayout root = new VerticalLayout();
-        
+        root.addStyleName("bookery-screen");
         root.addComponent(new Label("Home"));
         
         this.setCompositionRoot(root);

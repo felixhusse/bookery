@@ -51,6 +51,7 @@ public class App extends ViewMenuUI{
         logout = new Button("Logout", logoutClickListener);
         logout.setIcon(FontAwesome.SIGN_OUT);
         logout.addStyleName("user-menu");
+        
         if (!isLoggedIn()) {
             getMenu().setVisible(false);
             getNavigator().navigateTo(LoginView.id);

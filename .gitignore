@@ -4,3 +4,4 @@
 /target/
 /src/main/webapp/WEB-INF/jboss-web.xml
 /nb-configuration.xml
+/src/main/resources/rebel.xml

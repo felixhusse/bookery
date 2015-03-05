@@ -44,14 +44,18 @@ public class BookService {
     
     
     public List<BookEntry> searchBooks(String searchword) {
-        SearchResponse response = nodeHandler.getClient().prepareSearch("bookery")
-                .setTypes("book").setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(QueryBuilders.termQuery("_all", searchword))
-                .setFrom(0).setSize(60).setExplain(true).execute().actionGet();
+        System.out.println("Searchword: " + searchword);
+        SearchResponse response = nodeHandler.getClient()
+                                            .prepareSearch("bookery")
+                                            //.setQuery(QueryBuilders.termQuery("author", searchword))
+                                            .addFields("author","title")
+                                            .execute().actionGet();
+        
+        System.out.println("Hits: " + response.getHits().getTotalHits());
         ArrayList<BookEntry> bookEntries = new ArrayList<>();
+        
         for (SearchHit searchHit : response.getHits().hits()) {
-            Map<String,Object> result = searchHit.getSource();
-            bookEntries.add(new BookEntry().setAuthor(result.get("author").toString()).setTitle(result.get("title").toString()));
+            bookEntries.add(new BookEntry().setAuthor(searchHit.fields().get("author").getValue().toString()).setTitle(searchHit.fields().get("title").getValue().toString()));
         }
         
         return bookEntries;

@@ -71,12 +71,13 @@ public class HomeView extends AbstractView implements View{
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
+                
                 List<BookEntry> bookEntries = presenter.searchBooks(searchText.getValue());
                 String resultText = "";
                 for (BookEntry bookEntry : bookEntries) {
                     resultText += bookEntry.toString() + "\n";
                 }
-                resultLabel.setValue("Result:\n" + resultText);
+                resultLabel.setValue("Result ("+bookEntries.size()+"):\n" + resultText);
             }
         });
         

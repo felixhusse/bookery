@@ -44,10 +44,10 @@ public class BookService {
     
     
     public List<BookEntry> searchBooks(String searchword) {
-        System.out.println("Searchword: " + searchword);
+        System.out.println("Searchword: " + QueryBuilders.matchQuery("author", searchword).toString());
         SearchResponse response = nodeHandler.getClient()
                                             .prepareSearch("bookery")
-                                            .setQuery(QueryBuilders.matchQuery("author",searchword))
+                                            .setQuery(QueryBuilders.termQuery("author", searchword))
                                             .addFields("author","title")
                                             .execute().actionGet();
         

@@ -102,5 +102,11 @@ public class BookEntry {
         this.file = file;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", category=" + category + ", rating=" + rating + ", uploader=" + uploader + ", reader=" + reader + ", shared=" + shared + ", file=" + file + '}';
+    }
+    
     
 }

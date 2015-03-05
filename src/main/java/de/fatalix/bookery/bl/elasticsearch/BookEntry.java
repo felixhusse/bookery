@@ -19,7 +19,9 @@ public class BookEntry {
     private String uploader;
     private String[] reader;
     private String[] shared;
-
+    
+    private byte[] file;
+    
     public String getAuthor() {
         return author;
     }
@@ -52,6 +54,10 @@ public class BookEntry {
         return shared;
     }
 
+    public byte[] getFile() {
+        return file;
+    }
+    
     public BookEntry setAuthor(String author) {
         this.author = author;
         return this;
@@ -91,8 +97,10 @@ public class BookEntry {
         this.shared = shared;
         return this;
     }
-    
-    
-    
+
+    public BookEntry setFile(byte[] file) {
+        this.file = file;
+        return this;
+    }
     
 }

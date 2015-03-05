@@ -47,7 +47,7 @@ public class BookService {
         System.out.println("Searchword: " + searchword);
         SearchResponse response = nodeHandler.getClient()
                                             .prepareSearch("bookery")
-                                            //.setQuery(QueryBuilders.termQuery("author", searchword))
+                                            .setQuery(QueryBuilders.matchQuery("author",searchword))
                                             .addFields("author","title")
                                             .execute().actionGet();
         

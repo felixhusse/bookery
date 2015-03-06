@@ -17,7 +17,7 @@
 
     <modules>
         <module>bookery</module>
-        <module>bookery-widgetset</module>
+        <module>bookery-widget</module>
     </modules>
 
     <properties>

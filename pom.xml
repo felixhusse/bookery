@@ -19,10 +19,113 @@
         <module>bookery</module>
         <module>bookery-widgetset</module>
     </modules>
-    
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <vaadin.version>7.4.0</vaadin.version>
+        <deltaspike.version>1.1.0</deltaspike.version>
+        <es.version>1.4.4</es.version>
+    </properties>
+        
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-web-api</artifactId>
+                <version>6.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.core</groupId>
+                <artifactId>deltaspike-core-api</artifactId>
+                <version>${deltaspike.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.core</groupId>
+                <artifactId>deltaspike-core-impl</artifactId>
+                <version>${deltaspike.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${es.version}</version>
+            </dependency>
+        
+            <!-- Vaadin -->
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-server</artifactId>
+                <version>${vaadin.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-shared</artifactId>
+                <version>${vaadin.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-themes</artifactId>
+                <version>${vaadin.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client-compiled</artifactId>
+                <version>${vaadin.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client</artifactId>
+                <version>${vaadin.version}</version>    
+                <!-- TODO this should have scope provided once http://dev.vaadin.com/ticket/14788 
+                is resolved -->
+                <!-- <scope>provided</scope> -->
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client-compiler</artifactId>
+                <version>${vaadin.version}</version>    
+                <!-- TODO this should have scope provided once http://dev.vaadin.com/ticket/14788 
+                is resolved -->
+                <!-- <scope>provided</scope> -->
+            </dependency>
             
+            <dependency>
+                <groupId>com.squareup.retrofit</groupId>
+                <artifactId>retrofit</artifactId>
+                <version>1.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.vaadin</groupId>
+                <artifactId>cdi-helpers</artifactId>
+                <version>1.8</version>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <version>1.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>1.2.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     

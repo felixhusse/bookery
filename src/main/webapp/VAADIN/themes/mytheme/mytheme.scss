@@ -73,7 +73,18 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
             color: rgb(244, 238, 229); 
         }
     }
-
+    
+    .bookery-content {
+        @include valo-panel-style;
+        border: none;
+        padding: $v-layout-margin;
+        @include valo-animate-in-fade($duration: 1s);
+    }
+    
+    .admin-screen {
+        
+    }
+    
     .bookery-screen {
         background: $editor-background-color;
         background-image: url(#{$login-background-image});
@@ -82,12 +93,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
         width: 100%;
         height: 100%;
         
-        .bookery-content {
-            @include valo-panel-style;
-            border: none;
-            padding: $v-layout-margin;
-            @include valo-animate-in-fade($duration: 1s);
-        }
+        
         
         
         .bookery-sidebar {

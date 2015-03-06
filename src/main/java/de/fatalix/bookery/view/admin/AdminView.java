@@ -37,16 +37,19 @@ public class AdminView extends AbstractView {
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        VerticalLayout root = new VerticalLayout();
+
+        HorizontalLayout row = new HorizontalLayout();
+        row.addStyleName("wrapping");
+        row.setSpacing(true);
         
         List<AppUser> userList = presenter.loadUserList();
         for (AppUser appUser : userList) {
             AppUserCard appUserCard = appUserCardInstances.get();
             appUserCard.loadAppUser(appUser);
-            root.addComponent(appUserCard);
+            row.addComponent(appUserCard);
             
         }
-        this.setCompositionRoot(root);
+        this.setCompositionRoot(row);
     }
     
     

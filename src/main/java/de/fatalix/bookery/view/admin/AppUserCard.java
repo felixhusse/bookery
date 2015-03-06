@@ -43,8 +43,10 @@ public class AppUserCard extends CssLayout {
 
     @PostConstruct
     private void postInit() {
-        addStyleName("card");
+        addStyleName("bookery-content");
         addComponents(createHeader(), createContent());
+        setWidth(400, Unit.PIXELS);
+        setHeight(220, Unit.PIXELS);
     }
 
     private HorizontalLayout createHeader() {
@@ -65,7 +67,7 @@ public class AppUserCard extends CssLayout {
         captionLayout.setWidth("100%");
         captionLayout.addComponents(captionLabel, deleteUser);
         captionLayout.setExpandRatio(captionLabel, 1);
-
+        
         return captionLayout;
     }
 

@@ -55,7 +55,10 @@ public class AppUserCard extends CssLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-
+                presenter.deleteUser(appUser);
+                for (Listener listener : listeners) {
+                    listener.userDeleted(AppUserCard.this);
+                }
             }
         });
         deleteUser.setIcon(FontAwesome.TIMES_CIRCLE);
@@ -110,34 +113,34 @@ public class AppUserCard extends CssLayout {
                 }
             }
         });
-
+        fullnameField.setNullRepresentation("");
         fullnameField.addBlurListener(new FieldEvents.BlurListener() {
 
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                if(!appUser.getFullname().equals(fullnameField.getValue())) {
+                if(appUser.getFullname() == null || !appUser.getFullname().equals(fullnameField.getValue())) {
                     appUser.setFullname(fullnameField.getValue());
                     updateUser();
                 }
             }
         });
-
+        eMailField.setNullRepresentation("");
         eMailField.addBlurListener(new FieldEvents.BlurListener() {
 
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                if(!appUser.geteMail().equals(eMailField.getValue())) {
+                if(appUser.geteMail() == null || !appUser.geteMail().equals(eMailField.getValue())) {
                     appUser.seteMail(eMailField.getValue());
                     updateUser();
                 }
             }
         });
-
+        roles.setNullRepresentation("");
         roles.addBlurListener(new FieldEvents.BlurListener() {
 
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                if(!appUser.getRoles().equals(roles.getValue())) {
+                if(appUser.getRoles() == null || !appUser.getRoles().equals(roles.getValue())) {
                     appUser.setRoles(roles.getValue());
                     updateUser();
                 }
@@ -148,6 +151,7 @@ public class AppUserCard extends CssLayout {
 
     private void setUserFields() {
         usernameField.setValue(appUser.getUsername());
+        
         fullnameField.setValue(appUser.getFullname());
         passwordField.setValue("nopeNopeNope");
         eMailField.setValue(appUser.geteMail());
@@ -160,12 +164,11 @@ public class AppUserCard extends CssLayout {
         setUserFields();
     }
 
-    public void addListener(Listener listener) {
+    public void addAppUserCardListener(Listener listener) {
         listeners.add(listener);
     }
 
     public interface Listener {
-
         void userDeleted(AppUserCard appUserCard);
     }
 }

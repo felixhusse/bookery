@@ -39,4 +39,8 @@ public class AdminPresenter {
         return service.createUser(user);
     }
     
+    public void deleteUser(AppUser user) {
+        service.deleteUser(user);
+    }
+    
 }

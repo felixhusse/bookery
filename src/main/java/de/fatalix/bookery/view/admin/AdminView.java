@@ -30,20 +30,19 @@ import org.vaadin.cdiviewmenu.ViewMenuItem;
 @CDIView(AdminView.id)
 @RolesAllowed({"admin"})
 @ViewMenuItem(title = "Admin",icon = FontAwesome.GEARS,order = ViewMenuItem.END)
-public class AdminView extends AbstractView {
+public class AdminView extends AbstractView implements AppUserCard.Listener{
     
     public static final String id = "admin";
-    @Inject
-    private AdminPresenter presenter;
     
-    @Inject
-    private Instance<AppUserCard> appUserCardInstances;
+    @Inject private AdminPresenter presenter;
     
+    @Inject private Instance<AppUserCard> appUserCardInstances;
+    private HorizontalLayout row;
     private VerticalLayout emptyLayout;
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        HorizontalLayout row = new HorizontalLayout();
+        row = new HorizontalLayout();
         row.addStyleName("wrapping"); 
         row.setSpacing(true);
         row.setMargin(true);
@@ -52,6 +51,7 @@ public class AdminView extends AbstractView {
         for (AppUser appUser : userList) {
             AppUserCard appUserCard = appUserCardInstances.get();
             appUserCard.loadAppUser(appUser);
+            appUserCard.addAppUserCardListener(this);
             row.addComponent(appUserCard);
             
         }
@@ -70,7 +70,8 @@ public class AdminView extends AbstractView {
                 AppUser appUser = presenter.createNewUser();
                 AppUserCard appUserCard = appUserCardInstances.get();
                 appUserCard.loadAppUser(appUser);
-                //row.addComponent(appUserCard, index);
+                appUserCard.addAppUserCardListener(AdminView.this);
+                row.addComponent(appUserCard, row.getComponentCount()-1);
             }
         });
         row.addComponent(emptyLayout);
@@ -79,6 +80,11 @@ public class AdminView extends AbstractView {
         VerticalLayout root = new VerticalLayout(row);
         root.addStyleName("admin-screen");
         this.setCompositionRoot(root);
+    }
+
+    @Override
+    public void userDeleted(AppUserCard appUserCard) {
+        row.removeComponent(appUserCard);
     }
     
 }

@@ -13,6 +13,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.model.AppUser;
@@ -37,28 +38,37 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     @Inject private AdminPresenter presenter;
     
     @Inject private Instance<AppUserCard> appUserCardInstances;
-    private HorizontalLayout row;
-    private VerticalLayout emptyLayout;
+
+    private HorizontalLayout userManagementLayout;
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        row = new HorizontalLayout();
-        row.addStyleName("wrapping"); 
-        row.setSpacing(true);
-        row.setMargin(true);
+        TabSheet tabSheet = new TabSheet();
+        tabSheet.setStyleName("admin-screen");
+        tabSheet.addTab(createServerSettings(),"Server Settings");
+        tabSheet.addTab(createUserManagement(), "User Management");
+
+        this.setCompositionRoot(tabSheet);
+    }
+    
+    public HorizontalLayout createUserManagement() {
+        userManagementLayout = new HorizontalLayout();
+        userManagementLayout.addStyleName("wrapping"); 
+        userManagementLayout.setSpacing(true);
+        userManagementLayout.setMargin(true);
         
         List<AppUser> userList = presenter.loadUserList();
         for (AppUser appUser : userList) {
             AppUserCard appUserCard = appUserCardInstances.get();
             appUserCard.loadAppUser(appUser);
             appUserCard.addAppUserCardListener(this);
-            row.addComponent(appUserCard);
+            userManagementLayout.addComponent(appUserCard);
             
         }
         Label label = new Label("Add new user...");
         label.setSizeUndefined();
         label.addStyleName(ValoTheme.LABEL_LARGE);
-        emptyLayout = new VerticalLayout(label);
+        VerticalLayout  emptyLayout = new VerticalLayout(label);
         emptyLayout.addStyleName("dashed-border");
         emptyLayout.setWidth(380, Unit.PIXELS);
         emptyLayout.setHeight(220, Unit.PIXELS);
@@ -71,20 +81,22 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 AppUserCard appUserCard = appUserCardInstances.get();
                 appUserCard.loadAppUser(appUser);
                 appUserCard.addAppUserCardListener(AdminView.this);
-                row.addComponent(appUserCard, row.getComponentCount()-1);
+                userManagementLayout.addComponent(appUserCard, userManagementLayout.getComponentCount()-1);
             }
         });
-        row.addComponent(emptyLayout);
-        
-        
-        VerticalLayout root = new VerticalLayout(row);
-        root.addStyleName("admin-screen");
-        this.setCompositionRoot(root);
+        userManagementLayout.addComponent(emptyLayout);
+        return userManagementLayout;
     }
-
+    
+    public VerticalLayout createServerSettings() {
+        VerticalLayout layout = new VerticalLayout();
+        
+        return layout;
+    }
+    
     @Override
     public void userDeleted(AppUserCard appUserCard) {
-        row.removeComponent(appUserCard);
+        userManagementLayout.removeComponent(appUserCard);
     }
     
 }

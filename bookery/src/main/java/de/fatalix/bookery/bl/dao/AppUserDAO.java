@@ -10,6 +10,7 @@ import de.fatalix.bookery.bl.model.AppUser;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -17,6 +18,7 @@ import javax.persistence.PersistenceContext;
  *
  * @author felix.husse
  */
+@Stateless
 public class AppUserDAO extends DAOBean<AppUser>{
     @PersistenceContext(unitName = "bookery-pu")
     private EntityManager entityManager;

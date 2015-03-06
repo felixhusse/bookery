@@ -7,7 +7,10 @@ package de.fatalix.bookery.view.admin;
 
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
+import de.fatalix.bookery.bl.dao.AppSettingDAO;
+import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;
+import de.fatalix.bookery.bl.model.SettingKey;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -19,6 +22,7 @@ import javax.inject.Inject;
 public class AdminPresenter {
     
     @Inject private AppUserService service;
+    @Inject private AppSettingDAO settingDAO;
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -41,6 +45,10 @@ public class AdminPresenter {
     
     public void deleteUser(AppUser user) {
         service.deleteUser(user);
+    }
+
+    public AppSetting loadSetting(SettingKey key) {
+        return settingDAO.findByKey(key);
     }
     
 }

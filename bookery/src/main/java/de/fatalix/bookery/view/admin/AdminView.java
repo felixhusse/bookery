@@ -38,7 +38,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     @Inject private AdminPresenter presenter;
     
     @Inject private Instance<AppUserCard> appUserCardInstances;
-
+    @Inject private ServerSettingsLayout serverSettingsLayout;
     private HorizontalLayout userManagementLayout;
     
     @Override
@@ -46,8 +46,8 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
         TabSheet tabSheet = new TabSheet();
         tabSheet.setStyleName("admin-screen");
         tabSheet.addTab(createServerSettings(),"Server Settings");
-        tabSheet.addTab(createUserManagement(), "User Management");
-
+        tabSheet.addTab(createUserManagement(), "User Managements");
+        serverSettingsLayout.loadData();
         this.setCompositionRoot(tabSheet);
     }
     
@@ -90,7 +90,8 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     
     public VerticalLayout createServerSettings() {
         VerticalLayout layout = new VerticalLayout();
-        
+        layout.setMargin(true);
+        layout.addComponent(serverSettingsLayout);
         return layout;
     }
     

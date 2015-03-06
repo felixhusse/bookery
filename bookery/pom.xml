@@ -32,17 +32,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.deltaspike.core</groupId>
-            <artifactId>deltaspike-core-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.deltaspike.core</groupId>
-            <artifactId>deltaspike-core-impl</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
         </dependency>
@@ -156,7 +145,7 @@
                 <version>1.1.0.Alpha1</version>
                 <configuration>
                     <username>admin</username>
-                    <password>admin123</password>
+                    <password>b0rr1sbloed</password>
                     <hostname>localhost</hostname>
                 </configuration>
             </plugin>

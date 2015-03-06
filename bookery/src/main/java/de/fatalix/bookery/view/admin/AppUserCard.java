@@ -46,7 +46,7 @@ public class AppUserCard extends CssLayout {
         addStyleName("bookery-content");
         addComponents(createHeader(), createContent());
         setWidth(380, Unit.PIXELS);
-        setHeight(220, Unit.PIXELS);
+        setHeight(240, Unit.PIXELS);
     }
 
     private HorizontalLayout createHeader() {

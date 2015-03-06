@@ -45,7 +45,7 @@ public class AppUserCard extends CssLayout {
     private void postInit() {
         addStyleName("bookery-content");
         addComponents(createHeader(), createContent());
-        setWidth(400, Unit.PIXELS);
+        setWidth(380, Unit.PIXELS);
         setHeight(220, Unit.PIXELS);
     }
 

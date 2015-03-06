@@ -41,6 +41,7 @@ public class AdminView extends AbstractView {
         HorizontalLayout row = new HorizontalLayout();
         row.addStyleName("wrapping");
         row.setSpacing(true);
+        row.setMargin(true);
         
         List<AppUser> userList = presenter.loadUserList();
         for (AppUser appUser : userList) {

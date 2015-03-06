@@ -7,4 +7,25 @@
                 <goal>vaadin:compile-theme</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-Deploy</actionName>
+            <displayName>Deploy</displayName>
+            <goals>
+                <goal>wildfly:deploy</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Undeploy</actionName>
+            <displayName>Undeploy</displayName>
+            <goals>
+                <goal>wildfly:undeploy</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-JRebel</actionName>
+            <displayName>JRebel</displayName>
+            <goals>
+                <goal>jrebel:generate</goal>
+            </goals>
+        </action>
     </actions>

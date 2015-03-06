@@ -44,14 +44,13 @@ public class BookService {
     
     
     public List<BookEntry> searchBooks(String searchword) {
-        System.out.println("Searchword: " + QueryBuilders.matchQuery("author", searchword).toString());
+        System.out.println("Searchword: " + QueryBuilders.multiMatchQuery(searchword, "author","title").toString());
         SearchResponse response = nodeHandler.getClient()
                                             .prepareSearch("bookery")
-                                            .setQuery(QueryBuilders.termQuery("author", searchword))
+                                            .setQuery(QueryBuilders.multiMatchQuery(searchword, "author","title").fuzziness(2))
                                             .addFields("author","title")
                                             .execute().actionGet();
         
-        System.out.println("Hits: " + response.getHits().getTotalHits());
         ArrayList<BookEntry> bookEntries = new ArrayList<>();
         
         for (SearchHit searchHit : response.getHits().hits()) {

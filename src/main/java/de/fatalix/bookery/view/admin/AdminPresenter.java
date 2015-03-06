@@ -35,6 +35,7 @@ public class AdminPresenter {
     public AppUser createNewUser() {
         AppUser user = new AppUser();
         user.setUsername("newuser");
+        user.setPassword("password");
         return service.createUser(user);
     }
     

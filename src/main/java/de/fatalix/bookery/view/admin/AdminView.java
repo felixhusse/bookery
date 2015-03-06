@@ -6,6 +6,7 @@
 package de.fatalix.bookery.view.admin;
 
 import com.vaadin.cdi.CDIView;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
@@ -62,6 +63,16 @@ public class AdminView extends AbstractView {
         emptyLayout.setWidth(380, Unit.PIXELS);
         emptyLayout.setHeight(220, Unit.PIXELS);
         emptyLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
+        emptyLayout.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                AppUser appUser = presenter.createNewUser();
+                AppUserCard appUserCard = appUserCardInstances.get();
+                appUserCard.loadAppUser(appUser);
+                //row.addComponent(appUserCard, index);
+            }
+        });
         row.addComponent(emptyLayout);
         
         

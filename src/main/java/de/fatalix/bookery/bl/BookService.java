@@ -45,11 +45,21 @@ public class BookService {
     
     public List<BookEntry> searchBooks(String searchword) {
         System.out.println("Searchword: " + QueryBuilders.multiMatchQuery(searchword, "author","title").toString());
-        SearchResponse response = nodeHandler.getClient()
-                                            .prepareSearch("bookery")
-                                            .setQuery(QueryBuilders.multiMatchQuery(searchword, "author","title").fuzziness(2))
-                                            .addFields("author","title")
-                                            .execute().actionGet();
+        SearchResponse response = null;
+        if (searchword.isEmpty()) {
+            response = nodeHandler.getClient()
+                            .prepareSearch("bookery")
+                            .addFields("author","title")
+                            .execute().actionGet();
+        }
+        else {
+            response = nodeHandler.getClient()
+                            .prepareSearch("bookery")
+                            .setQuery(QueryBuilders.multiMatchQuery(searchword, "author","title").fuzziness(5))
+                            .addFields("author","title")
+                            .execute().actionGet();
+        }
+        
         
         ArrayList<BookEntry> bookEntries = new ArrayList<>();
         

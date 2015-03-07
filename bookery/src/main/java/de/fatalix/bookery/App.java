@@ -7,6 +7,7 @@ package de.fatalix.bookery;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
@@ -17,6 +18,7 @@ import com.vaadin.ui.Notification;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.login.LoginView;
 import de.fatalix.bookery.view.login.UserLoggedInEvent;
+import de.fatalix.bookery.widgetset.BookeryWidgetSet;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import org.apache.shiro.SecurityUtils;
@@ -27,10 +29,10 @@ import org.vaadin.cdiviewmenu.ViewMenuUI;
  *
  * @author Fatalix
  */
-//@Widgetset(BookeryWidgetSet.NAME)
 @CDIUI("")
 @Theme("mytheme")
 @Title("Bookery")
+@Widgetset(BookeryWidgetSet.NAME)
 public class App extends ViewMenuUI{
 
     private Button logout;

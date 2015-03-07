@@ -46,7 +46,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
         TabSheet tabSheet = new TabSheet();
         tabSheet.setStyleName("admin-screen");
         tabSheet.addTab(createServerSettings(),"Server Settings");
-        tabSheet.addTab(createUserManagement(), "User Managements");
+        tabSheet.addTab(createUserManagement(), "User Management");
         serverSettingsLayout.loadData();
         this.setCompositionRoot(tabSheet);
     }

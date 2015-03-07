@@ -44,8 +44,7 @@ public class HomeView extends AbstractView implements View{
     
     @Inject private HomePresenter presenter;
     
-    @Inject private UploadLayout uploadLayout;
-    @Inject private BookeryUploader bookeryUploader;
+    @Inject private BookeryUploadLayout bookeryUploadLayout;
     private TextField authorField;
     private TextField titleField;
     private TextField categoryField;
@@ -56,7 +55,7 @@ public class HomeView extends AbstractView implements View{
         VerticalLayout root = new VerticalLayout();
         root.addStyleName("bookery-screen");
         root.addComponent(new Label("Home"));     
-        root.addComponents(bookeryUploader,createBookUploadLayout(),createSearchLayout());
+        root.addComponents(bookeryUploadLayout,createSearchLayout());
         
         this.setCompositionRoot(root);
     }
@@ -88,48 +87,10 @@ public class HomeView extends AbstractView implements View{
         });
         VerticalLayout searchLayout = new VerticalLayout(searchText,resultLabel);
         searchLayout.setMargin(true);
+        //searchLayout.addStyleName("bookery-content");
         return searchLayout;
     }
-    
-    private FormLayout createBookUploadLayout() {
-        authorField = new TextField("Author","Felix Husse");
-        titleField = new TextField("Title", "Superman");
-        categoryField = new TextField("Category", "eBook");
-        fileName = new TextField("Filename", "progit.en.pdf");
-        
-        Button addBookButton = new Button("Add Book", new Button.ClickListener() {
 
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                Path path = FileSystems.getDefault().getPath("c:\\ebooks", fileName.getValue());
-                
-                try {
-                    BookEntry bookEntry = new BookEntry()
-                            .setAuthor(authorField.getValue())
-                            .setCategory(categoryField.getValue())
-                            .setTitle(titleField.getValue())
-                            .setFile(Files.readAllBytes(path));
-                    
-                    if (presenter.addBook(bookEntry)) {
-                        showNotification(new Notification("Book succesfully uploaded", Notification.Type.HUMANIZED_MESSAGE), ValoTheme.NOTIFICATION_SUCCESS);
-                    }
-                    else {
-                        showNotification(new Notification("Book succesfully uploaded", Notification.Type.HUMANIZED_MESSAGE), ValoTheme.NOTIFICATION_SUCCESS);
-                    }
-                } catch (IOException ex) {
-                    showNotification(new Notification("IO Error: " + ex.getMessage(), Notification.Type.ERROR_MESSAGE), ValoTheme.NOTIFICATION_FAILURE);
-                    Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-        
-        FormLayout bookUploadLayout = new FormLayout(authorField,titleField,fileName,addBookButton);
-        bookUploadLayout.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
-        bookUploadLayout.setMargin(true);
-        
-        return bookUploadLayout;
-    }
-    
     private void showNotification(Notification notification, String style) {
         // keep the notification visible a little while after moving the
         // mouse, or until clicked

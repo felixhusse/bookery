@@ -57,6 +57,9 @@ public class BookeryUploader extends CustomComponent{
 
             @Override
             public void uploadStarted(Upload.StartedEvent event) {
+                for (Listener listener : listeners) {
+                    listener.onUploadStarted(event.getFilename());
+                }
                 progressLayout.setVisible(true);
                 progressBar.setValue(0f);
                 progressBar.setCaption(event.getFilename());
@@ -115,6 +118,8 @@ public class BookeryUploader extends CustomComponent{
     }
     
     public interface Listener {
+        void onUploadStarted(String filename);
         void onUploadFinished(byte[] data);
+        void removeUpload();
     }
 }

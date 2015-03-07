@@ -44,6 +44,8 @@ public class HomeView extends AbstractView implements View{
     
     @Inject private HomePresenter presenter;
     
+    @Inject private UploadLayout uploadLayout;
+    @Inject private BookeryUploader bookeryUploader;
     private TextField authorField;
     private TextField titleField;
     private TextField categoryField;
@@ -54,7 +56,7 @@ public class HomeView extends AbstractView implements View{
         VerticalLayout root = new VerticalLayout();
         root.addStyleName("bookery-screen");
         root.addComponent(new Label("Home"));     
-        root.addComponents(createBookUploadLayout(),createSearchLayout());
+        root.addComponents(bookeryUploader,createBookUploadLayout(),createSearchLayout());
         
         this.setCompositionRoot(root);
     }

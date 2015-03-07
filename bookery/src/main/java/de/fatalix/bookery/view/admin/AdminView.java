@@ -10,7 +10,6 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
@@ -39,6 +38,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     
     @Inject private Instance<AppUserCard> appUserCardInstances;
     @Inject private ServerSettingsLayout serverSettingsLayout;
+    
     private HorizontalLayout userManagementLayout;
     
     @Override

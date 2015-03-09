@@ -54,7 +54,7 @@ public class AdminPresenter {
         return settingDAO.findByKey(key);
     }
     
-    public void resetIndex() throws IOException {
-        nodeHandler.createDefaultMapping();
+    public boolean resetIndex() throws IOException {
+        return nodeHandler.createIndex();
     }
 }

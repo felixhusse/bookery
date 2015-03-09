@@ -12,8 +12,9 @@ package de.fatalix.bookery.bl.model;
  */
 public enum SettingKey {
     
-    JIRA_URL("bookery.elasticsearch.url","JIRA URL","http://jira.medavis.local"),
-    JIRA_USER("bookery.","JIRA User","felix.husse"),
+    JIRA_URL("bookery.elasticsearch.url","Elasticsearch","http://jira.medavis.local"),
+    EL_INDEX("bookery.elasticsearch.index","Elasticsearch Index","bookery"),
+    EL_TYPE("bookery.elasticsearch.type","Elasticsearch Type","book"),
     JIRA_PASS("calculator.jira.password","JIRA Password","");
     
     private final String key;

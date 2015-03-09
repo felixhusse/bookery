@@ -102,8 +102,13 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 try {
-                    presenter.resetIndex();
-                    Notification.show("Succesfully reset Index", Notification.Type.HUMANIZED_MESSAGE);
+                    if (presenter.resetIndex()) {
+                        Notification.show("Succesfully reset Index", Notification.Type.HUMANIZED_MESSAGE);
+                    }
+                    else {
+                        Notification.show("Failed to reset Index", Notification.Type.ERROR_MESSAGE);
+                    }
+                    
                 } catch(IOException ex) {
                     Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }

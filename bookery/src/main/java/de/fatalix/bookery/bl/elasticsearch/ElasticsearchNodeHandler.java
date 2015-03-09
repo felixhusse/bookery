@@ -4,11 +4,16 @@
  * and open the template in the editor.
  */
 package de.fatalix.bookery.bl.elasticsearch;
+import de.fatalix.bookery.bl.dao.AppSettingDAO;
+import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.node.NodeBuilder.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -35,10 +40,20 @@ public class ElasticsearchNodeHandler {
     private Node node;
     private Client client;
     
+    @Inject
+    private AppSettingDAO settingDAO;
+    
     @PostConstruct
     private void postInit() {
         node = nodeBuilder().clusterName("bookery-cluster").node();
         client = node.client();
+        if (!indexExists()) {
+            try {
+                createIndex();
+            } catch(IOException ex) {
+                Logger.getLogger(ElasticsearchNodeHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     @PreDestroy
@@ -47,31 +62,22 @@ public class ElasticsearchNodeHandler {
         node.close();
     }
     
-    public void createDefaultMapping() throws IOException {
-        String indexName = "bookery";
-        String documentType = "book";
+    public boolean indexExists() {
+        String indexName = settingDAO.findByKey(SettingKey.EL_INDEX).getConfigurationValue();
+        IndicesExistsResponse res = client.admin().indices().prepareExists(indexName).execute().actionGet();
+        return res.isExists();
+    }
+    
+    public boolean createIndex() throws IOException {
+        String indexName = settingDAO.findByKey(SettingKey.EL_INDEX).getConfigurationValue();
+        String documentType = settingDAO.findByKey(SettingKey.EL_TYPE).getConfigurationValue();
         
-        final IndicesExistsResponse res = client.admin().indices().prepareExists(indexName).execute().actionGet();
-        if (res.isExists()) {
+        
+        if (indexExists()) {
             final DeleteIndexRequestBuilder delIdx = client.admin().indices().prepareDelete(indexName);
             delIdx.execute().actionGet();
         }
-//        
-//        XContentBuilder mapping = jsonBuilder()
-//                              .startObject()
-//                                   .startObject("general")
-//                                        .startObject("properties")
-//                                            .startObject("message")
-//                                                .field("type", "string")
-//                                                .field("index", "not_analyzed")
-//                                             .endObject()
-//                                             .startObject("source")
-//                                                .field("type","string")
-//                                             .endObject()
-//                                        .endObject()
-//                                    .endObject()
-//                                 .endObject();
-        
+
         // Create Index
         final CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
          // MAPPING GOES HERE
@@ -95,8 +101,8 @@ public class ElasticsearchNodeHandler {
         System.out.println(mappingBuilder.string());
         createIndexRequestBuilder.addMapping(documentType, mappingBuilder);
         // MAPPING DONE
-        createIndexRequestBuilder.execute().actionGet();
-        
+        CreateIndexResponse response = createIndexRequestBuilder.execute().actionGet();
+        return response.isAcknowledged();
     }
     
     public Client getClient() {

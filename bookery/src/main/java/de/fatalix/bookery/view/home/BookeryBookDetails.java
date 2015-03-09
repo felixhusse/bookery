@@ -38,10 +38,10 @@ public class BookeryBookDetails extends CustomComponent{
     }
     
     public void changeBookData(BookEntry bookEntry) {
-        if (bookEntry.getAuthor() != null || !bookEntry.getAuthor().isEmpty()) {
+        if (bookEntry.getAuthor() != null && !bookEntry.getAuthor().isEmpty()) {
             authorField.setValue(bookEntry.getAuthor());
         }
-        if (bookEntry.getTitle()!= null || !bookEntry.getTitle().isEmpty()) {
+        if (bookEntry.getTitle()!= null && !bookEntry.getTitle().isEmpty()) {
             titleField.setValue(bookEntry.getTitle());
         }
         

@@ -10,14 +10,19 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.AbstractView;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -92,6 +97,19 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
         layout.addComponent(serverSettingsLayout);
+        Button resetIndex = new Button("reset Index", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                try {
+                    presenter.resetIndex();
+                    Notification.show("Succesfully reset Index", Notification.Type.HUMANIZED_MESSAGE);
+                } catch(IOException ex) {
+                    Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                }
+            }
+        });
+        layout.addComponent(resetIndex);
         return layout;
     }
     

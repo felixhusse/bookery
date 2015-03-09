@@ -8,9 +8,11 @@ package de.fatalix.bookery.view.admin;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
+import de.fatalix.bookery.bl.elasticsearch.ElasticsearchNodeHandler;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.bl.model.SettingKey;
+import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ public class AdminPresenter {
     
     @Inject private AppUserService service;
     @Inject private AppSettingDAO settingDAO;
+    @Inject private ElasticsearchNodeHandler nodeHandler;
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -51,4 +54,7 @@ public class AdminPresenter {
         return settingDAO.findByKey(key);
     }
     
+    public void resetIndex() throws IOException {
+        nodeHandler.createDefaultMapping();
+    }
 }

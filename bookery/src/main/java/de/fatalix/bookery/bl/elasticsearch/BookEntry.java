@@ -5,6 +5,8 @@
  */
 package de.fatalix.bookery.bl.elasticsearch;
 
+import java.util.Date;
+
 /**
  * 
  * @author felix.husse
@@ -13,13 +15,18 @@ public class BookEntry {
     private String author;
     private String title;
     private String isbn;
-    private String category;
+    private String publisher;
+    private String description;
+    private String language;
+    private Date releaseDate;
     
     private int rating;
     private String uploader;
     private String[] reader;
     private String[] shared;
     
+    
+    private byte[] cover;
     private byte[] file;
     
     public String getAuthor() {
@@ -34,8 +41,8 @@ public class BookEntry {
         return isbn;
     }
 
-    public String getCategory() {
-        return category;
+    public Date getReleaseDate() {
+        return releaseDate;
     }
 
     public int getRating() {
@@ -57,6 +64,24 @@ public class BookEntry {
     public byte[] getFile() {
         return file;
     }
+
+    public byte[] getCover() {
+        return cover;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+    
+    
     
     public BookEntry setAuthor(String author) {
         this.author = author;
@@ -73,11 +98,11 @@ public class BookEntry {
         return this;
     }
 
-    public BookEntry setCategory(String category) {
-        this.category = category;
+    public BookEntry setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
         return this;
     }
-
+    
     public BookEntry setRating(int rating) {
         this.rating = rating;
         return this;
@@ -103,10 +128,32 @@ public class BookEntry {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", category=" + category + ", rating=" + rating + ", uploader=" + uploader + ", reader=" + reader + ", shared=" + shared + ", file=" + file + '}';
+    public BookEntry setCover(byte[] cover) {
+        this.cover = cover;
+        return this;
+    }
+
+    public BookEntry setPublisher(String publisher) {
+        this.publisher = publisher;
+        return this;
+    }
+
+    public BookEntry setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public BookEntry setLanguage(String language) {
+        this.language = language;
+        return this;
     }
     
+    
+
+    @Override
+    public String toString() {
+        return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", releaseDate=" + releaseDate + ", rating=" + rating + ", uploader=" + uploader + ", reader=" + reader +
+               ", shared=" + shared + '}';
+    }
     
 }

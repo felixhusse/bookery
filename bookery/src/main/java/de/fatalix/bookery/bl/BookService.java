@@ -10,12 +10,10 @@ import de.fatalix.bookery.bl.elasticsearch.BookEntry;
 import de.fatalix.bookery.bl.elasticsearch.ElasticsearchNodeHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 

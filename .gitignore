@@ -5,3 +5,5 @@
 /bookery/src/main/webapp/WEB-INF/jboss-web.xml
 /bookery/nb-configuration.xml
 /bookery/src/main/resources/rebel.xml
+/bookery-widget/target/
+/bookery-metadata/target/

@@ -8,7 +8,7 @@ package de.fatalix.bookery.view.admin;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
-import de.fatalix.bookery.bl.elasticsearch.ElasticsearchNodeHandler;
+import de.fatalix.bookery.bl.elasticsearch.SolrHandler;
 import de.fatalix.bookery.bl.fileimport.FileImportService;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;
@@ -16,6 +16,7 @@ import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+import org.apache.solr.client.solrj.SolrServerException;
 
 /**
  *
@@ -26,8 +27,8 @@ public class AdminPresenter {
     
     @Inject private AppUserService service;
     @Inject private AppSettingDAO settingDAO;
-    @Inject private ElasticsearchNodeHandler nodeHandler;
     @Inject private FileImportService fileImportService;
+    @Inject private SolrHandler solrHandler;
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -56,8 +57,8 @@ public class AdminPresenter {
         return settingDAO.findByKey(key);
     }
     
-    public boolean resetIndex() throws IOException {
-        return nodeHandler.createIndex();
+    public void resetIndex() throws IOException, SolrServerException {
+        solrHandler.resetSolrIndex();
     }
     
     public void doFileImport(String folder, String username) {

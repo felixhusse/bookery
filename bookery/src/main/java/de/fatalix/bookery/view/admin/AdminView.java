@@ -28,6 +28,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
@@ -103,15 +104,11 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
+                
                 try {
-                    if (presenter.resetIndex()) {
-                        Notification.show("Succesfully reset Index", Notification.Type.HUMANIZED_MESSAGE);
-                    }
-                    else {
-                        Notification.show("Failed to reset Index", Notification.Type.ERROR_MESSAGE);
-                    }
-                    
-                } catch(IOException ex) {
+                    presenter.resetIndex();
+                    Notification.show("Succesfully reset Index", Notification.Type.HUMANIZED_MESSAGE);
+                } catch(IOException | SolrServerException ex) {
                     Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }
             }

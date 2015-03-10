@@ -6,7 +6,6 @@
 package de.fatalix.bookery;
 
 import de.fatalix.bookery.bl.AppUserService;
-import de.fatalix.bookery.bl.elasticsearch.ElasticsearchNodeHandler;
 import de.fatalix.bookery.bl.model.AppUser;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -22,8 +21,6 @@ import javax.inject.Inject;
 public class AppStartup {
     
     @Inject private AppUserService service;
-    
-    //@Inject private ElasticsearchNodeHandler nodeHandler;
     
     @PostConstruct
     private void init() {
@@ -42,10 +39,7 @@ public class AppStartup {
             defaultUser.setRoles("user");
             service.createUser(defaultUser);
         }
-        
-//        if (nodeHandler.isClosed()) {
-//            throw new RuntimeException("Elasticsearch Node couldn't be started");
-//        }
+
     }
     
 }

@@ -31,5 +31,10 @@ public class SolrHandler {
         UpdateResponse response = solr.commit();
     }
     
+    public void resetSolrIndex() throws SolrServerException, IOException {
+        SolrServer solr = new HttpSolrServer("http://localhost:8080/solr-4.10.3/bookery");
+        solr.deleteByQuery("*:*");
+    }
+    
     
 }

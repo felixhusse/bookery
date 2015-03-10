@@ -31,10 +31,6 @@
             <artifactId>javaee-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-        </dependency>
         
         <!-- Vaadin -->
         <dependency>

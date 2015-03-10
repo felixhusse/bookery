@@ -42,29 +42,31 @@ public class BookService {
     
     
     public List<BookEntry> searchBooks(String searchword) {
-        System.out.println("Searchword: " + QueryBuilders.multiMatchQuery(searchword, "author","title").toString());
+        
+        long start = System.currentTimeMillis();
         SearchResponse response = null;
         if (searchword.isEmpty()) {
             response = nodeHandler.getClient()
                             .prepareSearch("bookery")
                             .addFields("author","title")
+                            .setSize(100)
                             .execute().actionGet();
         }
         else {
             response = nodeHandler.getClient()
                             .prepareSearch("bookery")
-                            .setQuery(QueryBuilders.multiMatchQuery(searchword, "author","title").fuzziness(5))
+                            .setQuery(QueryBuilders.multiMatchQuery(searchword, "author","title"))
                             .addFields("author","title")
                             .execute().actionGet();
         }
         
-        
+        System.out.println("EL took " + (System.currentTimeMillis()-start) + "ms");
         ArrayList<BookEntry> bookEntries = new ArrayList<>();
         
         for (SearchHit searchHit : response.getHits().hits()) {
             bookEntries.add(new BookEntry().setAuthor(searchHit.fields().get("author").getValue().toString()).setTitle(searchHit.fields().get("title").getValue().toString()));
         }
-        
+        System.out.println("Search took " + (System.currentTimeMillis()-start) + "ms");
         return bookEntries;
     }
 }

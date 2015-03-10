@@ -15,6 +15,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.model.AppUser;
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import org.apache.shiro.SecurityUtils;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
@@ -114,7 +116,18 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 }
             }
         });
-        layout.addComponent(resetIndex);
+        
+        final TextField path = new TextField("Path", "C:\\ebooks\\calibre-export");
+        Button importFiles = new Button("import Files", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.doFileImport(path.getValue(), SecurityUtils.getSubject().getPrincipal().toString());
+                Notification.show("FileImport Started!", Notification.Type.HUMANIZED_MESSAGE);
+            }
+        });
+        layout.addComponents(resetIndex,path,importFiles);
+        
         return layout;
     }
     

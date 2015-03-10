@@ -20,17 +20,15 @@ public class BookeryBookDetails extends CustomComponent{
     
     private TextField authorField;
     private TextField titleField;
-    private TextField categoryField;
     private TextField isbnField;
     
     @PostConstruct
     private void postInit() {
         authorField = new TextField("Author","");
         titleField = new TextField("Title", "");
-        categoryField = new TextField("Category", "eBook");
         isbnField = new TextField("ISBN", "");
         
-        FormLayout bookDetailsForm = new FormLayout(authorField,titleField,categoryField,isbnField);
+        FormLayout bookDetailsForm = new FormLayout(authorField,titleField,isbnField);
         bookDetailsForm.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
         bookDetailsForm.setMargin(true);
         
@@ -51,7 +49,6 @@ public class BookeryBookDetails extends CustomComponent{
         
         return new BookEntry().setAuthor(authorField.getValue())
                 .setTitle(titleField.getValue())
-                .setCategory(categoryField.getValue())
                 .setIsbn(isbnField.getValue());
         
     }

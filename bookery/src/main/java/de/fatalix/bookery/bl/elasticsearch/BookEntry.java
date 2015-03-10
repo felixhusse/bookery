@@ -18,7 +18,7 @@ public class BookEntry {
     private String publisher;
     private String description;
     private String language;
-    private Date releaseDate;
+    private String releaseDate;
     
     private int rating;
     private String uploader;
@@ -41,7 +41,7 @@ public class BookEntry {
         return isbn;
     }
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
@@ -98,7 +98,7 @@ public class BookEntry {
         return this;
     }
 
-    public BookEntry setReleaseDate(Date releaseDate) {
+    public BookEntry setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         return this;
     }
@@ -147,13 +147,10 @@ public class BookEntry {
         this.language = language;
         return this;
     }
-    
-    
 
     @Override
     public String toString() {
-        return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", releaseDate=" + releaseDate + ", rating=" + rating + ", uploader=" + uploader + ", reader=" + reader +
-               ", shared=" + shared + '}';
+        return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", publisher=" + publisher + ", releaseDate=" + releaseDate + '}';
     }
     
 }

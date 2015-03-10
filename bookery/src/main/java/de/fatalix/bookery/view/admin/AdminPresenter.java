@@ -9,6 +9,7 @@ import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.elasticsearch.ElasticsearchNodeHandler;
+import de.fatalix.bookery.bl.fileimport.FileImportService;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.bl.model.SettingKey;
@@ -26,6 +27,7 @@ public class AdminPresenter {
     @Inject private AppUserService service;
     @Inject private AppSettingDAO settingDAO;
     @Inject private ElasticsearchNodeHandler nodeHandler;
+    @Inject private FileImportService fileImportService;
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -56,5 +58,9 @@ public class AdminPresenter {
     
     public boolean resetIndex() throws IOException {
         return nodeHandler.createIndex();
+    }
+    
+    public void doFileImport(String folder, String username) {
+        fileImportService.invoke(folder, username);
     }
 }

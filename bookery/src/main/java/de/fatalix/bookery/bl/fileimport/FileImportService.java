@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -59,31 +60,34 @@ public class FileImportService {
     }
 
     private void parseFiles(final File[] files,String username) {
-        BookMetaData metaData;
-        byte[] bookData;
-        byte[] bookCover;
+        System.out.println("***Try to add Book " + files[0].getName());
+        BookEntry bookEntry = new BookEntry().setUploader(username);
         for (File file : files) {
             try {
                 if (file.getName().contains(".opf")) {
-                    metaData = parseOPF(file.toPath());
+                    bookEntry = parseOPF(file.toPath(),bookEntry);
                 }
                 if (file.getName().contains(".mobi")) {
-                    bookData = Files.readAllBytes(file.toPath());
+                    bookEntry.setFile(Files.readAllBytes(file.toPath()));
                 }
                 if (file.getName().contains(".jpg")) {
-                    bookCover = Files.readAllBytes(file.toPath());
+                    bookEntry.setCover(Files.readAllBytes(file.toPath()));
                 }
             } catch(IOException ex) {
                     Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        BookEntry bookEntry = new BookEntry();
-        bookService.addBook(null);
+        
+        if (bookService.addBook(bookEntry)) {
+            System.out.println("Added Book " + bookEntry.getTitle());
+        }
+        else {
+            System.out.println("Failed to add Book " + bookEntry.getTitle());
+        }
     }
     
-    private BookMetaData parseOPF(Path pathToOPF) throws IOException {
+    private BookEntry parseOPF(Path pathToOPF,BookEntry bmd) throws IOException {
         List<String> lines = Files.readAllLines(pathToOPF, Charset.forName("UTF-8"));
-        BookMetaData bmd = new BookMetaData();
         boolean multiLineDescription = false;
         String description = "";
         for (String line : lines) {
@@ -126,7 +130,10 @@ public class FileImportService {
                 }
                 else if (line.contains("dc:date")) {
                     String value = line.split(">")[1].split("<")[0];
-                    bmd.setReleaseDate(value);
+                    DateTime dtReleaseDate = new DateTime(value);
+                    if (dtReleaseDate.getYear() != 101) {
+                        bmd.setReleaseDate(dtReleaseDate.toString("YYYY-MM-dd"));
+                    }
                 }
                 else if (line.contains("dc:language")) {
                     String value = line.split(">")[1].split("<")[0];

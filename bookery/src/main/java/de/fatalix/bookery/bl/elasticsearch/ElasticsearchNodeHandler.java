@@ -15,20 +15,15 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.elasticsearch.action.ActionListener;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import org.elasticsearch.node.Node;
-import static org.elasticsearch.river.RiverIndexName.Conf.indexName;
 
 /**
  * Singleton
@@ -88,12 +83,16 @@ public class ElasticsearchNodeHandler {
                             .startObject("author").field("type", "string").endObject()
                             .startObject("title").field("type", "string").endObject()
                             .startObject("isbn").field("type", "string").endObject()
-                            .startObject("category").field("type", "string").endObject()
+                            .startObject("publisher").field("type", "string").endObject()
+                            .startObject("description").field("type", "string").endObject()
+                            .startObject("language").field("type", "string").endObject()
+                            .startObject("releaseDate").field("type", "string").endObject()
                             .startObject("rating").field("type", "integer").endObject()
                             .startObject("uploader").field("type", "string").endObject()
                             .startObject("reader").field("type", "string").endObject()
                             .startObject("shared").field("type", "string").endObject()
                             .startObject("file").field("type", "binary").endObject()
+                            .startObject("cover").field("type", "binary").endObject()
                         .endObject()
                     .endObject()
                 .endObject();

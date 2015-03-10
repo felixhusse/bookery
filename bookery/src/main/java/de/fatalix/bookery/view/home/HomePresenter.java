@@ -29,8 +29,12 @@ public class HomePresenter {
         service.addBooks(bookEntries);
     }
     
-    public List<BookEntry> searchBooks(String search) {
+    public List<BookEntry> searchBooks(String search) throws SolrServerException {
         
-        return Collections.EMPTY_LIST;
+        return service.searchBooks(search);
+    }
+    
+    public BookEntry getBookDetail(String id) throws SolrServerException {
+        return service.getBookDetail(id);
     }
 }

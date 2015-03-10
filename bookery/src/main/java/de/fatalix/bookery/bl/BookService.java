@@ -28,8 +28,11 @@ public class BookService {
     }
  
     
-    public List<BookEntry> searchBooks(String searchword) {
-        
-        return Collections.EMPTY_LIST;
+    public List<BookEntry> searchBooks(String searchword) throws SolrServerException {
+        return solrHandler.searchSolrIndex(searchword);
+    }
+    
+    public BookEntry getBookDetail(String id) throws SolrServerException {
+        return solrHandler.getBookDetail(id).get(0);
     }
 }

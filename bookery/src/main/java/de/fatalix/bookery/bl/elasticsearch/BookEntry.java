@@ -48,8 +48,10 @@ public class BookEntry {
     public BookEntry() {
         this.id = UUID.randomUUID().toString();
     }
-    
-    
+
+    public String getId() {
+        return id;
+    }
     
     public String getAuthor() {
         return author;

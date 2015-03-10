@@ -23,7 +23,7 @@ public class AppStartup {
     
     @Inject private AppUserService service;
     
-    @Inject private ElasticsearchNodeHandler nodeHandler;
+    //@Inject private ElasticsearchNodeHandler nodeHandler;
     
     @PostConstruct
     private void init() {
@@ -43,9 +43,9 @@ public class AppStartup {
             service.createUser(defaultUser);
         }
         
-        if (nodeHandler.isClosed()) {
-            throw new RuntimeException("Elasticsearch Node couldn't be started");
-        }
+//        if (nodeHandler.isClosed()) {
+//            throw new RuntimeException("Elasticsearch Node couldn't be started");
+//        }
     }
     
 }

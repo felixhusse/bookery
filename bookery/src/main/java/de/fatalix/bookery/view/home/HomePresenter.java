@@ -8,8 +8,12 @@ package de.fatalix.bookery.view.home;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.BookService;
 import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import org.apache.solr.client.solrj.SolrServerException;
 
 /**
  *
@@ -19,11 +23,14 @@ import javax.inject.Inject;
 public class HomePresenter {
     @Inject private BookService service;
     
-    public boolean addBook(BookEntry book) {
-        return service.addBook(book);
+    public void addBook(BookEntry book) throws SolrServerException, IOException {
+        List<BookEntry> bookEntries = new ArrayList<>();
+        bookEntries.add(book);
+        service.addBooks(bookEntries);
     }
     
     public List<BookEntry> searchBooks(String search) {
-        return service.searchBooks(search);
+        
+        return Collections.EMPTY_LIST;
     }
 }

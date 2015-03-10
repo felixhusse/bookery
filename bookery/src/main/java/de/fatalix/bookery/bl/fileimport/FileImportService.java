@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
 
 /**
@@ -39,27 +41,36 @@ public class FileImportService {
 
             @Override
             public void run() {
+                List<BookEntry> bookEntries = new ArrayList<>();
                 File startFolder = new File(folder);
-                parseFolder(startFolder,username);
+                bookEntries = parseFolder(startFolder,username,bookEntries);
+                try {
+                    bookService.addBooks(bookEntries);
+                } catch(SolrServerException ex) {
+                    Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch(IOException ex) {
+                    Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         };
 
         executor.execute(command);
     }
 
-    private void parseFolder(File folder, String username) {
+    private List<BookEntry> parseFolder(File folder, String username, List<BookEntry> bookEntries) {
         File[] files = folder.listFiles();
-
+        
         if(files.length == 3 && !files[0].isDirectory()) {
-            parseFiles(files,username);
+            parseFiles(files,username,bookEntries);
         } else {
             for(File file : files) {
-                parseFolder(file,username);
+                parseFolder(file,username,bookEntries);
             }
         }
+        return bookEntries;
     }
 
-    private void parseFiles(final File[] files,String username) {
+    private List<BookEntry> parseFiles(final File[] files,String username,List<BookEntry> bookEntries) {
         System.out.println("***Try to add Book " + files[0].getName());
         BookEntry bookEntry = new BookEntry().setUploader(username);
         for (File file : files) {
@@ -77,13 +88,17 @@ public class FileImportService {
                     Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        bookEntries.add(bookEntry);
+        if (bookEntries.size()>2) {
+            try {
+                bookService.addBooks(bookEntries);
+            } catch(SolrServerException | IOException ex) {
+                Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            bookEntries.clear();
+        }
         
-        if (bookService.addBook(bookEntry)) {
-            System.out.println("Added Book " + bookEntry.getTitle());
-        }
-        else {
-            System.out.println("Failed to add Book " + bookEntry.getTitle());
-        }
+        return bookEntries;
     }
     
     private BookEntry parseOPF(Path pathToOPF,BookEntry bmd) throws IOException {

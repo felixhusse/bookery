@@ -12,9 +12,13 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 
 /**
  *
@@ -91,12 +95,13 @@ public class BookeryUploadLayout extends VerticalLayout{
                 if (bookEntry.getTitle() != null || !bookEntry.getTitle().isEmpty()) {
                     bookEntry.setFile(bookData)
                                 .setUploader(SecurityUtils.getSubject().getPrincipal().toString());
-                    if (presenter.addBook(bookEntry)) {
-                        Notification.show("Success", Notification.Type.HUMANIZED_MESSAGE);
+                    try {
+                        presenter.addBook(bookEntry);
+                        
+                    } catch(SolrServerException | IOException ex) {
+                        Notification.show("Error " + ex.getMessage(), Notification.Type.WARNING_MESSAGE);
                     }
-                    else {
-                        Notification.show("Fail", Notification.Type.HUMANIZED_MESSAGE);
-                    }
+                    
                 }
                 else {
                     Notification.show("Title is empty", Notification.Type.WARNING_MESSAGE);

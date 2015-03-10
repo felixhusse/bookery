@@ -5,29 +5,51 @@
  */
 package de.fatalix.bookery.bl.elasticsearch;
 
-import java.util.Date;
+import java.util.UUID;
+import org.apache.solr.client.solrj.beans.Field;
 
 /**
  * 
  * @author felix.husse
  */
 public class BookEntry {
+    @Field("id")
+    private String id;
+    
+    @Field("author")
     private String author;
+    @Field("title")
     private String title;
+    @Field("isbn")
     private String isbn;
+    @Field("publisher")
     private String publisher;
+    @Field("description")
     private String description;
+    @Field("language")
     private String language;
+    @Field("releaseDate")
     private String releaseDate;
     
+    @Field("rating")
     private int rating;
+    @Field("uploader")
     private String uploader;
+    @Field("reader")
     private String[] reader;
+    @Field("shared")
     private String[] shared;
-    
-    
+
+    @Field("cover")
     private byte[] cover;
+    @Field("file")
     private byte[] file;
+
+    public BookEntry() {
+        this.id = UUID.randomUUID().toString();
+    }
+    
+    
     
     public String getAuthor() {
         return author;

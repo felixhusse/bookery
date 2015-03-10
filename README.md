@@ -1,7 +1,10 @@
 # Bookery
-The name "bookery" is based on the german word "Buecherei", which can be translated to "library".
+The name "bookery" is based on the german word "Buecherei", which can be translated to "library" but would result in a terrible grade in school.
 
 ## Features
+* import books from your calibri library to a web app
+* browse your books online
+* download/transfer your books to your favourite reader
 
 ## Installation
 * build with maven

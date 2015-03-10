@@ -7,6 +7,8 @@ package de.fatalix.bookery.bl.elasticsearch;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
@@ -15,12 +17,21 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.elasticsearch.Version;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.collect.ImmutableMap;
+import org.elasticsearch.common.settings.NoClassSettingsException;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.SettingsException;
+import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.RatioValue;
+import org.elasticsearch.common.unit.SizeValue;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import org.elasticsearch.node.Node;
@@ -75,6 +86,12 @@ public class ElasticsearchNodeHandler {
 
         // Create Index
         final CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
+        
+         final XContentBuilder settingBuilder = jsonBuilder()
+                        .startObject()
+                            .field("number_of_shards",1)
+                        .endObject();
+        createIndexRequestBuilder.setSettings(settingBuilder);
          // MAPPING GOES HERE
         final XContentBuilder mappingBuilder = jsonBuilder()
                 .startObject()
@@ -99,6 +116,9 @@ public class ElasticsearchNodeHandler {
         
         System.out.println(mappingBuilder.string());
         createIndexRequestBuilder.addMapping(documentType, mappingBuilder);
+        
+        
+        
         // MAPPING DONE
         CreateIndexResponse response = createIndexRequestBuilder.execute().actionGet();
         return response.isAcknowledged();

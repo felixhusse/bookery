@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
@@ -48,13 +49,15 @@ public class BookService {
         if (searchword.isEmpty()) {
             response = nodeHandler.getClient()
                             .prepareSearch("bookery")
-                            .addFields("author","title")
+                            .setSearchType(SearchType.QUERY_THEN_FETCH)
+                            .addFields("author","title", "releaseDate")
                             .setSize(100)
                             .execute().actionGet();
         }
         else {
             response = nodeHandler.getClient()
                             .prepareSearch("bookery")
+                            .setSearchType(SearchType.QUERY_THEN_FETCH)
                             .setQuery(QueryBuilders.multiMatchQuery(searchword, "author","title"))
                             .addFields("author","title")
                             .execute().actionGet();

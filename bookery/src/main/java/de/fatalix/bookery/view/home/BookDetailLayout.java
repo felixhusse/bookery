@@ -14,7 +14,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.elasticsearch.BookEntry;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import javax.annotation.PostConstruct;
 
@@ -30,10 +29,14 @@ public class BookDetailLayout extends HorizontalLayout{
     private Label authorLabel;
     private Label descriptionLabel;
     
+    
+    
     @PostConstruct
     private void postInit() {
         image = new Image();
-
+        image.setWidth(300, Unit.PIXELS);
+        image.setHeight(400, Unit.PIXELS);
+        image.setImmediate(true);
         titleLabel = new Label("Title");
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
         authorLabel = new Label("Author");
@@ -53,7 +56,9 @@ public class BookDetailLayout extends HorizontalLayout{
     
     public void loadData(BookEntry bookEntry) {
         StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
-        image.setSource(new StreamResource(source, "cover.png"));
+        
+        image.setSource(new StreamResource(source, bookEntry.getId()+".png"));
+        
         titleLabel.setValue(bookEntry.getTitle());
         authorLabel.setValue(bookEntry.getAuthor());
         descriptionLabel.setValue(bookEntry.getDescription());

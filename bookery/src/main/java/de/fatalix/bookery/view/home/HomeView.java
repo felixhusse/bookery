@@ -82,16 +82,25 @@ public class HomeView extends AbstractView implements View{
         table.setVisibleColumns("author","title","releaseDate","isbn","uploader");
         table.setSelectable(true);
         table.setSizeFull();
-        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+        
+        table.addValueChangeListener(new Property.ValueChangeListener() {
 
             @Override
-            public void itemClick(ItemClickEvent event) {
+            public void valueChange(Property.ValueChangeEvent event) {
                 try {
+                    
                     BookEntry bookEntry = presenter.getBookDetail(((BookEntry)table.getValue()).getId());
                     detailLayout.loadData(bookEntry);
                 } catch (SolrServerException ex) {
                     Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+        });
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                System.out.println("Event:" + event.getItemId());
             }
         });
         

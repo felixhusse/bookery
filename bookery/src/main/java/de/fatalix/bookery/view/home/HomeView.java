@@ -147,13 +147,5 @@ public class HomeView extends AbstractView implements View{
         beanContainer.removeAllItems();
         beanContainer.addAll(bookEntries);
     }
-    
-    private void showNotification(Notification notification, String style) {
-        // keep the notification visible a little while after moving the
-        // mouse, or until clicked
-        notification.setPosition(Position.TOP_CENTER);
-        notification.setStyleName(ValoTheme.NOTIFICATION_BAR);
-        notification.setDelayMsec(2000);
-        notification.show(Page.getCurrent());
-    }
+
 }

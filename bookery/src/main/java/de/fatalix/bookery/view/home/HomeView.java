@@ -49,8 +49,7 @@ public class HomeView extends AbstractView implements View{
     public static final String id = "home";
     
     @Inject private HomePresenter presenter;
-    
-    @Inject private BookeryUploadLayout bookeryUploadLayout;
+
     @Inject private BookDetailLayout detailLayout;
     private BeanItemContainer<BookEntry> beanContainer;
     private Label resultLabel;
@@ -103,20 +102,6 @@ public class HomeView extends AbstractView implements View{
                 System.out.println("Event:" + event.getItemId());
             }
         });
-        
-//        Grid grid = new Grid(beanContainer);
-//        grid.removeColumn("cover");
-//        grid.removeColumn("description");
-//        grid.removeColumn("file");
-//        grid.removeColumn("rating");
-//        grid.removeColumn("reader");
-//        grid.removeColumn("shared");
-//        grid.setColumnOrder("author","title","releaseDate");
-//        grid.setSizeFull();
-//        grid.getColumn("title").setExpandRatio(3);
-//        grid.getColumn("author").setExpandRatio(1);
-        
-        
         
         searchText.setImmediate(true);
         searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {

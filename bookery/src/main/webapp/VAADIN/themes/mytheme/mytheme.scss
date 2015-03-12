@@ -88,6 +88,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
         @include valo-panel-style;
         border: none;
         padding: $v-layout-margin;
+        background: rgba(185, 135, 65, $darker-info-opacity);
         @include valo-animate-in-fade($duration: 1s);
         .book-cover {
             width: 300px;

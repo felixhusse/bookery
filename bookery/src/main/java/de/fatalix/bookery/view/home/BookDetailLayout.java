@@ -35,26 +35,20 @@ public class BookDetailLayout extends HorizontalLayout{
     @PostConstruct
     private void postInit() {
         image = new Image();
-        //image.setWidth(300, Unit.PIXELS);
-        //image.setHeight(400, Unit.PIXELS);
         image.setImmediate(true);
         image.addStyleName("book-cover");
         titleLabel = new Label("Title");
 
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
+        
         authorLabel = new Label("Author");
-
         authorLabel.addStyleName(ValoTheme.LABEL_BOLD);
         authorLabel.addStyleName(ValoTheme.LABEL_COLORED);
         
         descriptionLabel = new Label("Description",ContentMode.HTML);
         descriptionLabel.addStyleName(ValoTheme.LABEL_LIGHT);
 
-        
         VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,descriptionLabel);
-        //infoLayout.addStyleName("book-detail-info");
-
-        
         this.setMargin(true);
         this.setSpacing(true);
         //addStyleName("wrapping"); 

@@ -57,6 +57,12 @@ public class AdminPresenter {
         return settingDAO.findByKey(key);
     }
     
+    public AppSetting updateSetting(SettingKey key, String value) {
+        AppSetting setting = settingDAO.findByKey(key);
+        setting.setConfigurationValue(value);
+        return settingDAO.update(setting);
+    }
+    
     public void resetIndex() throws IOException, SolrServerException {
         solrHandler.resetSolrIndex();
     }

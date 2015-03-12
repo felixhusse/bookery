@@ -89,7 +89,7 @@ public class FileImportService {
             }
         }
         bookEntries.add(bookEntry);
-        if (bookEntries.size()>2) {
+        if (bookEntries.size()>5) {
             try {
                 bookService.addBooks(bookEntries);
             } catch(SolrServerException | IOException ex) {

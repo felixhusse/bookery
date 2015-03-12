@@ -12,7 +12,7 @@ package de.fatalix.bookery.bl.model;
  */
 public enum SettingKey {
     
-    SOLR_URL("bookery.solr.url","Solr URL","http://localhost:8080/solr-4.3.10"),
+    SOLR_URL("bookery.solr.url","Solr URL","http://localhost:8080/solr-4.10.3"),
     SOLR_CORE("bookery.solr.core","Solr Core","bookery");
     
     private final String key;

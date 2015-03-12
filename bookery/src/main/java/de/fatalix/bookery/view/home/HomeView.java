@@ -45,7 +45,7 @@ public class HomeView extends AbstractView implements View{
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         VerticalLayout root = new VerticalLayout();
-        root.addStyleName("bookery-screen");
+        //root.addStyleName("bookery-screen");
         root.setSpacing(true);
         root.setMargin(true);
         root.addComponents(createSearchLayout(),detailLayout);

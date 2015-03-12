@@ -75,22 +75,27 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
         }
     }
     
-    
-    
-    .bookery-content {
-        @include valo-panel-style;
-        border: none;
-        padding: $v-layout-margin;
-        @include valo-animate-in-fade($duration: 1s);
-    }
-    
-    .admin-screen {
+    .valo-content {
         background: $editor-background-color;
         background-image: url(#{$login-background-image});
         background-size: cover;
         background-position: 50% 50%;
         width: 100%;
         height: 100%;
+    }
+    
+    .bookery-content {
+        @include valo-panel-style;
+        border: none;
+        padding: $v-layout-margin;
+        @include valo-animate-in-fade($duration: 1s);
+        .book-cover {
+            width: 300px;
+            height: 400px;
+        }
+    }
+    
+    .admin-screen {
         
         .dashed-border {
             border-color: #BF8E45;
@@ -106,12 +111,6 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
     }
     
     .bookery-screen {
-        background: $editor-background-color;
-        background-image: url(#{$login-background-image});
-        background-size: cover;
-        background-position: 50% 50%;
-        width: 100%;
-        height: 100%;
 
         .bookery-sidebar {
             display: inline-block;
@@ -139,6 +138,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
                 height: 100%;
             }
         }
+        
     }
 
     // login screen - for small screens, see below
@@ -272,7 +272,14 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
 
     // No top menu on the login view, login screen layout changes
     .v-ui[width-range~="0-800px"] {
-
+        
+        .bookery-content {
+            .book-cover {
+                width: 0px;
+                height: 0px;
+            }
+        }
+        
         .main-screen {
             padding-top: $v-unit-size;
         }
@@ -359,41 +366,11 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
             width:100%;
         }
 
-        // Remove margins around the grid and reduce top bar margins on small screens
-        .crud-view .crud-main-layout {
-            padding: 0 0 0 0;
-
-            .top-bar {
-                // Use spacing to the grid below as the margin - smaller than default margin
-                padding: $v-layout-spacing-vertical $v-layout-spacing-horizontal 0 $v-layout-spacing-horizontal;
-
-                .filter-textfield {
-                    width: 100%;
-                }
-            }
-        }
-
-        // About view fills the display on small screens
-        .about-view {
-            padding-bottom: 0;
-            padding-top: 0;
-            height: auto;
-            padding: 0.1 * $v-unit-size;
-
-            .v-slot-about-content {
-                overflow: auto;
-            }
-
-            .about-content {
-                width: 100%;
-                max-width: 100%;
-                height: auto;
-                vertical-align: top;
-                padding: 0;
-                background: transparent;
-                @include box-shadow(none);
-            }
-        }
+//        .bookery-content  {
+//            .book-cover {
+//                width: 0px;
+//            }
+//        }
     }
 
     // Override valo default narrow menu button on small screens to have the full logout text visible

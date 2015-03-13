@@ -7,6 +7,7 @@ package de.fatalix.bookery.view.admin;
 
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
+import de.fatalix.bookery.bl.BookeryMailService;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.elasticsearch.SolrHandler;
 import de.fatalix.bookery.bl.fileimport.FileImportService;
@@ -16,6 +17,7 @@ import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import org.apache.solr.client.solrj.SolrServerException;
 
 /**
@@ -29,6 +31,7 @@ public class AdminPresenter {
     @Inject private AppSettingDAO settingDAO;
     @Inject private FileImportService fileImportService;
     @Inject private SolrHandler solrHandler;
+    @Inject private BookeryMailService mailService;
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -69,5 +72,9 @@ public class AdminPresenter {
     
     public void doFileImport(String folder, String username) {
         fileImportService.invoke(folder, username);
+    }
+    
+    public void sendEmail(String receiver) throws MessagingException {
+        mailService.sendTestMail(receiver);
     }
 }

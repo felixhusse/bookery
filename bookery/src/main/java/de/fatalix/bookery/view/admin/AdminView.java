@@ -22,9 +22,12 @@ import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.AbstractView;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
@@ -121,7 +124,23 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 Notification.show("FileImport Started!", Notification.Type.HUMANIZED_MESSAGE);
             }
         });
-        layout.addComponents(resetIndex,path,importFiles);
+        
+        final TextField eMailAdress = new TextField(null, "felix.husse@medavis.de");
+        eMailAdress.setColumns(35);
+        Button testMail = new Button("Test Mail", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                try {
+                    presenter.sendEmail(eMailAdress.getValue());
+                    Notification.show("Mail succesfully sent!", Notification.Type.HUMANIZED_MESSAGE);
+                } catch (MessagingException ex) {
+                    Notification.show("Mail failed!" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                }
+            }
+        });
+        HorizontalLayout mailLayout = new HorizontalLayout(eMailAdress,testMail);
+        layout.addComponents(resetIndex,path,importFiles,mailLayout);
         
         return layout;
     }

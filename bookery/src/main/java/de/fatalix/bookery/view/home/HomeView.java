@@ -18,13 +18,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import de.fatalix.bookery.bl.solr.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.vaadin.addons.lazyquerycontainer.EntityContainer;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
@@ -67,6 +68,7 @@ public class HomeView extends AbstractView implements View{
         final Table table = new Table();
         table.setContainerDataSource(beanContainer);
         table.setVisibleColumns("author","title","releaseDate","isbn","uploader");
+        table.setColumnHeaders("Author","Title","Release","ISBN","Uploader");
         table.setSelectable(true);
         table.setSizeFull();
         
@@ -83,14 +85,7 @@ public class HomeView extends AbstractView implements View{
                 }
             }
         });
-        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
 
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                System.out.println("Event:" + event.getItemId());
-            }
-        });
-        
         searchText.setImmediate(true);
         searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {
 
@@ -120,5 +115,7 @@ public class HomeView extends AbstractView implements View{
         beanContainer.removeAllItems();
         beanContainer.addAll(bookEntries);
     }
+    
+  
 
 }

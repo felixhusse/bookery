@@ -6,7 +6,7 @@
 package de.fatalix.bookery.bl.fileimport;
 
 import de.fatalix.bookery.bl.BookService;
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import de.fatalix.bookery.bl.solr.BookEntry;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;

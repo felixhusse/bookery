@@ -9,7 +9,7 @@ import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookeryMailService;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
-import de.fatalix.bookery.bl.elasticsearch.SolrHandler;
+import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.bl.fileimport.FileImportService;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;

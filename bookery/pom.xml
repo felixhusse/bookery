@@ -106,6 +106,10 @@
             <artifactId>solr-solrj</artifactId>
             <version>4.10.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
+            <artifactId>vaadin-lazyquerycontainer</artifactId>
+        </dependency>
     
     </dependencies>
 

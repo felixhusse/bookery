@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.bookery.bl.elasticsearch;
+package de.fatalix.bookery.bl.solr;
 
 import java.util.UUID;
 import org.apache.solr.client.solrj.beans.Field;

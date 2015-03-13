@@ -11,7 +11,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import de.fatalix.bookery.bl.solr.BookEntry;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

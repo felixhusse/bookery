@@ -5,7 +5,6 @@
  */
 package de.fatalix.bookery.view.home;
 
-import com.sun.jmx.remote.security.NotificationAccessController;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -15,14 +14,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import de.fatalix.bookery.bl.solr.BookEntry;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.mail.MessagingException;

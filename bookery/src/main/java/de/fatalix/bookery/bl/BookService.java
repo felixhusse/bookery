@@ -5,8 +5,8 @@
  */
 package de.fatalix.bookery.bl;
 
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
-import de.fatalix.bookery.bl.elasticsearch.SolrHandler;
+import de.fatalix.bookery.bl.solr.BookEntry;
+import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.bl.model.AppUser;
 import java.io.IOException;
 import java.util.Collections;

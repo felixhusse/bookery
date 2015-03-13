@@ -9,7 +9,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import de.fatalix.bookery.bl.solr.BookEntry;
 import javax.annotation.PostConstruct;
 
 /**

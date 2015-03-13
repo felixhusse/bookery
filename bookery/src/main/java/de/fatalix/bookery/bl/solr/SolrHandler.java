@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.bookery.bl.elasticsearch;
+package de.fatalix.bookery.bl.solr;
 
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.model.SettingKey;
@@ -46,7 +46,7 @@ public class SolrHandler {
         else {
             query.setQuery("*:*");
         }
-        query.setRows(68);
+        query.setRows(500);
         query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader");
         QueryResponse rsp = solr.query(query);
         return rsp.getBeans(BookEntry.class);

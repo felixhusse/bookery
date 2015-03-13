@@ -8,7 +8,7 @@ package de.fatalix.bookery.view.home;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookService;
-import de.fatalix.bookery.bl.elasticsearch.BookEntry;
+import de.fatalix.bookery.bl.solr.BookEntry;
 import de.fatalix.bookery.bl.model.AppUser;
 import java.io.IOException;
 import java.util.ArrayList;

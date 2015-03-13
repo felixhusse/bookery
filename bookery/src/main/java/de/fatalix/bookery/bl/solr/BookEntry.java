@@ -39,7 +39,9 @@ public class BookEntry {
     private String[] reader;
     @Field("shared")
     private String[] shared;
-
+    @Field("mimetype")
+    private String mimeType;
+    
     @Field("cover")
     private byte[] cover;
     @Field("file")
@@ -104,8 +106,15 @@ public class BookEntry {
     public String getLanguage() {
         return language;
     }
-    
-    
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public BookEntry setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+        return this;
+    }
     
     public BookEntry setAuthor(String author) {
         this.author = author;

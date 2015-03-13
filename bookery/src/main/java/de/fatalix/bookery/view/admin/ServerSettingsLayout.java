@@ -58,6 +58,12 @@ public class ServerSettingsLayout extends FormLayout implements FieldEvents.Blur
     
     @Override
     public void blur(FieldEvents.BlurEvent event) {
-        
+        SettingKey key = SettingKey.getEnumByKey(event.getComponent().getId());
+         for (AbstractTextField field : fields) {
+             if (field.getId().equals(key.getKey())) {
+                 presenter.updateSetting(key, field.getValue());
+                 break;
+             }
+         }
     }
 }

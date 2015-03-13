@@ -12,10 +12,8 @@ package de.fatalix.bookery.bl.model;
  */
 public enum SettingKey {
     
-    JIRA_URL("bookery.elasticsearch.url","Elasticsearch","http://jira.medavis.local"),
-    EL_INDEX("bookery.elasticsearch.index","Elasticsearch Index","bookery"),
-    EL_TYPE("bookery.elasticsearch.type","Elasticsearch Type","book"),
-    JIRA_PASS("calculator.jira.password","JIRA Password","");
+    SOLR_URL("bookery.solr.url","Solr URL","http://localhost:8080/solr-4.10.3"),
+    SOLR_CORE("bookery.solr.core","Solr Core","bookery");
     
     private final String key;
     private final String defaultValue;

@@ -13,25 +13,13 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
-import com.vaadin.shared.Position;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.elasticsearch.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +45,7 @@ public class HomeView extends AbstractView implements View{
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         VerticalLayout root = new VerticalLayout();
-        root.addStyleName("bookery-screen");
+        //root.addStyleName("bookery-screen");
         root.setSpacing(true);
         root.setMargin(true);
         root.addComponents(createSearchLayout(),detailLayout);

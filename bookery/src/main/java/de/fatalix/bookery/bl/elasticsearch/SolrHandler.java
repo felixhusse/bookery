@@ -62,6 +62,16 @@ public class SolrHandler {
         return rsp.getBeans(BookEntry.class);
     }
     
+    public List<BookEntry> getBookData(String bookID) throws SolrServerException {
+        SolrServer solr = createConnection();
+        SolrQuery query = new SolrQuery();
+        query.setQuery("id:"+bookID);
+        query.setRows(1);
+        query.setFields("id,file");
+        QueryResponse rsp = solr.query(query);
+        return rsp.getBeans(BookEntry.class);
+    }
+    
     private SolrServer createConnection() {
         String solrURL = settingDAO.findByKey(SettingKey.SOLR_URL).getConfigurationValue();
         String solrCore = settingDAO.findByKey(SettingKey.SOLR_CORE).getConfigurationValue();

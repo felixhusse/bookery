@@ -5,18 +5,29 @@
  */
 package de.fatalix.bookery.view.home;
 
+import com.sun.jmx.remote.security.NotificationAccessController;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.elasticsearch.BookEntry;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 
 /**
  *
@@ -24,8 +35,10 @@ import javax.annotation.PostConstruct;
  */
 public class BookDetailLayout extends HorizontalLayout{
     
-    private Image image;
+    @Inject private HomePresenter presenter;
     
+    private Image image;
+    private String bookId;
     private Label titleLabel;
     private Label authorLabel;
     private Label descriptionLabel;
@@ -37,10 +50,7 @@ public class BookDetailLayout extends HorizontalLayout{
         image = new Image();
         image.setImmediate(true);
         image.addStyleName("book-cover");
-        titleLabel = new Label("Title");
 
-        titleLabel.addStyleName(ValoTheme.LABEL_H2);
-        
         authorLabel = new Label("Author");
         authorLabel.addStyleName(ValoTheme.LABEL_BOLD);
         authorLabel.addStyleName(ValoTheme.LABEL_COLORED);
@@ -48,7 +58,7 @@ public class BookDetailLayout extends HorizontalLayout{
         descriptionLabel = new Label("Description",ContentMode.HTML);
         descriptionLabel.addStyleName(ValoTheme.LABEL_LIGHT);
 
-        VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,descriptionLabel);
+        VerticalLayout infoLayout = new VerticalLayout(createBookTitleLayout(),authorLabel,descriptionLabel);
         this.setMargin(true);
         this.setSpacing(true);
         //addStyleName("wrapping"); 
@@ -58,7 +68,36 @@ public class BookDetailLayout extends HorizontalLayout{
         this.setWidth(100, Unit.PERCENTAGE);
     }
     
+    private HorizontalLayout createBookTitleLayout() {
+        HorizontalLayout titleLayout = new BookDetailLayout();
+        titleLabel = new Label("Title");
+        titleLabel.addStyleName(ValoTheme.LABEL_H2);
+        
+        Button shareButton = new Button("to Kindle", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                try {
+                    presenter.shareBookWithKindle(bookId, SecurityUtils.getSubject().getPrincipal().toString());
+                    Notification.show("Book is sent to kindle", Notification.Type.HUMANIZED_MESSAGE);
+                } catch (SolrServerException ex) {
+                    Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                } catch (MessagingException ex) {
+                    Notification.show("Mail crashed!\n"+ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                }
+            }
+        });
+        shareButton.setIcon(FontAwesome.SHARE_ALT_SQUARE);
+        
+        titleLayout.addComponents(titleLabel,shareButton);
+        titleLayout.setWidth(100, Unit.PERCENTAGE);
+        titleLayout.setComponentAlignment(shareButton, Alignment.MIDDLE_RIGHT);
+        
+        return titleLayout;
+    }
+    
     public void loadData(BookEntry bookEntry) {
+        this.bookId = bookEntry.getId();
         StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
         image.setSource(new StreamResource(source, bookEntry.getId()+".png"));
         titleLabel.setValue(bookEntry.getTitle());

@@ -7,11 +7,13 @@ package de.fatalix.bookery.bl;
 
 import de.fatalix.bookery.bl.elasticsearch.BookEntry;
 import de.fatalix.bookery.bl.elasticsearch.SolrHandler;
+import de.fatalix.bookery.bl.model.AppUser;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import org.apache.solr.client.solrj.SolrServerException;
 
 /**
@@ -22,6 +24,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 public class BookService {
 
     @Inject private SolrHandler solrHandler;
+    @Inject private BookeryMailService mailService;
     
     public void addBooks(List<BookEntry> bookEntries) throws SolrServerException, IOException {
         solrHandler.addBeans(bookEntries);
@@ -34,5 +37,10 @@ public class BookService {
     
     public BookEntry getBookDetail(String id) throws SolrServerException {
         return solrHandler.getBookDetail(id).get(0);
+    }
+    
+    public void sendBookToKindle(String bookId, AppUser user) throws SolrServerException, MessagingException {
+        BookEntry bookEntry = solrHandler.getBookData(bookId).get(0);
+        mailService.sendKindleMail(user, bookEntry.getFile());
     }
 }

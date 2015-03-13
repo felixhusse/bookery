@@ -1,0 +1,23 @@
+# CLI script for installing
+# Use: bin/jboss-cli.sh --file=wildfly-script.cli
+
+connect
+batch
+
+# DataSource
+data-source add --name=bookeryDS --driver-name=h2 --jndi-name=java:jboss/datasources/bookeryDS --connection-url="jdbc:h2:${jboss.server.data.dir}/bookery;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true --enabled=true
+
+# Solr System property
+/system-property=solr.solr.home:add(value=e:/server/solr-home)
+
+#Setup JavaMail
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=BookeryMailSMTP:add(host=smtp.gmail.com,port=465)
+/subsystem=mail/mail-session=BookeryMail:add(jndi-name="java:/mail/bookeryMail", from="example.user@gmail.com", debug=false)
+/subsystem=mail/mail-session=BookeryMail/server=smtp:add(outbound-socket-binding-ref=BookeryMailSMTP,ssl=true,username=example.user@gmail.com,password=***)
+
+# Increase max-post size
+/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=max-post-size, value=104857600)
+
+# Execute and reload
+run-batch
+:reload

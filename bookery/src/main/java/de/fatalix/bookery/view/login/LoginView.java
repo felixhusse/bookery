@@ -47,6 +47,7 @@ public class LoginView extends AbstractView implements View{
     private Button forgotPassword;
     
     public LoginView() {
+        setSizeFull();
         CssLayout rootLayout = new CssLayout();
         rootLayout.addStyleName("login-screen");
 

@@ -71,6 +71,7 @@ public class HomeView extends AbstractView implements View{
         table.setColumnHeaders("Author","Title","Release","ISBN","Uploader");
         table.setSelectable(true);
         table.setSizeFull();
+        table.setPageLength(10);
         
         table.addValueChangeListener(new Property.ValueChangeListener() {
 

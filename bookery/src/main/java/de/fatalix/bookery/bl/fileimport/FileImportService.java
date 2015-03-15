@@ -79,7 +79,8 @@ public class FileImportService {
                     bookEntry = parseOPF(file.toPath(),bookEntry);
                 }
                 if (file.getName().contains(".mobi")) {
-                    bookEntry.setFile(Files.readAllBytes(file.toPath()));
+                    bookEntry.setFile(Files.readAllBytes(file.toPath()))
+                            .setMimeType("MOBI");
                 }
                 if (file.getName().contains(".jpg")) {
                     bookEntry.setCover(Files.readAllBytes(file.toPath()));

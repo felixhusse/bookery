@@ -124,7 +124,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 Notification.show("FileImport Started!", Notification.Type.HUMANIZED_MESSAGE);
             }
         });
-        
+        importFiles.setEnabled(false);
         final TextField eMailAdress = new TextField(null, "felix.husse@medavis.de");
         eMailAdress.setColumns(35);
         Button testMail = new Button("Test Mail", new Button.ClickListener() {
@@ -139,6 +139,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 }
             }
         });
+        testMail.setEnabled(false);
         HorizontalLayout mailLayout = new HorizontalLayout(eMailAdress,testMail);
         layout.addComponents(resetIndex,path,importFiles,mailLayout);
         

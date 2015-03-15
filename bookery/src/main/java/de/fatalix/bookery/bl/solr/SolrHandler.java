@@ -29,12 +29,14 @@ public class SolrHandler {
     public void addBeans(List<BookEntry> bookEntries) throws SolrServerException, IOException {
         SolrServer solr = createConnection();
         solr.addBeans(bookEntries);
-        UpdateResponse response = solr.commit();
+        UpdateResponse response = solr.commit(true, false);
+        
     }
     
     public void resetSolrIndex() throws SolrServerException, IOException {
         SolrServer solr = createConnection();
         solr.deleteByQuery("*:*");
+        solr.commit();
     }
     
     public List<BookEntry> searchSolrIndex(String searchWord) throws SolrServerException  {

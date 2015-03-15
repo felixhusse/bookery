@@ -43,12 +43,12 @@ public class BookeryMailService {
         Transport.send(message);
     }
     
-    public void sendKindleMail(AppUser user, byte[] attachment) throws MessagingException {
+    public void sendKindleMail(AppUser user, byte[] attachment, String filename) throws MessagingException {
         BodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setText("Bookery delivery, frei haus!");
         
         BodyPart attachmentPart = new MimeBodyPart();
-        attachmentPart.setFileName("book.mobi");
+        attachmentPart.setFileName(filename+".mobi");
         attachmentPart.setContent(attachment, "application/octet-stream");
         //attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(attachment, "application/x-mobipocket-ebook")));
         

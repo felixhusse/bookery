@@ -43,12 +43,12 @@ public class FileImportService {
             public void run() {
                 List<BookEntry> bookEntries = new ArrayList<>();
                 File startFolder = new File(folder);
+                
                 bookEntries = parseFolder(startFolder,username,bookEntries);
                 try {
+                    System.out.println("Adding " + bookEntries.size() + " Books...");
                     bookService.addBooks(bookEntries);
-                } catch(SolrServerException ex) {
-                    Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
-                } catch(IOException ex) {
+                } catch(SolrServerException | IOException ex) {
                     Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -61,10 +61,12 @@ public class FileImportService {
         File[] files = folder.listFiles();
         
         if(files.length == 3 && !files[0].isDirectory()) {
-            parseFiles(files,username,bookEntries);
+            bookEntries = parseFiles(files,username,bookEntries);
         } else {
             for(File file : files) {
-                parseFolder(file,username,bookEntries);
+                if (file.isDirectory()){
+                    bookEntries = parseFolder(file,username,bookEntries);
+                }
             }
         }
         return bookEntries;
@@ -90,8 +92,9 @@ public class FileImportService {
             }
         }
         bookEntries.add(bookEntry);
-        if (bookEntries.size()>5) {
+        if (bookEntries.size()>25) {
             try {
+                System.out.println("Adding " + bookEntries.size() + " Books...");
                 bookService.addBooks(bookEntries);
             } catch(SolrServerException | IOException ex) {
                 Logger.getLogger(FileImportService.class.getName()).log(Level.SEVERE, null, ex);

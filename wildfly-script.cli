@@ -8,7 +8,7 @@ batch
 data-source add --name=bookeryDS --driver-name=h2 --jndi-name=java:jboss/datasources/bookeryDS --connection-url="jdbc:h2:${jboss.server.data.dir}/bookery;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true --enabled=true
 
 # Solr System property
-/system-property=solr.solr.home:add(value=e:/server/solr-home)
+/system-property=solr.solr.home:add(value=/home/felix/solr-home)
 
 #Setup JavaMail
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=BookeryMailSMTP:add(host=smtp.gmail.com,port=465)

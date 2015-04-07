@@ -9,6 +9,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.cdi.CDIUI;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
@@ -18,12 +19,12 @@ import com.vaadin.ui.Notification;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.login.LoginView;
 import de.fatalix.bookery.view.login.UserLoggedInEvent;
-import de.fatalix.bookery.widgetset.BookeryWidgetSet;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.vaadin.cdiviewmenu.ViewMenuUI;
+import static org.vaadin.cdiviewmenu.ViewMenuUI.getMenu;
 
  /*
  *
@@ -32,7 +33,6 @@ import org.vaadin.cdiviewmenu.ViewMenuUI;
 @CDIUI("")
 @Theme("mytheme")
 @Title("Bookery")
-@Widgetset(BookeryWidgetSet.NAME)
 public class App extends ViewMenuUI{
 
     private Button logout;
@@ -54,17 +54,31 @@ public class App extends ViewMenuUI{
         logout = new Button("Logout", logoutClickListener);
         logout.setIcon(FontAwesome.SIGN_OUT);
         logout.addStyleName("user-menu");
-        
-        if (!isLoggedIn()) {
-            getMenu().setVisible(false);
-            getNavigator().navigateTo(LoginView.id);
-        } else {
-            getMenu().setVisible(isLoggedIn());
-            getMenu().addMenuItem(logout);
-            if(getNavigator().getState().isEmpty()) {
-                getNavigator().navigateTo(HomeView.id);
+        getNavigator().addViewChangeListener(new ViewChangeListener() {
+
+            @Override
+            public boolean beforeViewChange(ViewChangeListener.ViewChangeEvent event) {
+               if (!isLoggedIn()) {
+                    getMenu().setVisible(false);
+                    getNavigator().navigateTo(LoginView.id);
+                    return false;
+                } else {
+                    getMenu().setVisible(isLoggedIn());
+                    getMenu().addMenuItem(logout);
+                    if(getNavigator().getState().isEmpty()) {
+                        getNavigator().navigateTo(HomeView.id);
+                        return false;
+                    }
+                    return true;
+                } 
             }
-        }
+
+            @Override
+            public void afterViewChange(ViewChangeListener.ViewChangeEvent event) {
+                
+            }
+        });
+        
 
     }
 

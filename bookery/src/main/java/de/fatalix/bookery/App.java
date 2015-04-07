@@ -60,17 +60,20 @@ public class App extends ViewMenuUI{
             public boolean beforeViewChange(ViewChangeListener.ViewChangeEvent event) {
                if (!isLoggedIn()) {
                     getMenu().setVisible(false);
-                    getNavigator().navigateTo(LoginView.id);
-                    return false;
+                    if (!event.getViewName().equals(LoginView.id)) {
+                        getNavigator().navigateTo(LoginView.id);
+                        return false;
+                    }
+                    return true;
                 } else {
                     getMenu().setVisible(isLoggedIn());
                     getMenu().addMenuItem(logout);
-                    if(getNavigator().getState().isEmpty()) {
+                    if(event.getViewName().equals("")) {
                         getNavigator().navigateTo(HomeView.id);
                         return false;
                     }
                     return true;
-                } 
+                }
             }
 
             @Override

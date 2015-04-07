@@ -9,6 +9,8 @@ import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -40,7 +42,13 @@ public class SolrHandler {
     }
     
     public List<BookEntry> searchSolrIndex(String searchWord) throws SolrServerException  {
-        SolrServer solr = createConnection();
+        SolrServer solr = null;
+        try {
+            solr = createConnection();
+        } catch (IOException ex) {
+            throw new SolrServerException(ex.getMessage());
+        }
+        
         SolrQuery query = new SolrQuery();
         if (searchWord != null && !searchWord.isEmpty()) {
             query.setQuery("author:*"+searchWord + "* OR title:*"+searchWord+"*");
@@ -55,7 +63,12 @@ public class SolrHandler {
     }
     
     public List<BookEntry> getBookDetail(String bookID) throws SolrServerException {
-        SolrServer solr = createConnection();
+        SolrServer solr = null;
+        try {
+            solr = createConnection();
+        } catch (IOException ex) {
+            throw new SolrServerException(ex.getMessage());
+        }
         SolrQuery query = new SolrQuery();
         query.setQuery("id:"+bookID);
         query.setRows(1);
@@ -65,7 +78,12 @@ public class SolrHandler {
     }
     
     public List<BookEntry> getBookData(String bookID) throws SolrServerException {
-        SolrServer solr = createConnection();
+        SolrServer solr = null;
+        try {
+            solr = createConnection();
+        } catch (IOException ex) {
+            throw new SolrServerException(ex.getMessage());
+        }
         SolrQuery query = new SolrQuery();
         query.setQuery("id:"+bookID);
         query.setRows(1);
@@ -74,14 +92,22 @@ public class SolrHandler {
         return rsp.getBeans(BookEntry.class);
     }
     
-    private SolrServer createConnection() {
+    private SolrServer createConnection() throws SolrServerException, IOException {
         String solrURL = settingDAO.findByKey(SettingKey.SOLR_URL).getConfigurationValue();
         String solrCore = settingDAO.findByKey(SettingKey.SOLR_CORE).getConfigurationValue();
         
         if (!solrURL.endsWith("/")) {
             solrURL = solrURL + "/";
         }
-
-        return new HttpSolrServer(solrURL + solrCore);
+        HttpSolrServer solrServer = new HttpSolrServer(solrURL + solrCore);
+        try {
+            if (solrServer.ping().getStatus()!=200) {
+                throw new SolrServerException("Solr Server not found! ");
+            }    
+        } catch (HttpSolrServer.RemoteSolrException ex) {
+            throw new SolrServerException("Solr Server not found!");
+        }
+        
+        return solrServer;
     }
 }

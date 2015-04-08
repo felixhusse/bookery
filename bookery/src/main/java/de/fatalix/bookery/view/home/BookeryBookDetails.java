@@ -21,6 +21,7 @@ public class BookeryBookDetails extends CustomComponent{
     private TextField authorField;
     private TextField titleField;
     private TextField isbnField;
+    private BookEntry bookEntry;
     
     @PostConstruct
     private void postInit() {
@@ -36,6 +37,7 @@ public class BookeryBookDetails extends CustomComponent{
     }
     
     public void changeBookData(BookEntry bookEntry) {
+        this.bookEntry = bookEntry;
         if (bookEntry.getAuthor() != null && !bookEntry.getAuthor().isEmpty()) {
             authorField.setValue(bookEntry.getAuthor());
         }

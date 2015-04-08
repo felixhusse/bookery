@@ -101,11 +101,14 @@ public class SolrHandler {
         }
         HttpSolrServer solrServer = new HttpSolrServer(solrURL + solrCore);
         try {
-            if (solrServer.ping().getStatus()!=200) {
+            
+            
+            
+            if (solrServer.ping().getStatus()!=0) {
                 throw new SolrServerException("Solr Server not found! ");
             }    
         } catch (HttpSolrServer.RemoteSolrException ex) {
-            throw new SolrServerException("Solr Server not found!");
+            throw new SolrServerException(ex.getMessage(),ex);
         }
         
         return solrServer;

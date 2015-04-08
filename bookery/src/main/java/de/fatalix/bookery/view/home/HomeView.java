@@ -106,14 +106,17 @@ public class HomeView extends AbstractView implements View {
     }
 
     private void searchBooks(String searchWord) {
+
         try {
             List<BookEntry> bookEntries = presenter.searchBooks(searchWord);
             resultLabel.setValue("(" + bookEntries.size() + ")");
             beanContainer.removeAllItems();
             beanContainer.addAll(bookEntries);
-        } catch (SolrServerException ex) {
-            Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+        } catch(SolrServerException ex) {
+            Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
+            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 
 }

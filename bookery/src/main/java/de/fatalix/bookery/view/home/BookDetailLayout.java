@@ -99,7 +99,7 @@ public class BookDetailLayout extends HorizontalLayout{
         image.setSource(new StreamResource(source, bookEntry.getId()+".png"));
         titleLabel.setValue(bookEntry.getTitle());
         authorLabel.setValue(bookEntry.getAuthor());
-        descriptionLabel.setValue(bookEntry.getDescription());
+        //descriptionLabel.setValue(bookEntry.getDescription());
     }
     
     protected class ByteStreamResource implements StreamResource.StreamSource {

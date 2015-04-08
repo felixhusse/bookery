@@ -38,8 +38,8 @@ public class BookDetailLayout extends HorizontalLayout{
     private Label titleLabel;
     private Label authorLabel;
     private Label descriptionLabel;
-    
-    
+
+    private BookEntry bookEntry;
     
     @PostConstruct
     private void postInit() {
@@ -93,6 +93,7 @@ public class BookDetailLayout extends HorizontalLayout{
     }
     
     public void loadData(BookEntry bookEntry) {
+        this.bookEntry = bookEntry;
         this.bookId = bookEntry.getId();
         StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
         image.setSource(new StreamResource(source, bookEntry.getId()+".png"));

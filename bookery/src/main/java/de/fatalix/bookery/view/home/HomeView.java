@@ -24,6 +24,7 @@ import de.fatalix.bookery.view.AbstractView;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.vaadin.addons.lazyquerycontainer.EntityContainer;
@@ -43,62 +44,40 @@ public class HomeView extends AbstractView implements View {
     private HomePresenter presenter;
 
     @Inject
-    private BookDetailLayout detailLayout;
-    private BeanItemContainer<BookEntry> beanContainer;
+    private Instance<BookDetailLayout> bookDetailLayoutInstances;
     private Label resultLabel;
+    private VerticalLayout resultLayout;
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        resultLayout = new VerticalLayout();
+        resultLayout.setSpacing(true);
         VerticalLayout root = new VerticalLayout();
         //root.addStyleName("bookery-screen");
         root.setSpacing(true);
         root.setMargin(true);
-        root.addComponents(createSearchLayout(), detailLayout);
-
+        root.addComponents(createSearchLayout(), resultLayout);
+        
         this.setCompositionRoot(root);
     }
 
     private VerticalLayout createSearchLayout() {
         final TextField searchText = new TextField();
-        beanContainer = new BeanItemContainer<>(BookEntry.class);
-        resultLabel = new Label("(0)");
-        final Table table = new Table();
-        table.setContainerDataSource(beanContainer);
-        table.setVisibleColumns("author", "title", "releaseDate", "isbn", "uploader");
-        table.setColumnHeaders("Author", "Title", "Release", "ISBN", "Uploader");
-        table.setSelectable(true);
-        table.setSizeFull();
-        table.setPageLength(10);
-
-        searchBooks("");
-        
-
-        table.addValueChangeListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                try {
-
-                    BookEntry bookEntry = presenter.getBookDetail(((BookEntry) table.getValue()).getId());
-                    detailLayout.loadData(bookEntry);
-                } catch (SolrServerException ex) {
-                    Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-
         searchText.setImmediate(true);
         searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {
 
             @Override
             public void textChange(FieldEvents.TextChangeEvent event) {
                 searchBooks(event.getText());
-
             }
         });
+        
+        resultLabel = new Label("(0)");
+        searchBooks("");
+
         HorizontalLayout topSearchLayout = new HorizontalLayout(searchText, resultLabel);
 
-        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout, table);
+        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout);
         searchLayout.setWidth(100, Unit.PERCENTAGE);
         searchLayout.setMargin(true);
         searchLayout.addStyleName("bookery-content");
@@ -110,8 +89,12 @@ public class HomeView extends AbstractView implements View {
         try {
             List<BookEntry> bookEntries = presenter.searchBooks(searchWord);
             resultLabel.setValue("(" + bookEntries.size() + ")");
-            beanContainer.removeAllItems();
-            beanContainer.addAll(bookEntries);
+            resultLayout.removeAllComponents();
+            for (BookEntry bookEntry : bookEntries) {
+                BookDetailLayout detailLayout = bookDetailLayoutInstances.get();
+                detailLayout.loadData(bookEntry);
+                resultLayout.addComponent(detailLayout);
+            }
         } catch(SolrServerException ex) {
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
             Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);

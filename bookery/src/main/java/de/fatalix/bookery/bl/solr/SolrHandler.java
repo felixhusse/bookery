@@ -56,8 +56,8 @@ public class SolrHandler {
         else {
             query.setQuery("*:*");
         }
-        query.setRows(500);
-        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader");
+        query.setRows(10);
+        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover");
         QueryResponse rsp = solr.query(query);
         return rsp.getBeans(BookEntry.class);
     }

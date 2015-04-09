@@ -9,12 +9,12 @@ import de.fatalix.bookery.bl.solr.BookEntry;
 import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.bl.model.AppUser;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 /**
  *
@@ -31,8 +31,14 @@ public class BookService {
     }
  
     
-    public List<BookEntry> searchBooks(String searchword) throws SolrServerException {
-        return solrHandler.searchSolrIndex(searchword);
+    public QueryResponse searchBooks(String searchword,int rows, int startOffset) throws SolrServerException {
+        String queryString = "*:*";
+        if (searchword != null && !searchword.isEmpty()) {
+            queryString = "author:*"+searchword + "* OR title:*"+searchword+"*";
+        }
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover";
+        
+        return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
     }
     
     public BookEntry getBookDetail(String id) throws SolrServerException {

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 /**
  *
@@ -26,17 +27,16 @@ import org.apache.solr.client.solrj.SolrServerException;
 public class HomePresenter {
     @Inject private BookService bookService;
     @Inject private AppUserService userService;
-    
-    
+
     public void addBook(BookEntry book) throws SolrServerException, IOException {
         List<BookEntry> bookEntries = new ArrayList<>();
         bookEntries.add(book);
         bookService.addBooks(bookEntries);
     }
     
-    public List<BookEntry> searchBooks(String search) throws SolrServerException {
+    public QueryResponse searchBooks(String search,int rows,int startOffset) throws SolrServerException {
         
-        return bookService.searchBooks(search);
+        return bookService.searchBooks(search,rows,startOffset);
     }
     
     public BookEntry getBookDetail(String id) throws SolrServerException {

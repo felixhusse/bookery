@@ -9,8 +9,6 @@ import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -41,25 +39,20 @@ public class SolrHandler {
         solr.commit();
     }
     
-    public List<BookEntry> searchSolrIndex(String searchWord) throws SolrServerException  {
+    public QueryResponse searchSolrIndex(String queryString, String fields, int rows, int startOffset) throws SolrServerException  {
         SolrServer solr = null;
         try {
             solr = createConnection();
         } catch (IOException ex) {
             throw new SolrServerException(ex.getMessage());
         }
-        
         SolrQuery query = new SolrQuery();
-        if (searchWord != null && !searchWord.isEmpty()) {
-            query.setQuery("author:*"+searchWord + "* OR title:*"+searchWord+"*");
-        }
-        else {
-            query.setQuery("*:*");
-        }
-        query.setRows(10);
-        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover");
+        query.setQuery(queryString);
+        query.setRows(rows);
+        query.setStart(startOffset); 
+        query.setFields(fields);
         QueryResponse rsp = solr.query(query);
-        return rsp.getBeans(BookEntry.class);
+        return rsp;
     }
     
     public List<BookEntry> getBookDetail(String bookID) throws SolrServerException {
@@ -101,8 +94,6 @@ public class SolrHandler {
         }
         HttpSolrServer solrServer = new HttpSolrServer(solrURL + solrCore);
         try {
-            
-            
             
             if (solrServer.ping().getStatus()!=0) {
                 throw new SolrServerException("Solr Server not found! ");

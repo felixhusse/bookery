@@ -43,10 +43,6 @@ public class BookDetailLayout extends HorizontalLayout{
     
     @PostConstruct
     private void postInit() {
-        image = new Image();
-        image.setImmediate(true);
-        image.addStyleName("book-cover");
-
         authorLabel = new Label("Author");
         authorLabel.addStyleName(ValoTheme.LABEL_BOLD);
         authorLabel.addStyleName(ValoTheme.LABEL_COLORED);
@@ -54,20 +50,23 @@ public class BookDetailLayout extends HorizontalLayout{
         descriptionLabel = new Label("Description",ContentMode.HTML);
         descriptionLabel.addStyleName(ValoTheme.LABEL_LIGHT);
 
-        VerticalLayout infoLayout = new VerticalLayout(createBookTitleLayout(),authorLabel,descriptionLabel);
+        titleLabel = new Label("Title");
+        titleLabel.addStyleName(ValoTheme.LABEL_H2);
+        
+        VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,descriptionLabel);
         this.setMargin(true);
         this.setSpacing(true);
         //addStyleName("wrapping"); 
         addStyleName("bookery-content");
-        this.addComponents(image,infoLayout);
+        this.addComponents(createBookCoverLayout(),infoLayout);
         this.setExpandRatio(infoLayout, 1.0f);
         this.setWidth(100, Unit.PERCENTAGE);
     }
     
-    private HorizontalLayout createBookTitleLayout() {
-        HorizontalLayout titleLayout = new BookDetailLayout();
-        titleLabel = new Label("Title");
-        titleLabel.addStyleName(ValoTheme.LABEL_H2);
+    private VerticalLayout createBookCoverLayout() {
+        image = new Image();
+        image.setImmediate(true);
+        image.addStyleName("book-cover");
         
         Button shareButton = new Button("to Kindle", new Button.ClickListener() {
 
@@ -84,12 +83,11 @@ public class BookDetailLayout extends HorizontalLayout{
             }
         });
         shareButton.setIcon(FontAwesome.SHARE_ALT_SQUARE);
-        
-        titleLayout.addComponents(titleLabel,shareButton);
-        titleLayout.setWidth(100, Unit.PERCENTAGE);
-        titleLayout.setComponentAlignment(shareButton, Alignment.MIDDLE_RIGHT);
-        
-        return titleLayout;
+        shareButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        shareButton.setWidth("130px");
+        VerticalLayout result = new VerticalLayout(image,shareButton);
+        result.setWidth("131px");
+        return result;
     }
     
     public void loadData(BookEntry bookEntry) {

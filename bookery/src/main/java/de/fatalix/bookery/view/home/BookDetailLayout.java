@@ -54,6 +54,7 @@ public class BookDetailLayout extends HorizontalLayout{
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
         
         VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,descriptionLabel);
+        infoLayout.addStyleName("book-info");
         this.setMargin(true);
         this.setSpacing(true);
         //addStyleName("wrapping"); 

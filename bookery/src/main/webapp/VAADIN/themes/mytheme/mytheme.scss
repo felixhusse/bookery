@@ -94,6 +94,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
             width: 130px;
             height: 200px;
         }
+        
     }
     
     .admin-screen {
@@ -275,7 +276,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
     .v-ui[width-range~="0-800px"] {
         
         .bookery-content {
-            .book-cover {
+            .book-info {
                 width: 0px;
                 height: 0px;
             }

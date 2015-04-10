@@ -8,7 +8,9 @@ package de.fatalix.bookery.view.admin;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.util.ArrayList;
@@ -31,6 +33,12 @@ public class ServerSettingsLayout extends FormLayout implements FieldEvents.Blur
     private void postInit() {
         addStyleName("bookery-content");
         addStyleName("light");
+        setMargin(true);
+        setSpacing(true);
+        Label titleLabel = new Label("General Settings");
+        titleLabel.addStyleName(ValoTheme.LABEL_H2);
+        addComponent(titleLabel);
+        
         addComponents(generateFields());
     }
     

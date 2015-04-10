@@ -95,6 +95,13 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
             height: 200px;
         }
         
+        .book-is-read {
+            color: greenyellow;
+        }
+        
+        .book-is-notread {
+            color: grey;
+        }
     }
     
     .admin-screen {

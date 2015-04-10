@@ -8,7 +8,6 @@ package de.fatalix.bookery.view.home;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -19,6 +18,8 @@ import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.solr.BookEntry;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -38,8 +39,11 @@ public class BookDetailLayout extends HorizontalLayout{
     private Label titleLabel;
     private Label authorLabel;
     private Label descriptionLabel;
-
+    private Button bookIsRead;
+    
     private BookEntry bookEntry;
+    
+    private boolean isRead = false;
     
     @PostConstruct
     private void postInit() {
@@ -53,7 +57,25 @@ public class BookDetailLayout extends HorizontalLayout{
         titleLabel = new Label("Title");
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
         
-        VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,descriptionLabel);
+        bookIsRead = new Button(FontAwesome.CIRCLE);
+        bookIsRead.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        bookIsRead.addStyleName(ValoTheme.BUTTON_HUGE);
+        bookIsRead.addStyleName("book-is-notread");
+        bookIsRead.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                if (!isRead) {
+                    try {
+                        String user = SecurityUtils.getSubject().getPrincipal().toString();
+                        loadData(presenter.setBookAsRead(bookEntry.getId(), user));
+                    } catch(SolrServerException ex) {
+                        Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,bookIsRead);
         infoLayout.addStyleName("book-info");
         this.setMargin(true);
         this.setSpacing(true);
@@ -70,7 +92,6 @@ public class BookDetailLayout extends HorizontalLayout{
         image.addStyleName("book-cover");
         
         Button shareButton = new Button("to Kindle", new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 try {
@@ -94,8 +115,26 @@ public class BookDetailLayout extends HorizontalLayout{
     public void loadData(BookEntry bookEntry) {
         this.bookEntry = bookEntry;
         this.bookId = bookEntry.getId();
-        StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
-        image.setSource(new StreamResource(source, bookEntry.getId()+".png"));
+        if (bookEntry.getCover()!=null) {
+            StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
+            image.setSource(new StreamResource(source, bookEntry.getId()+".png"));
+        }
+        bookIsRead.setIcon(FontAwesome.CIRCLE);
+        isRead = false;
+        String user = SecurityUtils.getSubject().getPrincipal().toString();
+        if (bookEntry.getReader() != null) {
+            for (String reader : bookEntry.getReader()) {
+                if (reader.equals(user)) {
+                    bookIsRead.setIcon(FontAwesome.CHECK_CIRCLE);
+                    bookIsRead.removeStyleName("book-is-notread");
+                    bookIsRead.addStyleName("book-is-read");
+                    isRead = true;
+                    break;
+                }
+            }    
+        }
+        
+        
         titleLabel.setValue(bookEntry.getTitle());
         authorLabel.setValue(bookEntry.getAuthor());
         //descriptionLabel.setValue(bookEntry.getDescription());

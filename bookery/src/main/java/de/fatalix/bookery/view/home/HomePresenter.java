@@ -47,4 +47,8 @@ public class HomePresenter {
         AppUser appUser = userService.getAppUser(username);
         bookService.sendBookToKindle(bookId, appUser);
     }
+    
+    public BookEntry setBookAsRead(String bookId, String username) throws SolrServerException {
+        return bookService.updateReader(bookId, username);
+    }
 }

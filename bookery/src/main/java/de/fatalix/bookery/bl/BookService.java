@@ -38,11 +38,46 @@ public class BookService {
         if(searchword != null && !searchword.isEmpty()) {
             queryString = "author:*" + searchword + "* OR title:*" + searchword + "*";
         }
-        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader";
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared";
 
         return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
     }
+    
+    public BookEntry updateShared(String bookId, String shared) throws SolrServerException {
+        
+        QueryResponse response = solrHandler.searchSolrIndex("id:" + bookId, "", 1, 0);
 
+        if(response.getResults().getNumFound() == 1) {
+            BookEntry bookEntry = response.getBeans(BookEntry.class).get(0);
+            ArrayList<String> sharedList = new ArrayList<>();
+            if (bookEntry.getShared()!= null) {
+                for(String existingReader : bookEntry.getShared()) {
+                    if(!existingReader.equals(shared)) {
+                        sharedList.add(existingReader);
+                    }
+                }    
+            }
+            
+            sharedList.add(shared);
+
+            bookEntry.setShared(sharedList.toArray(new String[sharedList.size()]));
+            try {
+                solrHandler.updateBean(bookEntry);
+            } catch(IOException ex) {
+                throw new SolrServerException("Could not update Book Entry with ID: " + bookId + " - " + ex.getMessage());
+            }
+            String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared";
+            QueryResponse result = solrHandler.searchSolrIndex("id:" + bookId, fields, 1, 0);
+            if(result.getResults().getNumFound() == 1) {
+                return result.getBeans(BookEntry.class).get(0);
+            } else {
+                throw new SolrServerException("Book Entry is not UNIQUE with ID: " + bookId);
+            }
+        } else {
+            throw new SolrServerException("Book Entry is not UNIQUE with ID: " + bookId);
+        }
+    }
+    
     public BookEntry updateReader(String bookId, String reader) throws SolrServerException {
         String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,mimetype,shared,file";
         QueryResponse response = solrHandler.searchSolrIndex("id:" + bookId, "", 1, 0);

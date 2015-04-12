@@ -30,7 +30,12 @@ public class SolrHandler {
         SolrServer solr = createConnection();
         solr.addBeans(bookEntries);
         UpdateResponse response = solr.commit(true, false);
-        
+    }
+    
+    public void updateBean(BookEntry bookEntry) throws SolrServerException, IOException {
+        SolrServer solr = createConnection();
+        solr.addBean(bookEntry);
+        solr.commit();
     }
     
     public void resetSolrIndex() throws SolrServerException, IOException {
@@ -49,7 +54,8 @@ public class SolrHandler {
         SolrQuery query = new SolrQuery();
         query.setQuery(queryString);
         query.setRows(rows);
-        query.setStart(startOffset); 
+        query.setStart(startOffset);
+        
         query.setFields(fields);
         QueryResponse rsp = solr.query(query);
         return rsp;

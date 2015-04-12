@@ -22,8 +22,6 @@ import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.AbstractView;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -100,6 +98,10 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     public VerticalLayout createServerSettings() {
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
+        Label titleLabel = new Label("General Settings");
+        titleLabel.addStyleName(ValoTheme.LABEL_H2);
+        
+        //layout.addComponent(titleLabel);
         layout.addComponent(serverSettingsLayout);
         Button resetIndex = new Button("reset Index", new Button.ClickListener() {
 

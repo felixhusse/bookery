@@ -10,7 +10,6 @@
     
     <groupId>de.fatalix</groupId>
     <artifactId>bookery</artifactId>
-    <version>1.0</version>
     <packaging>war</packaging>
     
     <name>Bookery</name>

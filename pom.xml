@@ -29,7 +29,14 @@
         <deltaspike.version>1.1.0</deltaspike.version>
         <es.version>1.4.4</es.version>
     </properties>
-        
+    
+    <scm>
+        <url>git://github.com/felixhusse/bookery.git</url>
+        <connection>scm:git:git://github.com/felixhusse/bookery.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:/felixhusse/bookery.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>    
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -148,7 +155,16 @@
                 <version>7.4.0.0</version>
             </dependency>
         </dependencies>
-        
     </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+            </plugin>
+        </plugins>  
+    </build>
+    
     
 </project>

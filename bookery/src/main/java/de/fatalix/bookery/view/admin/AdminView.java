@@ -22,6 +22,7 @@ import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.AbstractView;
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -48,14 +49,31 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     
     private HorizontalLayout userManagementLayout;
     
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
+    @PostConstruct
+    private void postInit() {
         TabSheet tabSheet = new TabSheet();
         tabSheet.setStyleName("admin-screen");
         tabSheet.addTab(createServerSettings(),"Server Settings");
         tabSheet.addTab(createUserManagement(), "User Management");
-        serverSettingsLayout.loadData();
+        
         this.setCompositionRoot(tabSheet);
+    }
+    
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        serverSettingsLayout.loadData();
+        loadUser();
+    }
+    
+    private void loadUser() {
+        List<AppUser> userList = presenter.loadUserList();
+        for (AppUser appUser : userList) {
+            AppUserCard appUserCard = appUserCardInstances.get();
+            appUserCard.loadAppUser(appUser);
+            appUserCard.addAppUserCardListener(this);
+            userManagementLayout.addComponent(appUserCard,userManagementLayout.getComponentCount()-1);
+            
+        }
     }
     
     public HorizontalLayout createUserManagement() {
@@ -63,15 +81,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
         userManagementLayout.addStyleName("wrapping"); 
         userManagementLayout.setSpacing(true);
         userManagementLayout.setMargin(true);
-        
-        List<AppUser> userList = presenter.loadUserList();
-        for (AppUser appUser : userList) {
-            AppUserCard appUserCard = appUserCardInstances.get();
-            appUserCard.loadAppUser(appUser);
-            appUserCard.addAppUserCardListener(this);
-            userManagementLayout.addComponent(appUserCard);
-            
-        }
+
         Label label = new Label("Add new user...");
         label.setSizeUndefined();
         label.addStyleName(ValoTheme.LABEL_LARGE);

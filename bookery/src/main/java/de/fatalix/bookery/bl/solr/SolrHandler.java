@@ -91,6 +91,16 @@ public class SolrHandler {
         return rsp.getBeans(BookEntry.class);
     }
     
+    public long checkSolr() throws SolrServerException, IOException {
+        SolrServer solr = createConnection();
+        SolrQuery query = new SolrQuery();
+        query.setQuery("*:*");
+        query.setRows(1);
+        QueryResponse rsp = solr.query(query);
+        
+        return rsp.getResults().getNumFound();
+    }
+    
     private SolrServer createConnection() throws SolrServerException, IOException {
         String solrURL = settingDAO.findByKey(SettingKey.SOLR_URL).getConfigurationValue();
         String solrCore = settingDAO.findByKey(SettingKey.SOLR_CORE).getConfigurationValue();

@@ -74,7 +74,12 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
             color: rgb(244, 238, 229); 
         }
     }
-    
+    .green-icon .v-icon {
+        color: greenyellow;
+    }
+    .red-icon .v-icon {
+        color: red;
+    }
     .valo-content {
         background: $editor-background-color;
         background-image: url(#{$login-background-image});

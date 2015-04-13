@@ -176,7 +176,7 @@
         <repository>
             <id>release</id>
             <name>release</name>
-            <url>file:D:/release/</url>
+            <url>file:C:/release/</url>
         </repository>
     </distributionManagement>
     

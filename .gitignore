@@ -7,3 +7,8 @@
 /bookery/src/main/resources/rebel.xml
 /bookery-widget/target/
 /bookery-metadata/target/
+/bookery/pom.xml.releaseBackup
+/pom.xml.releaseBackup
+/release.properties
+/bookery-metadata/pom.xml.releaseBackup
+/bookery-widget/pom.xml.releaseBackup

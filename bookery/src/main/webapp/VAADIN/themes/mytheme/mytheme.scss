@@ -22,8 +22,10 @@ $v-app-background-color: #C29147;
 
 // Defines colors for indicating status (focus, success, failure)
 //$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
-//$v-friendly-color: #2c9720;
-//$v-error-indicator-color: #ed473b;
+// $v-error-indicator-color: #eb2977 !default;
+// $v-friendly-color: rgb(54, 185, 85);
+$v-friendly-color: #37B454;
+$v-error-indicator-color: #ed473b;
 
 // For more information, see: https://vaadin.com/book/-/page/themes.valo.html
 // Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
@@ -34,8 +36,6 @@ $editor-background-color: #3b2400 !default;
 $valo-menu-background-color: $editor-background-color !default;
 
 $v-focus-color: #7F5312 !default;
-$v-error-indicator-color: #eb2977 !default;
-$v-friendly-color: rgb(54, 185, 85);
 
 $v-font-size: 15px !default;
 $v-font-weight: 400 !default;
@@ -75,10 +75,10 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
         }
     }
     .green-icon .v-icon {
-        color: greenyellow;
+        color: $v-friendly-color;
     }
     .red-icon .v-icon {
-        color: red;
+        color: $v-error-indicator-color;
     }
     .valo-content {
         background: $editor-background-color;
@@ -101,11 +101,11 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
         }
         
         .book-is-read {
-            color: greenyellow;
+            color: $v-friendly-color;
         }
         
         .book-is-notread {
-            color: grey;
+            color: $v-error-indicator-color;
         }
     }
     

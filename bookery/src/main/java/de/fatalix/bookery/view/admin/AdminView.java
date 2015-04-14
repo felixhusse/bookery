@@ -125,7 +125,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 }
             }
         });
-        
+        resetIndex.addStyleName(ValoTheme.BUTTON_DANGER);
         final TextField path = new TextField("Path", "C:\\ebooks\\calibre-export");
         Button importFiles = new Button("import Files", new Button.ClickListener() {
 

@@ -96,7 +96,11 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
         </dependency>
-    
+        <dependency>
+            <groupId>de.fatalix</groupId>
+            <artifactId>bookery-metadata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

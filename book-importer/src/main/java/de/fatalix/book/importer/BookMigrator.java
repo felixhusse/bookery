@@ -6,18 +6,17 @@
 package de.fatalix.book.importer;
 
 import com.google.gson.Gson;
+import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOError;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sound.midi.Patch;
+import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -118,8 +117,7 @@ public class BookMigrator {
                 byte[] coverData = Files.readAllBytes(file.toPath());
                 bookEntry.setCover(coverData);
             } else if(file.getName().contains(".json")) {
-                byte[] metaData = Files.readAllBytes(file.toPath());
-                BookMetaData bmd = gson.fromJson(new String(metaData, "UTF-8"), BookMetaData.class);
+                BookMetaData bmd = gson.fromJson(IOUtils.toString(new FileInputStream(file), Charset.defaultCharset()), BookMetaData.class);
                 bookEntry.setAuthor(bmd.getAuthor()).setTitle(bmd.getTitle()).setIsbn(bmd.getIsbn())
                         .setPublisher(bmd.getPublisher()).setDescription(bmd.getDescription()).setLanguage(bmd.getLanguage())
                         .setReleaseDate(bmd.getReleaseDate()).setMimeType(bmd.getMimeType());

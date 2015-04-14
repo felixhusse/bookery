@@ -17,7 +17,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.bl.solr.BookEntry;
+import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
 import java.util.List;
 import java.util.logging.Level;

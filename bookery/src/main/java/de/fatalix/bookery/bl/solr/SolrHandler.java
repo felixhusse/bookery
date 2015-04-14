@@ -7,6 +7,7 @@ package de.fatalix.bookery.bl.solr;
 
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.model.SettingKey;
+import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.Stateless;

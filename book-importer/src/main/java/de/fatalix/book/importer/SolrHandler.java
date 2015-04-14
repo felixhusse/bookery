@@ -5,6 +5,7 @@
  */
 package de.fatalix.book.importer;
 
+import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
 import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;

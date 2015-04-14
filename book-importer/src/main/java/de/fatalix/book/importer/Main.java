@@ -20,7 +20,7 @@ public class Main {
             //BookMigrator.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "C:\\export");
             //http://localhost:8080/solr-4.10.3
             //http://jboss.fatalix.de/solr-4.10.4
-            BookMigrator.importBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 10, "C:\\export");
+            BookMigrator.importBooks("http://localhost:8080/solr-4.10.3", "bookery", 10, "C:\\export");
         } catch(SolrServerException | IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

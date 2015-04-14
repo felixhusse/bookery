@@ -19,6 +19,7 @@
         <module>bookery-widget</module>
         <module>bookery-metadata</module>
         <module>bookery</module>
+        <module>book-importer</module>
     </modules>
 
     <properties>
@@ -150,10 +151,11 @@
                 <version>2.7</version>
             </dependency>
             <dependency>
-                <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
-                <artifactId>vaadin-lazyquerycontainer</artifactId>
-                <version>7.4.0.0</version>
+                <groupId>org.apache.solr</groupId>
+                <artifactId>solr-solrj</artifactId>
+                <version>4.10.4</version>
             </dependency>
+            
         </dependencies>
     </dependencyManagement>
     <build>

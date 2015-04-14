@@ -36,6 +36,7 @@ public class SolrHandler {
         SolrServer solr = createConnection();
         solr.addBean(bookEntry);
         solr.commit();
+        
     }
     
     public void resetSolrIndex() throws SolrServerException, IOException {

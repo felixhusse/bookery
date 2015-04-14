@@ -26,9 +26,7 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
  * @author felix.husse
  */
 public class BookMigrator {
-    
-    
-    
+
     /**
      *
      * @param solrURL
@@ -84,7 +82,9 @@ public class BookMigrator {
         }
 
     }
-
+    
+    
+    
     /**
      *
      * @param solrURL
@@ -104,7 +104,9 @@ public class BookMigrator {
 
         exportBatchWise(server, exportFolder, batchSize, 0, gson);
     }
-
+    
+ 
+    
     private static BookEntry importBatchWise(File bookFolder, Gson gson) throws IOException {
         BookEntry bookEntry = new BookEntry();
 
@@ -158,5 +160,6 @@ public class BookMigrator {
         }
 
     }
+
 
 }

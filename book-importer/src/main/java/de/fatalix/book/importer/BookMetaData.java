@@ -1,9 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2015 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.book.importer;
+
+import java.util.Date;
 
 /**
  *
@@ -17,10 +18,11 @@ public class BookMetaData {
     private final String publisher;
     private final String description;
     private final String language;
-    private final String releaseDate;
+    private final Date releaseDate;
     private final String mimeType;
+    private final Date uploadDate;
 
-    public BookMetaData(String author, String title, String isbn, String publisher, String description, String language, String releaseDate, String mimeType) {
+    public BookMetaData(String author, String title, String isbn, String publisher, String description, String language, Date releaseDate, String mimeType, Date uploadDate) {
         this.author = author;
         this.title = title;
         this.isbn = isbn;
@@ -29,6 +31,7 @@ public class BookMetaData {
         this.language = language;
         this.releaseDate = releaseDate;
         this.mimeType = mimeType;
+        this.uploadDate = uploadDate;
     }
 
     public String getAuthor() {
@@ -55,12 +58,17 @@ public class BookMetaData {
         return language;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
     public String getMimeType() {
         return mimeType;
     }
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
     
+        
 }

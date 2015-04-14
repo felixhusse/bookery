@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2015 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.book.importer;
 
@@ -64,7 +63,7 @@ public class BookMigrator {
         int counter = 0;
         List<BookEntry> bookEntries = new ArrayList<>();
         for(File bookFolder : bookFolders) {
-            bookEntries.add(importBatchWise(server, bookFolder, gson));
+            bookEntries.add(importBatchWise(bookFolder, gson));
             counter++;
             if(bookEntries.size() >= batchSize) {
                 UpdateResponse response = SolrHandler.addBeans(server, bookEntries);
@@ -106,7 +105,7 @@ public class BookMigrator {
         exportBatchWise(server, exportFolder, batchSize, 0, gson);
     }
 
-    private static BookEntry importBatchWise(SolrServer server, File bookFolder, Gson gson) throws IOException {
+    private static BookEntry importBatchWise(File bookFolder, Gson gson) throws IOException {
         BookEntry bookEntry = new BookEntry();
 
         for(File file : bookFolder.listFiles()) {
@@ -120,7 +119,7 @@ public class BookMigrator {
                 BookMetaData bmd = gson.fromJson(IOUtils.toString(new FileInputStream(file), Charset.defaultCharset()), BookMetaData.class);
                 bookEntry.setAuthor(bmd.getAuthor()).setTitle(bmd.getTitle()).setIsbn(bmd.getIsbn())
                         .setPublisher(bmd.getPublisher()).setDescription(bmd.getDescription()).setLanguage(bmd.getLanguage())
-                        .setReleaseDate(bmd.getReleaseDate()).setMimeType(bmd.getMimeType());
+                        .setMimeType(bmd.getMimeType()).setUploadDate(bmd.getUploadDate()).setReleaseDate(bmd.getReleaseDate());
             }
         }
 
@@ -145,8 +144,9 @@ public class BookMigrator {
                 Files.write(coverData.toPath(), bookEntry.getCover(), StandardOpenOption.CREATE_NEW);
 
                 File metaDataFile = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".json");
-                BookMetaData metaData = new BookMetaData(bookEntry.getAuthor(), bookEntry.getTitle(), bookEntry.getIsbn(), bookEntry.getPublisher(), bookEntry.getDescription(), bookEntry.getLanguage(),
-                                                         bookEntry.getReleaseDate(), bookEntry.getMimeType());
+                BookMetaData metaData = new BookMetaData(bookEntry.getAuthor(), bookEntry.getTitle(), bookEntry.getIsbn(), 
+                                                        bookEntry.getPublisher(), bookEntry.getDescription(), bookEntry.getLanguage(),
+                                                        bookEntry.getReleaseDate(), bookEntry.getMimeType(),bookEntry.getUploadDate());
                 gson.toJson(metaData);
                 Files.write(metaDataFile.toPath(), gson.toJson(metaData).getBytes(), StandardOpenOption.CREATE_NEW);
             }

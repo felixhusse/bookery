@@ -1,10 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2015 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.bookery.solr.model;
 
+import java.util.Date;
 import java.util.UUID;
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -14,7 +14,7 @@ import org.apache.solr.client.solrj.beans.Field;
  */
 public class BookEntry {
     @Field("id")
-    private String id;
+    private final String id;
     
     @Field("author")
     private String author;
@@ -28,8 +28,11 @@ public class BookEntry {
     private String description;
     @Field("language")
     private String language;
+    
     @Field("releaseDate")
-    private String releaseDate;
+    private Date releaseDate;
+    @Field("uploadDate")
+    private Date uploadDate;
     
     @Field("rating")
     private int rating;
@@ -67,7 +70,7 @@ public class BookEntry {
         return isbn;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
@@ -111,6 +114,10 @@ public class BookEntry {
         return mimeType;
     }
 
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+    
     public BookEntry setMimeType(String mimeType) {
         this.mimeType = mimeType;
         return this;
@@ -131,7 +138,7 @@ public class BookEntry {
         return this;
     }
 
-    public BookEntry setReleaseDate(String releaseDate) {
+    public BookEntry setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
         return this;
     }
@@ -181,6 +188,11 @@ public class BookEntry {
         return this;
     }
 
+    public BookEntry setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+        return this;
+    }
+  
     @Override
     public String toString() {
         return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", publisher=" + publisher + ", releaseDate=" + releaseDate + '}';

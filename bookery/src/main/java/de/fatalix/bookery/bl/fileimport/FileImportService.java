@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2015 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.bookery.bl.fileimport;
 
@@ -151,7 +150,7 @@ public class FileImportService {
                     String value = line.split(">")[1].split("<")[0];
                     DateTime dtReleaseDate = new DateTime(value);
                     if (dtReleaseDate.getYear() != 101) {
-                        bmd.setReleaseDate(dtReleaseDate.toString("YYYY-MM-dd"));
+                        //bmd.setReleaseDate(dtReleaseDate.toString("YYYY-MM-dd"));
                     }
                 }
                 else if (line.contains("dc:language")) {

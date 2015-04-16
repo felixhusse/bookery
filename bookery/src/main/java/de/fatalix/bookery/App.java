@@ -14,13 +14,19 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
+import de.fatalix.bookery.bl.AppUserService;
+import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.login.LoginView;
 import de.fatalix.bookery.view.login.UserLoggedInEvent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
+import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.format.DateTimeFormat;
 import org.vaadin.cdiviewmenu.ViewMenuUI;
 import static org.vaadin.cdiviewmenu.ViewMenuUI.getMenu;
 
@@ -34,6 +40,8 @@ import static org.vaadin.cdiviewmenu.ViewMenuUI.getMenu;
 public class App extends ViewMenuUI{
 
     private Button logout;
+    @Inject
+    private AppUserService userService;
     
     private final Button.ClickListener logoutClickListener = new Button.ClickListener() {
         private static final long serialVersionUID = -1545988729141348821L;
@@ -94,7 +102,56 @@ public class App extends ViewMenuUI{
     }
 
     public void userLoggedIn(@Observes(notifyObserver = Reception.IF_EXISTS) UserLoggedInEvent event) {
-        Notification.show("Welcome back " + event.getUsername());
+        AppUser user = userService.updateLastLogin(event.getUsername());
+        
+        if (user.getLastLogin() != null) {
+            DateTime dtLastLogin = new DateTime(user.getLastLogin());
+            DateTime dtCurrentLogin = new DateTime(user.getCurrentLogin());
+            Duration duration = new Duration(dtLastLogin, dtCurrentLogin);
+            String sinceLastLogin = "";
+            if (duration.getStandardDays()>0) {
+                long days = duration.getStandardDays();
+                if (days == 1) {
+                    sinceLastLogin = days + " day";
+                }
+                else {
+                    sinceLastLogin = days + " days";
+                }
+            }
+            else if (duration.getStandardHours()> 0) {
+                long hours = duration.getStandardHours();
+                if (hours == 1) {
+                    sinceLastLogin = hours + " hour";
+                }
+                else {
+                    sinceLastLogin = hours + " hours";
+                }
+            }
+            else if (duration.getStandardMinutes() > 0) {
+                long minutes = duration.getStandardMinutes();
+                if (minutes == 1) {
+                    sinceLastLogin = minutes + " minute";
+                }
+                else {
+                    sinceLastLogin = minutes + " minutes";
+                }
+            }
+            else {
+                long seconds = duration.getStandardSeconds();
+                if (seconds == 1) {
+                    sinceLastLogin = seconds + " second";
+                }
+                else {
+                    sinceLastLogin = seconds + " seconds";
+                }
+            }
+            Notification.show("Welcome back " + event.getUsername() + " after " + sinceLastLogin + ".");
+        }
+        else {
+            Notification.show("Welcome " + event.getUsername());
+        }
+        
+        
         getMenu().navigateTo(HomeView.id);
         getMenu().addMenuItem(logout);
         getMenu().setVisible(isLoggedIn());

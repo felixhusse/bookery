@@ -4,11 +4,13 @@
  */
 package de.fatalix.bookery.bl;
 
+
 import de.fatalix.bookery.bl.dao.AppUserDAO;
 import de.fatalix.bookery.bl.model.AppUser;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -19,7 +21,22 @@ public class AppUserService {
 
     @Inject
     private AppUserDAO appUserDao;
-
+    
+    public AppUser updateLastLogin(String username) {
+        AppUser user = appUserDao.findByUserName(username);
+        if (user.getCurrentLogin()!=null) {
+            if (user.getCurrentLogin().contains("CEST")) {
+                user.setLastLogin(null);
+            }
+            else {
+                user.setLastLogin(user.getCurrentLogin());
+            }
+            
+        }
+        user.setCurrentLogin(new DateTime().toString());
+        return appUserDao.update(user);
+    }
+    
     public AppUser getAppUser(String username) {
         return appUserDao.findByUserName(username);
     }

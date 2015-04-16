@@ -8,12 +8,14 @@ import de.fatalix.bookery.bl.EntityIntf;
 import de.fatalix.bookery.bl.authentication.AppUserAuthenticationInfo;
 import de.fatalix.bookery.bl.authentication.AppUserAuthorizationInfo;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.crypto.hash.Sha512Hash;
@@ -41,6 +43,9 @@ public class AppUser implements EntityIntf, Serializable{
     private String fullname;
     private String roles;
     private String salt;
+
+    private String currentLogin;
+    private String lastLogin;
     
     @Override
     public Integer getId() {
@@ -94,6 +99,22 @@ public class AppUser implements EntityIntf, Serializable{
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getCurrentLogin() {
+        return currentLogin;
+    }
+
+    public void setCurrentLogin(String currentLogin) {
+        this.currentLogin = currentLogin;
     }
     
     /**

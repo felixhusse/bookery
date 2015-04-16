@@ -5,6 +5,7 @@
 package de.fatalix.bookery.view.home;
 
 import com.vaadin.cdi.CDIView;
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -13,9 +14,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import de.fatalix.bookery.bl.TimeRange;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
 import java.util.List;
@@ -47,6 +50,7 @@ public class HomeView extends AbstractView implements View {
     private VerticalLayout resultLayout;
     private TextField searchText;
     private Button showMore;
+    private OptionGroup timeRangeGroup;
     
     @PostConstruct
     private void postInit() {
@@ -56,7 +60,7 @@ public class HomeView extends AbstractView implements View {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                searchBooks(searchText.getValue(), false);
+                searchBooks(searchText.getValue(), false,(TimeRange)timeRangeGroup.getValue());
             }
         });
         showMore.setWidth(100, Unit.PERCENTAGE);
@@ -72,18 +76,37 @@ public class HomeView extends AbstractView implements View {
     
     private VerticalLayout createSearchLayout() {
         searchText = new TextField();
+        searchText.setIcon(FontAwesome.SEARCH);
         searchText.setImmediate(true);
+        searchText.setColumns(10);
+        searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
+        searchText.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {
             @Override
             public void textChange(FieldEvents.TextChangeEvent event) {
-                searchBooks(event.getText(),true);
+                searchBooks(event.getText(),true,(TimeRange)timeRangeGroup.getValue());
             }
         });
         
-        resultLabel = new Label("(0)");
+        resultLabel = new Label("(0 Books)");
+        resultLabel.addStyleName(ValoTheme.LABEL_HUGE);
         
         HorizontalLayout topSearchLayout = new HorizontalLayout(searchText, resultLabel);
-        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout);
+        topSearchLayout.setSpacing(true);
+        timeRangeGroup = new OptionGroup();
+        timeRangeGroup.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        for (TimeRange timeRange : TimeRange.values()) {
+            timeRangeGroup.addItem(timeRange);
+            timeRangeGroup.setItemCaption(timeRange, timeRange.getCaption());
+        }
+        timeRangeGroup.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                searchBooks(searchText.getValue(), true, (TimeRange)timeRangeGroup.getValue());
+            }
+        });
+        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout,timeRangeGroup);
         searchLayout.setWidth(100, Unit.PERCENTAGE);
         searchLayout.setMargin(true);
         searchLayout.addStyleName("bookery-content");
@@ -93,17 +116,18 @@ public class HomeView extends AbstractView implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         searchText.setValue("");
-        searchBooks(searchText.getValue(),true);
+        timeRangeGroup.setValue(TimeRange.NONE);
+        searchBooks(searchText.getValue(),true, (TimeRange)timeRangeGroup.getValue());
     }
 
-    private void searchBooks(String searchWord,boolean reset) {
+    private void searchBooks(String searchWord,boolean reset,TimeRange timeRange) {
         try {
             if (reset) {
                 resultLayout.removeAllComponents();
             }
-            QueryResponse queryResponse = presenter.searchBooks(searchWord,10,resultLayout.getComponentCount());
+            QueryResponse queryResponse = presenter.searchBooks(searchWord,10,resultLayout.getComponentCount(),timeRange);
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
-            resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ ")");
+            resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ " Books)");
             
             for (BookEntry bookEntry : bookEntries) {
                 BookDetailLayout detailLayout = bookDetailLayoutInstances.get();

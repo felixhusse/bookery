@@ -14,8 +14,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -28,19 +31,63 @@ public class BookService {
     private SolrHandler solrHandler;
     @Inject
     private BookeryMailService mailService;
+    @Inject
+    private AppUserService userService;
 
     public void addBooks(List<BookEntry> bookEntries) throws SolrServerException, IOException {
         solrHandler.addBeans(bookEntries);
     }
-
-    public QueryResponse searchBooks(String searchword, int rows, int startOffset) throws SolrServerException {
+    
+    public long getTotalCount(String searchword,TimeRange timeRange) throws SolrServerException {
         String queryString = "*:*";
         if(searchword != null && !searchword.isEmpty()) {
             queryString = "author:*" + searchword + "* OR title:*" + searchword + "*";
         }
+        
+        String fields = "id";
+        return solrHandler.searchSolrIndex(queryString, fields, 1, 0).getResults().getNumFound();
+    }
+
+    public QueryResponse searchBooks(String searchword, int rows, int startOffset, TimeRange timeRange) throws SolrServerException {
+        String queryString = "*:*";
+        if(searchword != null && !searchword.isEmpty()) {
+            queryString = "author:*" + searchword + "* OR title:*" + searchword + "*";
+        }
+        
+        String timeRangeQueryPart = getTimeRangeQuery(timeRange);
+        if (!timeRangeQueryPart.isEmpty()) {
+            queryString = queryString + " AND " + timeRangeQueryPart;
+        }
+        
         String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared";
 
         return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
+    }
+    
+    private String getTimeRangeQuery(TimeRange timeRange) {
+        
+        String result = "";
+        switch (timeRange) {
+            case LASTMONTH:
+                DateTime dtLastMonth = new DateTime(DateTimeZone.UTC).minusMonths(1);
+                result = "uploadDate:["+dtLastMonth+" TO NOW]";
+                break;
+            case LASTWEEK:
+                DateTime dtLastWeek = new DateTime(DateTimeZone.UTC).minusWeeks(1);
+                result = "uploadDate:["+dtLastWeek+" TO NOW]";
+                break;
+            case SINCELASTLOGIN:
+                AppUser user = userService.getAppUser(SecurityUtils.getSubject().getPrincipal().toString());
+                if (user.getLastLogin()!=null) {
+                    DateTime dtLastLogin = new DateTime(user.getLastLogin(), DateTimeZone.UTC);
+                    result = "uploadDate:["+dtLastLogin+" TO NOW]";
+                }
+                break;
+            default:
+                break;
+        }
+        
+        return result;
     }
     
     public BookEntry updateShared(String bookId, String shared) throws SolrServerException {

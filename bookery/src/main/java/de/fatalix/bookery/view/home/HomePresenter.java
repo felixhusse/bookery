@@ -7,6 +7,7 @@ package de.fatalix.bookery.view.home;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookService;
+import de.fatalix.bookery.bl.TimeRange;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
@@ -33,9 +34,9 @@ public class HomePresenter {
         bookService.addBooks(bookEntries);
     }
     
-    public QueryResponse searchBooks(String search,int rows,int startOffset) throws SolrServerException {
+    public QueryResponse searchBooks(String search,int rows,int startOffset, TimeRange timeRange) throws SolrServerException {
         
-        return bookService.searchBooks(search,rows,startOffset);
+        return bookService.searchBooks(search,rows,startOffset,timeRange);
     }
     
     public BookEntry getBookDetail(String id) throws SolrServerException {

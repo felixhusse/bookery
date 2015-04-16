@@ -78,8 +78,8 @@ public class HomeView extends AbstractView implements View {
         searchText = new TextField();
         searchText.setIcon(FontAwesome.SEARCH);
         searchText.setImmediate(true);
-        searchText.setColumns(10);
-        searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
+        searchText.setColumns(20);
+        //searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
         searchText.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {
             @Override
@@ -89,7 +89,7 @@ public class HomeView extends AbstractView implements View {
         });
         
         resultLabel = new Label("(0 Books)");
-        resultLabel.addStyleName(ValoTheme.LABEL_HUGE);
+        //resultLabel.addStyleName(ValoTheme.LABEL_HUGE);
         
         HorizontalLayout topSearchLayout = new HorizontalLayout(searchText, resultLabel);
         topSearchLayout.setSpacing(true);

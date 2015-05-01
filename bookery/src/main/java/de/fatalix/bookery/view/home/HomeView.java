@@ -127,7 +127,7 @@ public class HomeView extends AbstractView implements View {
             }
             QueryResponse queryResponse = presenter.searchBooks(searchWord,10,resultLayout.getComponentCount(),timeRange);
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
-            resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ " Books)");
+            resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ ")");
             
             for (BookEntry bookEntry : bookEntries) {
                 BookDetailLayout detailLayout = bookDetailLayoutInstances.get();

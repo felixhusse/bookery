@@ -72,7 +72,7 @@ public class BookDetailLayout extends HorizontalLayout{
                 }
             }
         });
-        VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel,bookIsRead);
+        VerticalLayout infoLayout = new VerticalLayout(titleLabel,authorLabel);
         infoLayout.addStyleName("book-info");
         this.setMargin(true);
         this.setSpacing(true);

@@ -336,8 +336,8 @@
        and statistics to JMX.
 
        For more details see http://wiki.apache.org/solr/SolrJmx
-    -->
-  <jmx />
+
+  <jmx />-->
   <!-- If you want to connect to a particular server, specify the
        agentId 
     -->
@@ -354,11 +354,11 @@
          uncommitted changes to the index, so use of a hard autoCommit
          is recommended (see below).
          "dir" - the target directory for transaction logs, defaults to the
-                solr data directory.  --> 
+                solr data directory. 
     <updateLog>
       <str name="dir">${solr.ulog.dir:}</str>
     </updateLog>
- 
+	 --> 
     <!-- AutoCommit
 
          Perform a hard commit automatically under certain conditions.
@@ -381,7 +381,7 @@
          have some sort of hard autoCommit to limit the log size.
       -->
      <autoCommit> 
-       <maxTime>${solr.autoCommit.maxTime:15000}</maxTime> 
+       <maxTime>100</maxTime> 
        <openSearcher>false</openSearcher> 
      </autoCommit>
 
@@ -830,7 +830,7 @@
      <lst name="defaults">
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
-       <str name="df">text</str>
+       <str name="df">title</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
@@ -892,7 +892,7 @@
        <str name="echoParams">explicit</str>
        <str name="wt">json</str>
        <str name="indent">true</str>
-       <str name="df">text</str>
+       <str name="df">title</str>
      </lst>
   </requestHandler>
 
@@ -963,7 +963,7 @@
           text^0.5 features^1.0 name^1.2 sku^1.5 id^10.0 manu^1.1 cat^1.4
           title^10.0 description^5.0 keywords^5.0 author^2.0 resourcename^1.0
        </str>
-       <str name="df">text</str>
+       <str name="df">title</str>
        <str name="mm">100%</str>
        <str name="q.alt">*:*</str>
        <str name="rows">10</str>
@@ -1395,7 +1395,7 @@
     -->
   <requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
     <lst name="defaults">
-      <str name="df">text</str>
+      <str name="df">title</str>
       <!-- Solr will use suggestions from both the 'default' spellchecker
            and from the 'wordbreak' spellchecker and combine them.
            collations (re-written queries) can include a combination of
@@ -1455,7 +1455,7 @@
     -->
   <requestHandler name="/tvrh" class="solr.SearchHandler" startup="lazy">
     <lst name="defaults">
-      <str name="df">text</str>
+      <str name="df">title</str>
       <bool name="tv">true</bool>
     </lst>
     <arr name="last-components">
@@ -1582,31 +1582,6 @@
     </arr>
   </requestHandler>
 
-
-  <!-- Query Elevation Component
-
-       http://wiki.apache.org/solr/QueryElevationComponent
-
-       a search component that enables you to configure the top
-       results for a given query regardless of the normal lucene
-       scoring.
-    -->
-  <searchComponent name="elevator" class="solr.QueryElevationComponent" >
-    <!-- pick a fieldType to analyze queries -->
-    <str name="queryFieldType">string</str>
-    <str name="config-file">elevate.xml</str>
-  </searchComponent>
-
-  <!-- A request handler for demonstrating the elevator component -->
-  <requestHandler name="/elevate" class="solr.SearchHandler" startup="lazy">
-    <lst name="defaults">
-      <str name="echoParams">explicit</str>
-      <str name="df">text</str>
-    </lst>
-    <arr name="last-components">
-      <str>elevator</str>
-    </arr>
-  </requestHandler>
 
   <!-- Highlighting Component
 

@@ -18,14 +18,15 @@ import org.joda.time.DateTimeZone;
 public class Main {
 
     
-    public static void main(String[] args) {
-        parseDateTime();
+    public static void main(String[] args) throws IOException, SolrServerException {
+        //parseDateTime();
 //        try {
 //            
-//            DateTimeZone.setDefault(DateTimeZone.UTC);
+//            
 //            //BookExporterOld.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "E:\\dumps\\bookery-web");
 //            //BookMigrator.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "E:\\dumps\\bookery-web");
-//            //BookMigrator.importBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 10, "C:\\export");
+            DateTimeZone.setDefault(DateTimeZone.UTC);
+            BookMigrator.importBooks("http://localhost:8080/solr-4.10.4", "bookery", 10, "E:\\newstuff\\lydia");
 //            
 //            //BookMigrator.exportBooks("http://localhost:8080/solr-4.10.3", "bookery", 20, "C:\\export2");
 //            BookMigrator.importBooks("http://localhost:8080/solr-4.10.4", "bookery", 10, "E:\\dumps\\bookery-web");

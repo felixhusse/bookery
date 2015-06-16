@@ -16,7 +16,6 @@
     </developers>
 
     <modules>
-        <module>bookery-widget</module>
         <module>bookery-metadata</module>
         <module>bookery</module>
         <module>book-importer</module>

@@ -45,6 +45,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
     
     @Inject private Instance<AppUserCard> appUserCardInstances;
     @Inject private ServerSettingsLayout serverSettingsLayout;
+    @Inject private BatchJobsLayout batchJobsLayout;
     
     private HorizontalLayout userManagementLayout;
     
@@ -54,13 +55,14 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
         tabSheet.setStyleName("admin-screen");
         tabSheet.addTab(createServerSettings(),"Server Settings");
         tabSheet.addTab(createUserManagement(), "User Management");
-        
+        tabSheet.addTab(batchJobsLayout,"Batch Jobs");
         this.setCompositionRoot(tabSheet);
     }
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         serverSettingsLayout.loadData();
+        batchJobsLayout.enter();
         loadUser();
     }
     

@@ -7,11 +7,14 @@ package de.fatalix.bookery.view.admin;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookeryMailService;
+import de.fatalix.bookery.bl.background.BatchJobService;
+import de.fatalix.bookery.bl.background.BatchJobType;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.bl.fileimport.FileImportService;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;
+import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +34,7 @@ public class AdminPresenter {
     @Inject private FileImportService fileImportService;
     @Inject private SolrHandler solrHandler;
     @Inject private BookeryMailService mailService;
+    @Inject private BatchJobService batchJobService;
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -80,4 +84,25 @@ public class AdminPresenter {
     public long getSolrInfo() throws SolrServerException, IOException {
         return solrHandler.checkSolr();
     }
+    
+    public List<BatchJobConfiguration> getAllJobs() {
+        return batchJobService.getAllJobs();
+    }
+    
+    public BatchJobConfiguration updateBatchJob(BatchJobConfiguration jobConfig) {
+        return batchJobService.updateJob(jobConfig);
+    }
+    
+    public BatchJobConfiguration createBatchJob() {
+        BatchJobConfiguration jobConfig = new BatchJobConfiguration();
+        jobConfig.setType(BatchJobType.THUMBNAIL);
+        jobConfig.setCronJobExpression("0 */5 * * * * *");
+        jobConfig.setActive(false);
+        return batchJobService.saveJob(jobConfig);
+    }
+    
+    public void deleteBatchJob(BatchJobConfiguration jobConfig) {
+        batchJobService.deleteJob(jobConfig);
+    }
+    
 }

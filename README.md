@@ -1,4 +1,6 @@
-# Bookery
+[![Build Status](https://travis-ci.org/felixhusse/bookery.svg?branch=master)](https://travis-ci.org/felixhusse/bookery)
+
+# Bookery 
 The name "bookery" is based on the german word "Buecherei", which can be translated to "library" but would result in a terrible grade in school.
 
 ## Features

@@ -101,6 +101,10 @@
             <artifactId>bookery-metadata</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -185,5 +189,25 @@
             </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+           <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Example for MySQL-->
+                <sonar.jdbc.url>
+                  jdbc:h2:tcp://localhost:9092/sonar
+                </sonar.jdbc.url>
+                <sonar.jdbc.username>sonar</sonar.jdbc.username>
+                <sonar.jdbc.password>sonar</sonar.jdbc.password>
+ 
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <sonar.host.url>
+                  http://localhost:9000
+                </sonar.host.url>
+            </properties> 
+        </profile>
+    </profiles>
 </project>

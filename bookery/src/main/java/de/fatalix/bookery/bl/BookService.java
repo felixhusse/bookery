@@ -59,7 +59,7 @@ public class BookService {
             queryString = queryString + " AND " + timeRangeQueryPart;
         }
         
-        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared";
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared,thumbnail";
 
         return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
     }
@@ -113,7 +113,7 @@ public class BookService {
             } catch(IOException ex) {
                 throw new SolrServerException("Could not update Book Entry with ID: " + bookId + " - " + ex.getMessage());
             }
-            String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared";
+            String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared,thumbnail,thumbnailgenerated";
             QueryResponse result = solrHandler.searchSolrIndex("id:" + bookId, fields, 1, 0);
             if(result.getResults().getNumFound() == 1) {
                 return result.getBeans(BookEntry.class).get(0);
@@ -126,7 +126,7 @@ public class BookService {
     }
     
     public BookEntry updateReader(String bookId, String reader) throws SolrServerException {
-        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,mimetype,shared,file";
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,mimetype,shared,file,thumbnail,thumbnailgenerated";
         QueryResponse response = solrHandler.searchSolrIndex("id:" + bookId, "", 1, 0);
 
         if(response.getResults().getNumFound() == 1) {
@@ -148,7 +148,7 @@ public class BookService {
             } catch(IOException ex) {
                 throw new SolrServerException("Could not update Book Entry with ID: " + bookId + " - " + ex.getMessage());
             }
-            fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader";
+            fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,thumbnail,thumbnailgenerated";
             QueryResponse result = solrHandler.searchSolrIndex("id:" + bookId, fields, 1, 0);
             if(result.getResults().getNumFound() == 1) {
                 return result.getBeans(BookEntry.class).get(0);

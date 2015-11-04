@@ -28,4 +28,16 @@
                 <goal>jrebel:generate</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-Sonar</actionName>
+            <displayName>Sonar</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+                <goal>sonar:sonar</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>sonar</activatedProfile>
+            </activatedProfiles>
+        </action>
     </actions>

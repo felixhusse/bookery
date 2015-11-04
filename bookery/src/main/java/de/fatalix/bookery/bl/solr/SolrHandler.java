@@ -17,6 +17,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.common.SolrInputDocument;
 
 /**
  *
@@ -37,6 +38,12 @@ public class SolrHandler {
         solr.addBean(bookEntry);
         solr.commit();
         
+    }
+    
+    public void updateDocument(SolrInputDocument document) throws SolrServerException, IOException {
+        SolrServer solr = createConnection();
+        solr.add(document);
+        solr.commit();
     }
     
     public void resetSolrIndex() throws SolrServerException, IOException {
@@ -72,7 +79,7 @@ public class SolrHandler {
         SolrQuery query = new SolrQuery();
         query.setQuery("id:"+bookID);
         query.setRows(1);
-        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,reader,shared,cover");
+        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,reader,shared,cover,thumbnail,thumbnailgenerated");
         QueryResponse rsp = solr.query(query);
         return rsp.getBeans(BookEntry.class);
     }

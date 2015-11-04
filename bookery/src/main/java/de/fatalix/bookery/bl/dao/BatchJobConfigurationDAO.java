@@ -18,7 +18,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class BatchJobConfigurationDAO extends DAOBean<BatchJobConfiguration>{
-    @PersistenceContext(unitName = "game-pu")
+    @PersistenceContext(unitName = "bookery-pu")
     private EntityManager entityManager;
     
     @SuppressWarnings("unused")

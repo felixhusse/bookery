@@ -28,6 +28,8 @@ public class BookEntry {
     private String description;
     @Field("language")
     private String language;
+    @Field("thumbnailgenerated")
+    private String thumbnailGenerated;
     
     @Field("releaseDate")
     private Date releaseDate;
@@ -49,7 +51,9 @@ public class BookEntry {
     private byte[] cover;
     @Field("file")
     private byte[] file;
-
+    @Field("thumbnail")
+    private byte[] thumbnail;
+    
     public BookEntry() {
         this.id = UUID.randomUUID().toString();
     }
@@ -192,7 +196,25 @@ public class BookEntry {
         this.uploadDate = uploadDate;
         return this;
     }
-  
+
+    public String getThumbnailGenerated() {
+        return thumbnailGenerated;
+    }
+
+    public BookEntry setThumbnailGenerated(String thumbnailGenerated) {
+        this.thumbnailGenerated = thumbnailGenerated;
+        return this;
+    }
+
+    public byte[] getThumbnail() {
+        return thumbnail;
+    }
+
+    public BookEntry setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
+        return this;
+    }
+    
     @Override
     public String toString() {
         return "BookEntry{" + "author=" + author + ", title=" + title + ", isbn=" + isbn + ", publisher=" + publisher + ", releaseDate=" + releaseDate + '}';

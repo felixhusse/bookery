@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2015 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.bookery.bl.background;
 
@@ -10,7 +9,7 @@ package de.fatalix.bookery.bl.background;
  * @author felix.husse
  */
 public enum BatchJobType {
-    THUMBNAIL("java:module/ThumbnailJob","Thumbnail Job","converts thumbnails","");
+    THUMBNAIL("java:module/ThumbnailBatch","Thumbnail Job","converts thumbnails","");
     
     private final String moduleName;
     private final String displayName;

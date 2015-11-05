@@ -83,7 +83,7 @@ public class BatchJobService {
         return jobConfigs;
     }
     
-    private BatchJobConfiguration fireUpTimer(BatchJobConfiguration jobConfig) {
+    public BatchJobConfiguration fireUpTimer(BatchJobConfiguration jobConfig) {
         if (jobConfig.isActive()) {
             TimerConfig timerConf = new TimerConfig(jobConfig, false);
             String[] splittedCronJob = jobConfig.getCronJobExpression().split(" ");

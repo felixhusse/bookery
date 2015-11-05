@@ -7,6 +7,7 @@ package de.fatalix.bookery.view.admin;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookeryMailService;
+import de.fatalix.bookery.bl.BookeryService;
 import de.fatalix.bookery.bl.background.BatchJobService;
 import de.fatalix.bookery.bl.background.BatchJobType;
 import de.fatalix.bookery.bl.background.thumbnail.ThumbnailBatchConfiguration;
@@ -19,6 +20,8 @@ import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -29,7 +32,7 @@ import org.apache.solr.client.solrj.SolrServerException;
  */
 @UIScoped
 public class AdminPresenter {
-    
+    @Inject private BookeryService bookeryService;
     @Inject private AppUserService service;
     @Inject private AppSettingDAO settingDAO;
     @Inject private FileImportService fileImportService;
@@ -67,7 +70,13 @@ public class AdminPresenter {
     public AppSetting updateSetting(SettingKey key, String value) {
         AppSetting setting = settingDAO.findByKey(key);
         setting.setConfigurationValue(value);
-        return settingDAO.update(setting);
+        setting = settingDAO.update(setting);
+        try {
+            bookeryService.updateConfiguration();
+        } catch(SolrServerException | IOException ex) {
+            Logger.getLogger(AdminPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return setting;
     }
     
     public void resetIndex() throws IOException, SolrServerException {

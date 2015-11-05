@@ -5,6 +5,7 @@
 package de.fatalix.bookery;
 
 import de.fatalix.bookery.bl.AppUserService;
+import de.fatalix.bookery.bl.BookeryService;
 import de.fatalix.bookery.bl.model.AppUser;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 public class AppStartup {
     
     @Inject private AppUserService service;
+    @Inject private BookeryService bookeryService;
     
     @PostConstruct
     private void init() {
@@ -38,7 +40,7 @@ public class AppStartup {
             defaultUser.setRoles("user");
             service.createUser(defaultUser);
         }
-
+        bookeryService.fireUpBatchJobs();
     }
     
 }

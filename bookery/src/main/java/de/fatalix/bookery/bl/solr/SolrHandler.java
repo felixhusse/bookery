@@ -4,8 +4,8 @@
  */
 package de.fatalix.bookery.bl.solr;
 
+import de.fatalix.bookery.bl.BookeryService;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
-import de.fatalix.bookery.bl.model.SettingKey;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
@@ -25,29 +24,29 @@ import org.apache.solr.common.SolrInputDocument;
  */
 @Stateless
 public class SolrHandler {
-    @Inject private AppSettingDAO settingDAO;
+    @Inject private BookeryService bookeryService;
     
     public void addBeans(List<BookEntry> bookEntries) throws SolrServerException, IOException {
-        SolrServer solr = createConnection();
+        SolrServer solr = bookeryService.getSolrConnection();
         solr.addBeans(bookEntries);
         UpdateResponse response = solr.commit(true, false);
     }
     
     public void updateBean(BookEntry bookEntry) throws SolrServerException, IOException {
-        SolrServer solr = createConnection();
+        SolrServer solr = bookeryService.getSolrConnection();
         solr.addBean(bookEntry);
         solr.commit();
         
     }
     
     public void updateDocument(SolrInputDocument document) throws SolrServerException, IOException {
-        SolrServer solr = createConnection();
+        SolrServer solr = bookeryService.getSolrConnection();
         solr.add(document);
         solr.commit();
     }
     
     public void resetSolrIndex() throws SolrServerException, IOException {
-        SolrServer solr = createConnection();
+        SolrServer solr = bookeryService.getSolrConnection();
         solr.deleteByQuery("*:*");
         solr.commit();
     }
@@ -55,7 +54,7 @@ public class SolrHandler {
     public QueryResponse searchSolrIndex(String queryString, String fields, int rows, int startOffset) throws SolrServerException  {
         SolrServer solr = null;
         try {
-            solr = createConnection();
+            solr = bookeryService.getSolrConnection();
         } catch (IOException ex) {
             throw new SolrServerException(ex.getMessage());
         }
@@ -72,7 +71,7 @@ public class SolrHandler {
     public List<BookEntry> getBookDetail(String bookID) throws SolrServerException {
         SolrServer solr = null;
         try {
-            solr = createConnection();
+            solr = bookeryService.getSolrConnection();
         } catch (IOException ex) {
             throw new SolrServerException(ex.getMessage());
         }
@@ -87,7 +86,7 @@ public class SolrHandler {
     public List<BookEntry> getBookData(String bookID) throws SolrServerException {
         SolrServer solr = null;
         try {
-            solr = createConnection();
+            solr = bookeryService.getSolrConnection();
         } catch (IOException ex) {
             throw new SolrServerException(ex.getMessage());
         }
@@ -100,32 +99,12 @@ public class SolrHandler {
     }
     
     public long checkSolr() throws SolrServerException, IOException {
-        SolrServer solr = createConnection();
+        SolrServer solr = bookeryService.getSolrConnection();
         SolrQuery query = new SolrQuery();
         query.setQuery("*:*");
         query.setRows(1);
         QueryResponse rsp = solr.query(query);
         
         return rsp.getResults().getNumFound();
-    }
-    
-    private SolrServer createConnection() throws SolrServerException, IOException {
-        String solrURL = settingDAO.findByKey(SettingKey.SOLR_URL).getConfigurationValue();
-        String solrCore = settingDAO.findByKey(SettingKey.SOLR_CORE).getConfigurationValue();
-        
-        if (!solrURL.endsWith("/")) {
-            solrURL = solrURL + "/";
-        }
-        HttpSolrServer solrServer = new HttpSolrServer(solrURL + solrCore);
-        try {
-            
-            if (solrServer.ping().getStatus()!=0) {
-                throw new SolrServerException("Solr Server not found! ");
-            }    
-        } catch (HttpSolrServer.RemoteSolrException ex) {
-            throw new SolrServerException(ex.getMessage(),ex);
-        }
-        
-        return solrServer;
     }
 }

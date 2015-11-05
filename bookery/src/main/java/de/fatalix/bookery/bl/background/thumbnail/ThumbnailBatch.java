@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.inject.Inject;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -41,7 +40,7 @@ public class ThumbnailBatch implements BatchJobInterface{
 
             QueryResponse response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title,thumbnailgenerated,thumbnail,cover", 35, 0);
             List<BookEntry> bookeEntries = response.getBeans(BookEntry.class);
-            System.out.println("Processing " + bookeEntries.size() + " books total " + response.getResults().getNumFound());
+            
             for (BookEntry bookEntry : bookeEntries) {
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 try {
@@ -67,7 +66,7 @@ public class ThumbnailBatch implements BatchJobInterface{
                         Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-            System.out.println("Processed " + bookeEntries.size() + " books. Left #" + (response.getResults().getNumFound()-bookeEntries.size()));
+            
             
         } catch(SolrServerException ex) {
             Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,8 +5,6 @@
 package de.fatalix.book.importer;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -26,9 +24,11 @@ public class Main {
 //            //BookExporterOld.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "E:\\dumps\\bookery-web");
 //            //BookMigrator.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "E:\\dumps\\bookery-web");
             DateTimeZone.setDefault(DateTimeZone.UTC);
-            BookMigrator.importBooks("http://localhost:8080/solr-4.10.4", "bookery", 10, "E:\\newstuff\\lydia");
+            BookMigrator.importBooks("http://localhost:8080/solr-4.10.3", "bookery", 40, "C:\\server\\bookery-backup",true);
+            //ThumbnailConvert.createThumbnailForBook("http://localhost:8080/solr-4.10.3", "bookery", "1377ce69-ab5c-40d1-a47c-c71aae8eeace");
+ //           ThumbnailConvert.createThumbnails("http://localhost:8080/solr-4.10.3", "bookery", 20);
 //            
-//            //BookMigrator.exportBooks("http://localhost:8080/solr-4.10.3", "bookery", 20, "C:\\export2");
+            //BookMigrator.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 40, "C:\\server\\bookery-backup");
 //            BookMigrator.importBooks("http://localhost:8080/solr-4.10.4", "bookery", 10, "E:\\dumps\\bookery-web");
 //            
 //        } catch(SolrServerException | IOException ex) {

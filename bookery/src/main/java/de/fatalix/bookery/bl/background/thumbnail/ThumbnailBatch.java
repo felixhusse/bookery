@@ -37,46 +37,37 @@ public class ThumbnailBatch implements BatchJobInterface{
     @Override
     public void executeJob(Timer timer) {
         try {
-            
             BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
-            
-            
-            QueryResponse response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title", 1, 0);
-            long totalResults = response.getResults().getNumFound();
-            
-            for (int i = 0; i < totalResults;i=i+20) {
-                response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title", 20, i);
-                List<BookEntry> bookeEntries = response.getBeans(BookEntry.class);
-                for (BookEntry bookEntry : bookeEntries) {
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-                    BookEntry bookEntryDetail = solrHandler.getBookDetail(bookEntry.getId()).get(0);
-                    
-                    try {
-                        if (bookEntryDetail.getCover()!= null) {
-                            Thumbnails.of(new ByteArrayInputStream(bookEntryDetail.getCover()))
+
+            QueryResponse response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title,thumbnailgenerated,thumbnail,cover", 35, 0);
+            List<BookEntry> bookeEntries = response.getBeans(BookEntry.class);
+            System.out.println("Processing " + bookeEntries.size() + " books total " + response.getResults().getNumFound());
+            for (BookEntry bookEntry : bookeEntries) {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                try {
+                        if (bookEntry.getCover()!= null) {
+                            Thumbnails.of(new ByteArrayInputStream(bookEntry.getCover()))
                                 .size(130, 200)
                                 .toOutputStream(output);
-                            bookEntryDetail.setThumbnail(output.toByteArray()).setThumbnailGenerated("done");
-                            solrHandler.updateBean(bookEntry);
-                            //                        SolrInputDocument doc = new SolrInputDocument();
-                            //                        doc.addField("id", bookEntry.getId());
-                            //                        Map<String, Object> thumbnailData = new HashMap<>();
-                            //                        thumbnailData.put("set", output.toByteArray());
-                            //doc.addField("thumbnail", thumbnailData);
-                            //Map<String, Object> thumbnailStatus = new HashMap<>();
-                            //thumbnailData.put("set", "done");
-                            //doc.addField("thumbnailgenerated", thumbnailStatus);
-                            //solrHandler.updateDocument(doc); 
+                            
+                            SolrInputDocument doc = new SolrInputDocument();
+                            doc.addField("id", bookEntry.getId());
+
+                            Map<String, Object> thumbnailData = new HashMap<>();
+                            thumbnailData.put("set", output.toByteArray());
+                            doc.addField("thumbnail", thumbnailData);
+
+                            Map<String, Object> thumbnailStatus = new HashMap<>();
+                            thumbnailStatus.put("set", "done");
+                            doc.addField("thumbnailgenerated", thumbnailStatus);
+                            solrHandler.updateDocument(doc); 
                         }
                         
                     } catch(IOException ex) {
                         Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);
-                    }   
-                }
-                System.out.println("Thumbnailing Finished for " + (i+20) + " of " + totalResults);
-                
+                    }
             }
-            
+            System.out.println("Processed " + bookeEntries.size() + " books. Left #" + (response.getResults().getNumFound()-bookeEntries.size()));
             
         } catch(SolrServerException ex) {
             Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);

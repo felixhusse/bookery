@@ -4,12 +4,14 @@
  */
 package de.fatalix.bookery.bl.background;
 
+import de.fatalix.bookery.bl.background.thumbnail.ThumbnailBatchConfiguration;
+
 /**
  *
  * @author felix.husse
  */
 public enum BatchJobType {
-    THUMBNAIL("java:module/ThumbnailBatch","Thumbnail Job","converts thumbnails","");
+    THUMBNAIL("java:module/ThumbnailBatch","Thumbnail Job","converts thumbnails",ThumbnailBatchConfiguration.generateDefaultConfig());
     
     private final String moduleName;
     private final String displayName;

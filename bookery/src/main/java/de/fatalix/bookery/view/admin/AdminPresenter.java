@@ -9,6 +9,7 @@ import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookeryMailService;
 import de.fatalix.bookery.bl.background.BatchJobService;
 import de.fatalix.bookery.bl.background.BatchJobType;
+import de.fatalix.bookery.bl.background.thumbnail.ThumbnailBatchConfiguration;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.bl.fileimport.FileImportService;
@@ -98,6 +99,7 @@ public class AdminPresenter {
         jobConfig.setType(BatchJobType.THUMBNAIL);
         jobConfig.setCronJobExpression("0 */5 * * * * *");
         jobConfig.setActive(false);
+        jobConfig.setConfigurationXML(BatchJobType.THUMBNAIL.getDefaultConfig());
         return batchJobService.saveJob(jobConfig);
     }
     

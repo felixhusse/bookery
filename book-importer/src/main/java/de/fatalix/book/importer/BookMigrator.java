@@ -40,7 +40,7 @@ public class BookMigrator {
      * @throws IOException
      * @throws SolrServerException
      */
-    public static void importBooks(String solrURL, String solrCore, int batchSize, String importPath) throws IOException, SolrServerException {
+    public static void importBooks(String solrURL, String solrCore, int batchSize, String importPath, boolean reset) throws IOException, SolrServerException {
         
         File importFolder = new File(importPath);
         if(!importFolder.isDirectory()) {
@@ -48,10 +48,15 @@ public class BookMigrator {
         }
 
         SolrServer server = SolrHandler.createConnection(solrURL, solrCore);
+        if (reset) {
+            System.out.println("RESET:");
+            server.deleteByQuery("*:*");
+            server.commit();
+
+        }
         
         System.out.println("Connection established");
-        
-        //SolrHandler.resetSolrIndex(server);
+
         Gson gson = new Gson();
 
         File[] bookFolders = importFolder.listFiles(new FileFilter() {

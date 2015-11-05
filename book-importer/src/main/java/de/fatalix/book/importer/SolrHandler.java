@@ -39,6 +39,7 @@ public class SolrHandler {
     public static QueryResponse searchSolrIndex(SolrServer solr,String queryString, int rows, int startOffset) throws SolrServerException  {
         SolrQuery query = new SolrQuery();
         query.setQuery(queryString);
+
         query.setRows(rows);
         query.setStart(startOffset);
         QueryResponse rsp = solr.query(query);

@@ -6,7 +6,6 @@ package de.fatalix.bookery.bl;
 
 import de.fatalix.bookery.bl.model.AppUser;
 import java.util.Date;
-import javax.activation.DataHandler;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.mail.BodyPart;
@@ -20,7 +19,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
 
 /**
  *

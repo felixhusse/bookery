@@ -4,6 +4,7 @@
  */
 package de.fatalix.bookery.bl.background.thumbnail;
 
+import com.google.gson.Gson;
 import de.fatalix.bookery.bl.background.BatchJobInterface;
 import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.solr.SolrHandler;
@@ -37,8 +38,9 @@ public class ThumbnailBatch implements BatchJobInterface{
     public void executeJob(Timer timer) {
         try {
             BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
-
-            QueryResponse response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title,thumbnailgenerated,thumbnail,cover", 35, 0);
+            Gson gson = new Gson();
+            ThumbnailBatchConfiguration config = gson.fromJson(jobConfig.getConfigurationXML(), ThumbnailBatchConfiguration.class);
+            QueryResponse response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title,thumbnailgenerated,thumbnail,cover", config.getBatchSize(), 0);
             List<BookEntry> bookeEntries = response.getBeans(BookEntry.class);
             
             for (BookEntry bookEntry : bookeEntries) {
@@ -46,7 +48,7 @@ public class ThumbnailBatch implements BatchJobInterface{
                 try {
                         if (bookEntry.getCover()!= null) {
                             Thumbnails.of(new ByteArrayInputStream(bookEntry.getCover()))
-                                .size(130, 200)
+                                .size(config.getWidth(), config.getHeight())
                                 .toOutputStream(output);
                             
                             SolrInputDocument doc = new SolrInputDocument();

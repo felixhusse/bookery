@@ -1,20 +1,15 @@
 /*
- * Copyright (c) 2015 Felix Husse under MIT License
- * see LICENSE file
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-package de.fatalix.bookery.bl.background.importer;
+package de.fatalix.book.importer;
 
-import com.google.gson.Gson;
-import com.vaadin.data.util.FilesystemContainer;
-import de.fatalix.bookery.bl.BookeryService;
-import de.fatalix.bookery.bl.background.BatchJobInterface;
-import de.fatalix.bookery.bl.model.BatchJobConfiguration;
-import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
@@ -26,59 +21,34 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.Stateless;
-import javax.ejb.Timer;
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
 
 /**
  *
- * @author felix.husse
+ * @author Fatalix
  */
-@Stateless
-public class CalibriImporter implements BatchJobInterface{
-    
-    @Inject private SolrHandler solrHandler;
-    
-    @Override
-    public void executeJob(Timer timer) {
-        BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
-        Gson gson = new Gson();
-        CalibriImporterConfiguration config = gson.fromJson(jobConfig.getConfigurationXML(), CalibriImporterConfiguration.class);
-        
-        File importFolder = new File(config.getImportFolder());
-        if (importFolder.isDirectory()) {
-            File[] zipFiles = importFolder.listFiles(new FilenameFilter() {
+public class CalibriImporter {
 
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".zip");
-                }
-            });
-            for (File zipFile : zipFiles) {
-                try {
-                    processArchive(zipFile.toPath(),config.getBatchSize());
-                } catch (IOException ex) {
-                    Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-        }
-        else {
-            Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, "Import folder cannot read!",importFolder.getAbsolutePath());
-        }
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        readArchive(new File("E:/dumps/calibre-export.zip"));
     }
-    
-    private void processArchive(final Path zipFile, final int batchSize) throws IOException {
+
+    public static void readArchive(File archive) throws IOException, URISyntaxException {
+        Path zipFile = archive.toPath();
         FileSystem zipFileSystem = FileSystems.newFileSystem(zipFile, null);
-        final List<BookEntry> bookEntries = new ArrayList<>();
         Path root = zipFileSystem.getPath("/");
+        final List<BookEntry> bookEntries = new ArrayList<>();
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                //System.out.println(file.toString());
+
+                return super.visitFile(file, attrs);
+            }
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -101,31 +71,25 @@ public class CalibriImporter implements BatchJobInterface{
                     }
                     if (bookEntry.getFile()!=null) {
                         bookEntries.add(bookEntry);
-                        if (bookEntries.size()>batchSize) {
+                        if (bookEntries.size()>10) {
                             System.out.println("Adding " + bookEntries.size() + " Books...");
-                            try {
-                                solrHandler.addBeans(bookEntries);
-                            } catch (SolrServerException ex) {
-                                Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
-                            }
                             bookEntries.clear();
                         }
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
                 }
-                return super.preVisitDirectory(dir, attrs); 
+                return super.preVisitDirectory(dir, attrs); //To change body of generated methods, choose Tools | Templates.
             }
+
         });
         
-        try {
-            System.out.println("Adding " + bookEntries.size() + " Books...");
-            solrHandler.addBeans(bookEntries);
-        } catch (SolrServerException ex) {
-            Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        System.out.println("Adding " + bookEntries.size() + " Books...");
+        bookEntries.clear();
+        System.out.println("MÖP");
+
     }
-    
+
     private static BookEntry parseOPF(Path pathToOPF, BookEntry bmd) throws IOException {
         List<String> lines = Files.readAllLines(pathToOPF, Charset.forName("UTF-8"));
         boolean multiLineDescription = false;
@@ -178,5 +142,5 @@ public class CalibriImporter implements BatchJobInterface{
         }
         return bmd;
     }
-    
+
 }

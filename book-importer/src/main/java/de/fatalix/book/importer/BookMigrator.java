@@ -30,7 +30,17 @@ import org.joda.time.DateTimeZone;
  * @author felix.husse
  */
 public class BookMigrator {
+    
+    public static void clearDB(String solrURL, String solrCore) throws SolrServerException, IOException {
+        SolrServer server = SolrHandler.createConnection(solrURL, solrCore);
 
+            System.out.println("RESET:");
+            server.deleteByQuery("*:*");
+            server.commit();
+
+        
+    }
+    
     /**
      *
      * @param solrURL

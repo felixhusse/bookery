@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -43,6 +44,7 @@ public class CalibriImporter implements BatchJobInterface{
     
     @Override
     public void executeJob(Timer timer) {
+        DateTimeZone.setDefault(DateTimeZone.UTC);
         BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
         Gson gson = new Gson();
         CalibriImporterConfiguration config = gson.fromJson(jobConfig.getConfigurationXML(), CalibriImporterConfiguration.class);
@@ -115,8 +117,13 @@ public class CalibriImporter implements BatchJobInterface{
         });
         
         try {
-            System.out.println("Adding " + bookEntries.size() + " Books...");
-            solrHandler.addBeans(bookEntries);
+            if (!bookEntries.isEmpty()) {
+                System.out.println("Adding " + bookEntries.size() + " Books...");
+                solrHandler.addBeans(bookEntries);
+            }
+            
+            Files.delete(zipFile);
+            
         } catch (SolrServerException ex) {
             Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
         }

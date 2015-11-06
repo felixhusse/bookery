@@ -4,6 +4,7 @@
  */
 package de.fatalix.bookery.bl.background;
 
+import de.fatalix.bookery.bl.background.importer.CalibriImporterConfiguration;
 import de.fatalix.bookery.bl.background.thumbnail.ThumbnailBatchConfiguration;
 
 /**
@@ -11,7 +12,8 @@ import de.fatalix.bookery.bl.background.thumbnail.ThumbnailBatchConfiguration;
  * @author felix.husse
  */
 public enum BatchJobType {
-    THUMBNAIL("java:module/ThumbnailBatch","Thumbnail Job","converts thumbnails",ThumbnailBatchConfiguration.generateDefaultConfig());
+    THUMBNAIL("java:module/ThumbnailBatch","Thumbnail Job","converts thumbnails",ThumbnailBatchConfiguration.generateDefaultConfig()),
+    CALIBRIIMPORT("java:module/CalibriImporter","Calibri Importer","imports calibri files",CalibriImporterConfiguration.generateDefaultConfig());
     
     private final String moduleName;
     private final String displayName;

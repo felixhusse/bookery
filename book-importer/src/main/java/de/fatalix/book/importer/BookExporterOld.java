@@ -9,10 +9,13 @@ import com.google.gson.Gson;
 import de.fatalix.book.importer.old.BookEntry;
 import java.io.File;
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+
 import java.util.Date;
 import java.util.List;
+
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -63,9 +66,10 @@ public class BookExporterOld {
                 DateTime dtUploadDate = new DateTime(DateTimeZone.UTC);
                 
                 File metaDataFile = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".json");
+                String[] viewed = {};
                 BookMetaData metaData = new BookMetaData(bookEntry.getAuthor(), bookEntry.getTitle(), bookEntry.getIsbn(), 
                                                         bookEntry.getPublisher(), bookEntry.getDescription(), bookEntry.getLanguage(),
-                                                        dreleaseDate, bookEntry.getMimeType(),dtUploadDate.toDate());
+                                                        dreleaseDate, bookEntry.getMimeType(),dtUploadDate.toDate(),viewed,bookEntry.getShared());
                 gson.toJson(metaData);
                 Files.write(metaDataFile.toPath(), gson.toJson(metaData).getBytes(), StandardOpenOption.CREATE_NEW);
             }

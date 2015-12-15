@@ -21,8 +21,10 @@ public class BookMetaData {
     private final Date releaseDate;
     private final String mimeType;
     private final Date uploadDate;
+    private final String[] shared;
+    private final String[] viewed;
 
-    public BookMetaData(String author, String title, String isbn, String publisher, String description, String language, Date releaseDate, String mimeType, Date uploadDate) {
+    public BookMetaData(String author, String title, String isbn, String publisher, String description, String language, Date releaseDate, String mimeType, Date uploadDate,String[] viewed,String[] shared) {
         this.author = author;
         this.title = title;
         this.isbn = isbn;
@@ -32,6 +34,8 @@ public class BookMetaData {
         this.releaseDate = releaseDate;
         this.mimeType = mimeType;
         this.uploadDate = uploadDate;
+        this.shared = shared;
+        this.viewed = viewed;
     }
 
     public String getAuthor() {
@@ -68,6 +72,14 @@ public class BookMetaData {
 
     public Date getUploadDate() {
         return uploadDate;
+    }
+
+    public String[] getShared() {
+        return shared;
+    }
+
+    public String[] getViewed() {
+        return viewed;
     }
     
         

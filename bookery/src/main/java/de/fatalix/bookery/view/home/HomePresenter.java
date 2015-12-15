@@ -49,7 +49,4 @@ public class HomePresenter {
         bookService.updateShared(bookId, username);
     }
     
-    public BookEntry setBookAsRead(String bookId, String username) throws SolrServerException {
-        return bookService.updateReader(bookId, username);
-    }
 }

@@ -89,15 +89,18 @@ public class CalibriImporter implements BatchJobInterface{
                                 bookEntry = parseOPF(path, bookEntry);
                             }
                             if (path.toString().contains(".mobi")) {
-                                bookEntry.setFile(Files.readAllBytes(path))
+                                bookEntry.setMobi(Files.readAllBytes(path))
                                         .setMimeType("MOBI");
+                            }
+                            if (path.toString().contains(".epub")) {
+                                bookEntry.setEpub(Files.readAllBytes(path));
                             }
                             if (path.toString().contains(".jpg")) {
                                 bookEntry.setCover(Files.readAllBytes(path));
                             }
                         }
                     }
-                    if (bookEntry.getFile()!=null) {
+                    if (bookEntry.getMobi()!=null) {
                         bookEntries.add(bookEntry);
                         if (bookEntries.size()>batchSize) {
                             System.out.println("Adding " + bookEntries.size() + " Books...");

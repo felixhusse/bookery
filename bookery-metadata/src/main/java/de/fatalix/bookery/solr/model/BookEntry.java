@@ -40,8 +40,8 @@ public class BookEntry {
     private int rating;
     @Field("uploader")
     private String uploader;
-    @Field("reader")
-    private String[] reader;
+    @Field("viewed")
+    private String[] viewed;
     @Field("shared")
     private String[] shared;
     @Field("mimetype")
@@ -49,10 +49,14 @@ public class BookEntry {
     
     @Field("cover")
     private byte[] cover;
-    @Field("file")
-    private byte[] file;
+
     @Field("thumbnail")
     private byte[] thumbnail;
+    
+    @Field("epub")
+    private byte[] epub;
+    @Field("mobi")
+    private byte[] mobi;
     
     public BookEntry() {
         this.id = UUID.randomUUID().toString();
@@ -86,18 +90,22 @@ public class BookEntry {
         return uploader;
     }
 
-    public String[] getReader() {
-        return reader;
+    public String[] getViewed() {
+        return viewed;
     }
 
     public String[] getShared() {
         return shared;
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getEpub() {
+        return epub;
     }
 
+    public byte[] getMobi() {
+        return mobi;
+    }
+    
     public byte[] getCover() {
         return cover;
     }
@@ -157,8 +165,8 @@ public class BookEntry {
         return this;
     }
 
-    public BookEntry setReader(String[] reader) {
-        this.reader = reader;
+    public BookEntry setViewed(String[] viewed) {
+        this.viewed = viewed;
         return this;
     }
 
@@ -167,8 +175,13 @@ public class BookEntry {
         return this;
     }
 
-    public BookEntry setFile(byte[] file) {
-        this.file = file;
+    public BookEntry setMobi(byte[] mobi) {
+        this.mobi = mobi;
+        return this;
+    }
+    
+    public BookEntry setEpub(byte[] epub) {
+        this.epub = epub;
         return this;
     }
 

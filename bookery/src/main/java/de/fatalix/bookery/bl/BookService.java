@@ -125,30 +125,30 @@ public class BookService {
         }
     }
     
-    public BookEntry updateReader(String bookId, String reader) throws SolrServerException {
-        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,mimetype,shared,file,thumbnail,thumbnailgenerated";
+    public BookEntry updateViewed(String bookId, String viewer) throws SolrServerException {
+        
         QueryResponse response = solrHandler.searchSolrIndex("id:" + bookId, "", 1, 0);
 
         if(response.getResults().getNumFound() == 1) {
             BookEntry bookEntry = response.getBeans(BookEntry.class).get(0);
-            ArrayList<String> readerList = new ArrayList<>();
-            if (bookEntry.getReader() != null) {
-                for(String existingReader : bookEntry.getReader()) {
-                    if(!existingReader.equals(reader)) {
-                        readerList.add(existingReader);
+            ArrayList<String> viewerList = new ArrayList<>();
+            if (bookEntry.getViewed()!= null) {
+                for(String existingViewed : bookEntry.getViewed()) {
+                    if(!existingViewed.equals(viewer)) {
+                        viewerList.add(existingViewed);
                     }
                 }    
             }
             
-            readerList.add(reader);
+            viewerList.add(viewer);
 
-            bookEntry.setReader(readerList.toArray(new String[readerList.size()]));
+            bookEntry.setShared(viewerList.toArray(new String[viewerList.size()]));
             try {
                 solrHandler.updateBean(bookEntry);
             } catch(IOException ex) {
                 throw new SolrServerException("Could not update Book Entry with ID: " + bookId + " - " + ex.getMessage());
             }
-            fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,thumbnail,thumbnailgenerated";
+            String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared,thumbnail,thumbnailgenerated";
             QueryResponse result = solrHandler.searchSolrIndex("id:" + bookId, fields, 1, 0);
             if(result.getResults().getNumFound() == 1) {
                 return result.getBeans(BookEntry.class).get(0);
@@ -168,6 +168,6 @@ public class BookService {
         BookEntry bookFileName = solrHandler.getBookDetail(bookId).get(0);
         String filename = bookFileName.getTitle() + "-" + bookFileName.getAuthor();
         BookEntry bookEntry = solrHandler.getBookData(bookId).get(0);
-        mailService.sendKindleMail(user, bookEntry.getFile(), filename);
+        mailService.sendKindleMail(user, bookEntry.getMobi(), filename);
     }
 }

@@ -37,11 +37,11 @@ public class BookDetailLayout extends HorizontalLayout {
     private Label titleLabel;
     private Label authorLabel;
     private Label descriptionLabel;
-    private Button bookIsRead;
+    
 
     private BookEntry bookEntry;
 
-    private boolean isRead = false;
+
 
     @PostConstruct
     private void postInit() {
@@ -55,24 +55,6 @@ public class BookDetailLayout extends HorizontalLayout {
         titleLabel = new Label("Title");
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
 
-        bookIsRead = new Button(FontAwesome.CIRCLE);
-        bookIsRead.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        bookIsRead.addStyleName(ValoTheme.BUTTON_HUGE);
-        bookIsRead.addStyleName("book-is-notread");
-        bookIsRead.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                if(!isRead) {
-                    try {
-                        String user = SecurityUtils.getSubject().getPrincipal().toString();
-                        loadData(presenter.setBookAsRead(bookEntry.getId(), user));
-                    } catch(SolrServerException ex) {
-                        Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
         VerticalLayout infoLayout = new VerticalLayout(titleLabel, authorLabel);
         infoLayout.addStyleName("book-info");
         this.setMargin(true);
@@ -123,20 +105,8 @@ public class BookDetailLayout extends HorizontalLayout {
                 image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
             }
         }
-        bookIsRead.setIcon(FontAwesome.CIRCLE);
-        isRead = false;
+
         String user = SecurityUtils.getSubject().getPrincipal().toString();
-        if(bookEntry.getReader() != null) {
-            for(String reader : bookEntry.getReader()) {
-                if(reader.equals(user)) {
-                    bookIsRead.setIcon(FontAwesome.CHECK_CIRCLE);
-                    bookIsRead.removeStyleName("book-is-notread");
-                    bookIsRead.addStyleName("book-is-read");
-                    isRead = true;
-                    break;
-                }
-            }
-        }
 
         titleLabel.setValue(bookEntry.getTitle());
         authorLabel.setValue(bookEntry.getAuthor());

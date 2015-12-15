@@ -30,53 +30,77 @@ import org.joda.time.DateTimeZone;
  * @author felix.husse
  */
 public class BookMigrator {
-    
+
     public static void clearDB(String solrURL, String solrCore) throws SolrServerException, IOException {
         SolrServer server = SolrHandler.createConnection(solrURL, solrCore);
-
-            System.out.println("RESET:");
-            server.deleteByQuery("*:*");
-            server.commit();
-
-        
+        System.out.println("RESET:");
+        server.deleteByQuery("*:*");
+        server.commit();
     }
-    
+
+    public static List<File> findAllBooks(String importPath) throws IOException {
+        List<File> result = new ArrayList<>();
+        File importFolder = new File(importPath);
+        if(!importFolder.isDirectory()) {
+            throw new IOException(importFolder.getAbsolutePath() + " is not a folder!");
+        }
+        return walkTree(result, importFolder);
+    }
+
+    private static List<File> walkTree(List<File> result, File currentFolder) {
+        if(hasFolderBook(currentFolder)) {
+            result.add(currentFolder);
+        } else {
+            File[] subFolders = currentFolder.listFiles(new FileFilter() {
+
+                @Override
+                public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            });
+            for (File subFolder : subFolders) {
+                result = walkTree(result, subFolder);
+            }
+            
+        }
+        return result;
+    }
+
+    private static boolean hasFolderBook(File folder) {
+        return folder.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File file) {
+                return file.getName().contains(".epub") || file.getName().contains(".mobi");
+            }
+        }).length > 0;
+    }
+
     /**
      *
      * @param solrURL
      * @param solrCore
      * @param batchSize
      * @param importPath
+     * @param reset
      * @throws IOException
      * @throws SolrServerException
      */
-    public static void importBooks(String solrURL, String solrCore, int batchSize, String importPath, boolean reset) throws IOException, SolrServerException {
-        
-        File importFolder = new File(importPath);
-        if(!importFolder.isDirectory()) {
-            throw new IOException(importFolder.getAbsolutePath() + " is not a folder!");
-        }
+    public static void importBooks(String solrURL, String solrCore, int batchSize, List<File> bookFolders, boolean reset) throws IOException, SolrServerException {
 
         SolrServer server = SolrHandler.createConnection(solrURL, solrCore);
-        if (reset) {
+        if(reset) {
             System.out.println("RESET:");
             server.deleteByQuery("*:*");
             server.commit();
 
         }
-        
+
         System.out.println("Connection established");
 
         Gson gson = new Gson();
 
-        File[] bookFolders = importFolder.listFiles(new FileFilter() {
-
-            @Override
-            public boolean accept(File file) {
-                return file.isDirectory();
-            }
-        });
-        int total = bookFolders.length;
+        int total = bookFolders.size();
         int counter = 0;
         List<BookEntry> bookEntries = new ArrayList<>();
         for(File bookFolder : bookFolders) {
@@ -101,9 +125,7 @@ public class BookMigrator {
         }
 
     }
-    
-    
-    
+
     /**
      *
      * @param solrURL
@@ -123,27 +145,28 @@ public class BookMigrator {
 
         exportBatchWise(server, exportFolder, batchSize, 0, gson);
     }
-    
- 
-    
+
     private static BookEntry importBatchWise(File bookFolder, Gson gson) throws IOException {
         BookEntry bookEntry = new BookEntry();
 
         for(File file : bookFolder.listFiles()) {
             if(file.getName().contains(".mobi")) {
                 byte[] bookData = Files.readAllBytes(file.toPath());
-                bookEntry.setFile(bookData);
+                bookEntry.setMobi(bookData);
             } else if(file.getName().contains(".jpg")) {
                 byte[] coverData = Files.readAllBytes(file.toPath());
                 bookEntry.setCover(coverData);
+            } else if(file.getName().contains(".epub")) {
+                byte[] bookData = Files.readAllBytes(file.toPath());
+                bookEntry.setEpub(bookData);
             } else if(file.getName().contains(".json")) {
                 BookMetaData bmd = gson.fromJson(IOUtils.toString(new FileInputStream(file), Charset.defaultCharset()), BookMetaData.class);
                 bookEntry.setAuthor(bmd.getAuthor()).setTitle(bmd.getTitle()).setIsbn(bmd.getIsbn())
                         .setPublisher(bmd.getPublisher()).setDescription(bmd.getDescription()).setLanguage(bmd.getLanguage())
                         .setMimeType(bmd.getMimeType()).setUploadDate(bmd.getUploadDate()).setReleaseDate(bmd.getReleaseDate());
-            } else if (file.getName().contains(".opf")) {
+            } else if(file.getName().contains(".opf")) {
                 bookEntry = parseOPF(file, bookEntry);
-                
+
                 bookEntry.setMimeType("mobi").setUploadDate(new DateTime(DateTimeZone.UTC).toDate());
             }
         }
@@ -161,17 +184,23 @@ public class BookMigrator {
             bookTitle = bookTitle.replaceAll(":", " ");
             File bookFolder = new File(exportFolder, bookEntry.getAuthor() + "-" + bookTitle);
             bookFolder.mkdirs();
-            if(bookEntry.getFile() != null && bookEntry.getCover() != null) {
-                File bookData = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".mobi");
-                Files.write(bookData.toPath(), bookEntry.getFile(), StandardOpenOption.CREATE_NEW);
-
+            if(bookEntry.getCover() != null) {
+                if (bookEntry.getEpub() != null) {
+                    File bookData = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".epub");
+                    Files.write(bookData.toPath(), bookEntry.getMobi(), StandardOpenOption.CREATE_NEW);
+                }
+                if (bookEntry.getMobi()!=null) {
+                    File bookData = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".mobi");
+                    Files.write(bookData.toPath(), bookEntry.getMobi(), StandardOpenOption.CREATE_NEW);
+                }
                 File coverData = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".jpg");
                 Files.write(coverData.toPath(), bookEntry.getCover(), StandardOpenOption.CREATE_NEW);
 
                 File metaDataFile = new File(bookFolder, bookEntry.getAuthor() + "-" + bookTitle + ".json");
-                BookMetaData metaData = new BookMetaData(bookEntry.getAuthor(), bookEntry.getTitle(), bookEntry.getIsbn(), 
-                                                        bookEntry.getPublisher(), bookEntry.getDescription(), bookEntry.getLanguage(),
-                                                        bookEntry.getReleaseDate(), bookEntry.getMimeType(),bookEntry.getUploadDate());
+                BookMetaData metaData = new BookMetaData(bookEntry.getAuthor(), bookEntry.getTitle(), bookEntry.getIsbn(),
+                                                         bookEntry.getPublisher(), bookEntry.getDescription(), bookEntry.getLanguage(),
+                                                         bookEntry.getReleaseDate(), bookEntry.getMimeType(), bookEntry.getUploadDate(),
+                                                         bookEntry.getViewed(),bookEntry.getShared());
                 gson.toJson(metaData);
                 Files.write(metaDataFile.toPath(), gson.toJson(metaData).getBytes(), StandardOpenOption.CREATE_NEW);
             }
@@ -183,68 +212,56 @@ public class BookMigrator {
         }
 
     }
-    
-    private static BookEntry parseOPF(File pathToOPF,BookEntry bmd) throws IOException {
+
+    private static BookEntry parseOPF(File pathToOPF, BookEntry bmd) throws IOException {
         List<String> lines = Files.readAllLines(pathToOPF.toPath(), Charset.forName("UTF-8"));
         boolean multiLineDescription = false;
         String description = "";
-        for (String line : lines) {
-            if (multiLineDescription) {
+        for(String line : lines) {
+            if(multiLineDescription) {
                 multiLineDescription = false;
-                if (line.split("<").length == 1) {
+                if(line.split("<").length == 1) {
                     multiLineDescription = true;
                     description = description + line;
-                }
-                else {
+                } else {
                     description = description + line.split("<")[0];
                     description = StringEscapeUtils.unescapeXml(description);
-                    bmd.setDescription(description); 
+                    bmd.setDescription(description);
                 }
-            }
-            else {
-                if (line.contains("dc:title")) {
-                    String title = line.split(">")[1].split("<")[0];
-                    bmd.setTitle(title);
+            } else if(line.contains("dc:title")) {
+                String title = line.split(">")[1].split("<")[0];
+                bmd.setTitle(title);
+            } else if(line.contains("dc:creator")) {
+                String creator = line.split(">")[1].split("<")[0];
+                bmd.setAuthor(creator);
+            } else if(line.contains("dc:description")) {
+                String value = line.split(">")[1];
+                if(value.split("<").length == 1) {
+                    multiLineDescription = true;
+                    description = value;
+                } else {
+                    value = value.split("<")[0];
+                    value = StringEscapeUtils.unescapeXml(value);
+                    bmd.setDescription(value);
                 }
-                else if (line.contains("dc:creator")) {
-                    String creator = line.split(">")[1].split("<")[0];
-                    bmd.setAuthor(creator);
+            } else if(line.contains("dc:publisher")) {
+                String value = line.split(">")[1].split("<")[0];
+                bmd.setPublisher(value);
+            } else if(line.contains("dc:date")) {
+                String value = line.split(">")[1].split("<")[0];
+                DateTime dtReleaseDate = new DateTime(value, DateTimeZone.UTC);
+                if(dtReleaseDate.getYear() != 101) {
+                    bmd.setReleaseDate(dtReleaseDate.toDate());
                 }
-                else if (line.contains("dc:description")) {
-                    String value = line.split(">")[1];
-                    if (value.split("<").length == 1) {
-                        multiLineDescription = true;
-                        description = value;
-                    }
-                    else {
-                        value = value.split("<")[0];
-                        value = StringEscapeUtils.unescapeXml(value);
-                        bmd.setDescription(value);
-                    }
-                } 
-                else if (line.contains("dc:publisher")) {
-                    String value = line.split(">")[1].split("<")[0];
-                    bmd.setPublisher(value);
-                }
-                else if (line.contains("dc:date")) {
-                    String value = line.split(">")[1].split("<")[0];
-                    DateTime dtReleaseDate = new DateTime(value,DateTimeZone.UTC);
-                    if (dtReleaseDate.getYear() != 101) {
-                        bmd.setReleaseDate(dtReleaseDate.toDate());
-                    }
-                }
-                else if (line.contains("dc:language")) {
-                    String value = line.split(">")[1].split("<")[0];
-                    bmd.setLanguage(value);
-                }
-                else if (line.contains("opf:scheme=\"ISBN\"")) {
-                    String value = line.split(">")[1].split("<")[0];
-                    bmd.setIsbn(value);
-                }
+            } else if(line.contains("dc:language")) {
+                String value = line.split(">")[1].split("<")[0];
+                bmd.setLanguage(value);
+            } else if(line.contains("opf:scheme=\"ISBN\"")) {
+                String value = line.split(">")[1].split("<")[0];
+                bmd.setIsbn(value);
             }
         }
         return bmd;
     }
-    
 
 }

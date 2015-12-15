@@ -125,11 +125,15 @@
 	<field name="rating" type="int" indexed="true" stored="true"/>
 	<field name="uploader" type="string" indexed="true" stored="true" />
 	<field name="mimetype" type="string" indexed="true" stored="true" />
-	<field name="reader" type="string" indexed="true" stored="true" multiValued="true"/>
-	<field name="shared" type="string" indexed="true" stored="true" multiValued="true"/>
+	
 	<field name="collection" type="string" indexed="true" stored="true" multiValued="true"/>
-	<field name="cover" type="binary" indexed="false" stored="true" />
-	<field name="file" type="binary" indexed="false" stored="true" />
+	<field name="shared" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="viewed" type="string" indexed="true" stored="true" multiValued="true"/>
+    
+    <field name="mobi" type="binary" indexed="false" stored="true" />
+    <field name="epub" type="binary" indexed="false" stored="true" />
+    
+    <field name="cover" type="binary" indexed="false" stored="true" />
 	<field name="thumbnail" type="binary" indexed="false" stored="true" />
 	
 	

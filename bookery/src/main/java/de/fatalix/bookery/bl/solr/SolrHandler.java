@@ -83,6 +83,21 @@ public class SolrHandler {
         return rsp.getBeans(BookEntry.class);
     }
     
+    public List<BookEntry> getEpubBook(String bookID) throws SolrServerException {
+        SolrServer solr = null;
+        try {
+            solr = bookeryService.getSolrConnection();
+        } catch (IOException ex) {
+            throw new SolrServerException(ex.getMessage());
+        }
+        SolrQuery query = new SolrQuery();
+        query.setQuery("id:"+bookID);
+        query.setRows(1);
+        query.setFields("id,epub");
+        QueryResponse rsp = solr.query(query);
+        return rsp.getBeans(BookEntry.class);
+    }
+    
     public List<BookEntry> getBookData(String bookID) throws SolrServerException {
         SolrServer solr = null;
         try {

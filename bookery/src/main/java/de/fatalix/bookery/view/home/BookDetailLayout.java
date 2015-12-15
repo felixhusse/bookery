@@ -4,6 +4,7 @@
  */
 package de.fatalix.bookery.view.home;
 
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -37,42 +38,27 @@ public class BookDetailLayout extends HorizontalLayout {
     private Label titleLabel;
     private Label authorLabel;
     private Label descriptionLabel;
-    
-
+    private Button downloadButton;
     private BookEntry bookEntry;
-
-
 
     @PostConstruct
     private void postInit() {
-        authorLabel = new Label("Author");
-        authorLabel.addStyleName(ValoTheme.LABEL_BOLD);
-        authorLabel.addStyleName(ValoTheme.LABEL_COLORED);
 
         descriptionLabel = new Label("Description", ContentMode.HTML);
         descriptionLabel.addStyleName(ValoTheme.LABEL_LIGHT);
-
-        titleLabel = new Label("Title");
-        titleLabel.addStyleName(ValoTheme.LABEL_H2);
-
-        VerticalLayout infoLayout = new VerticalLayout(titleLabel, authorLabel);
-        infoLayout.addStyleName("book-info");
         this.setMargin(true);
         this.setSpacing(true);
-        //addStyleName("wrapping"); 
         addStyleName("bookery-content");
-        this.addComponents(createBookCoverLayout(), infoLayout);
-        this.setExpandRatio(infoLayout, 1.0f);
-        this.setWidth(100, Unit.PERCENTAGE);
+        this.addComponents(createBookCoverLayout(), createInfoLayout());
+
     }
 
-    private VerticalLayout createBookCoverLayout() {
-        image = new Image();
-        image.setImmediate(true);
-        image.addStyleName("book-cover");
+    private VerticalLayout createInfoLayout() {
+        authorLabel = new Label("Author");
 
+        titleLabel = new Label("Title");
+        titleLabel.addStyleName(ValoTheme.LABEL_H3);
         Button shareButton = new Button("to Kindle", new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 try {
@@ -88,8 +74,26 @@ public class BookDetailLayout extends HorizontalLayout {
         shareButton.setIcon(FontAwesome.SHARE_ALT_SQUARE);
         shareButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         shareButton.setWidth("130px");
-        VerticalLayout result = new VerticalLayout(image, shareButton);
-        result.setWidth("131px");
+
+        downloadButton = new Button("download");
+        downloadButton.setIcon(FontAwesome.DOWNLOAD);
+        downloadButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        downloadButton.setWidth("130px");
+        
+        
+        VerticalLayout infoLayout = new VerticalLayout(titleLabel, authorLabel, shareButton,downloadButton);
+        infoLayout.addStyleName("book-info");
+        infoLayout.setWidth("200px");
+        return infoLayout;
+    }
+
+    private VerticalLayout createBookCoverLayout() {
+        image = new Image();
+        image.setImmediate(true);
+        image.addStyleName("book-cover");
+
+        VerticalLayout result = new VerticalLayout(image);
+        result.setWidth("130px");
         return result;
     }
 
@@ -99,11 +103,9 @@ public class BookDetailLayout extends HorizontalLayout {
         if(bookEntry.getThumbnail() != null) {
             StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getThumbnail());
             image.setSource(new StreamResource(source, bookEntry.getId() + "_thumb.png"));
-        } else {
-            if(bookEntry.getCover() != null) {
-                StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
-                image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
-            }
+        } else if(bookEntry.getCover() != null) {
+            StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
+            image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
         }
 
         String user = SecurityUtils.getSubject().getPrincipal().toString();
@@ -111,6 +113,9 @@ public class BookDetailLayout extends HorizontalLayout {
         titleLabel.setValue(bookEntry.getTitle());
         authorLabel.setValue(bookEntry.getAuthor());
         //descriptionLabel.setValue(bookEntry.getDescription());
+        
+        FileDownloader fileDownloader = new FileDownloader(new StreamResource(new EbookStreamSource(presenter, bookEntry),bookEntry.getTitle() + "-" + bookEntry.getAuthor()+".epub"));
+        fileDownloader.extend(downloadButton);
     }
 
     protected class ByteStreamResource implements StreamResource.StreamSource {

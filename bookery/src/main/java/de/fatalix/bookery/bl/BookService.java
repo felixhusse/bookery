@@ -163,6 +163,11 @@ public class BookService {
     public BookEntry getBookDetail(String id) throws SolrServerException {
         return solrHandler.getBookDetail(id).get(0);
     }
+    
+    public byte[] getEBookFile(String bookId) throws SolrServerException {
+        BookEntry bookFileName = solrHandler.getEpubBook(bookId).get(0);
+        return bookFileName.getEpub();
+    }
 
     public void sendBookToKindle(String bookId, AppUser user) throws SolrServerException, MessagingException {
         BookEntry bookFileName = solrHandler.getBookDetail(bookId).get(0);

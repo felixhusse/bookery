@@ -49,4 +49,8 @@ public class HomePresenter {
         bookService.updateShared(bookId, username);
     }
     
+    public byte[] getEbookFile(String bookId) throws SolrServerException {
+        return bookService.getEBookFile(bookId);
+    }
+    
 }

@@ -47,15 +47,17 @@ public class HomeView extends AbstractView implements View {
     @Inject
     private Instance<BookDetailLayout> bookDetailLayoutInstances;
     private Label resultLabel;
-    private VerticalLayout resultLayout;
+    
+    private HorizontalLayout resultLayout;
     private TextField searchText;
     private Button showMore;
     private OptionGroup timeRangeGroup;
     
     @PostConstruct
     private void postInit() {
-        resultLayout = new VerticalLayout();
+        resultLayout = new HorizontalLayout();
         resultLayout.setSpacing(true);
+        resultLayout.addStyleName("wrapping"); 
         showMore = new Button("show more", new Button.ClickListener() {
 
             @Override
@@ -125,7 +127,7 @@ public class HomeView extends AbstractView implements View {
             if (reset) {
                 resultLayout.removeAllComponents();
             }
-            QueryResponse queryResponse = presenter.searchBooks(searchWord,10,resultLayout.getComponentCount(),timeRange);
+            QueryResponse queryResponse = presenter.searchBooks(searchWord,20,resultLayout.getComponentCount(),timeRange);
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
             resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ ")");
             

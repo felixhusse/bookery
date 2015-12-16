@@ -28,7 +28,7 @@ public class Main {
             DateTimeZone.setDefault(DateTimeZone.UTC);
             //BookMigrator.clearDB("http://localhost:8080/solr-4.10.3", "bookery");
             List<File> bookFolder = BookMigrator.findAllBooks("C:\\export\\fabian-books\\test");
-            BookMigrator.importBooks("http://localhost:8080/solr-4.10.3", "bookery", 20, bookFolder,true);
+            BookMigrator.importBooks("http://localhost:8080/solr-4.10.3", "bookery", 40, bookFolder,true);
             //ThumbnailConvert.createThumbnailForBook("http://localhost:8080/solr-4.10.3", "bookery", "1377ce69-ab5c-40d1-a47c-c71aae8eeace");
  //           ThumbnailConvert.createThumbnails("http://localhost:8080/solr-4.10.3", "bookery", 20);
 //            

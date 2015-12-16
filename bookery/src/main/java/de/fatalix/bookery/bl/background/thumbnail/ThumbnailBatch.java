@@ -6,12 +6,14 @@ package de.fatalix.bookery.bl.background.thumbnail;
 
 import com.google.gson.Gson;
 import de.fatalix.bookery.bl.background.BatchJobInterface;
+import de.fatalix.bookery.bl.dao.BatchJobConfigurationDAO;
 import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import org.apache.solr.common.SolrInputDocument;
 public class ThumbnailBatch implements BatchJobInterface{
     
     @Inject private SolrHandler solrHandler;
+    @Inject private BatchJobConfigurationDAO dao;
     
     @Override
     public void executeJob(Timer timer) {
@@ -43,6 +46,7 @@ public class ThumbnailBatch implements BatchJobInterface{
             QueryResponse response = solrHandler.searchSolrIndex("-thumbnailgenerated:done", "id,author,title,thumbnailgenerated,thumbnail,cover", config.getBatchSize(), 0);
             List<BookEntry> bookeEntries = response.getBeans(BookEntry.class);
             
+            List<SolrInputDocument> solrDocs = new ArrayList<>();
             for (BookEntry bookEntry : bookeEntries) {
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 try {
@@ -61,16 +65,28 @@ public class ThumbnailBatch implements BatchJobInterface{
                             Map<String, Object> thumbnailStatus = new HashMap<>();
                             thumbnailStatus.put("set", "done");
                             doc.addField("thumbnailgenerated", thumbnailStatus);
-                            solrHandler.updateDocument(doc); 
+                            solrDocs.add(doc);    
                         }
                         
                     } catch(IOException ex) {
                         Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
+            long totalLeft = response.getResults().getNumFound();
+            if (totalLeft > 0) {
+                if (totalLeft < config.getBatchSize()) {
+                    totalLeft = 0;
+                }
+                else {
+                    totalLeft = totalLeft - config.getBatchSize();
+                }
+                jobConfig.setStatus("Total left: " + totalLeft);
+                dao.update(jobConfig);
+            }
             
             
-        } catch(SolrServerException ex) {
+            solrHandler.updateDocument(solrDocs);
+        } catch(SolrServerException | IOException ex) {
             Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

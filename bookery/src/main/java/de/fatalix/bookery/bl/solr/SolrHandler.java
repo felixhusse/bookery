@@ -39,9 +39,9 @@ public class SolrHandler {
         
     }
     
-    public void updateDocument(SolrInputDocument document) throws SolrServerException, IOException {
+    public void updateDocument(List<SolrInputDocument> solrDocs) throws SolrServerException, IOException {
         SolrServer solr = bookeryService.getSolrConnection();
-        solr.add(document);
+        solr.add(solrDocs);
         solr.commit();
     }
     
@@ -78,7 +78,7 @@ public class SolrHandler {
         SolrQuery query = new SolrQuery();
         query.setQuery("id:"+bookID);
         query.setRows(1);
-        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,reader,shared,cover,thumbnail,thumbnailgenerated");
+        query.setFields("id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,viewed,shared,cover,thumbnail,thumbnailgenerated");
         QueryResponse rsp = solr.query(query);
         return rsp.getBeans(BookEntry.class);
     }
@@ -108,7 +108,7 @@ public class SolrHandler {
         SolrQuery query = new SolrQuery();
         query.setQuery("id:"+bookID);
         query.setRows(1);
-        query.setFields("id,file");
+        query.setFields("id,mobi");
         QueryResponse rsp = solr.query(query);
         return rsp.getBeans(BookEntry.class);
     }

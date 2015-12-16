@@ -33,6 +33,7 @@ public class BatchJobConfiguration implements EntityIntf, Serializable {
     private BatchJobType type;
     private String cronJobExpression;
     private String configurationXML;
+    private String status;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date nextTimeout;
@@ -89,6 +90,14 @@ public class BatchJobConfiguration implements EntityIntf, Serializable {
 
     public void setNextTimeout(Date nextTimeout) {
         this.nextTimeout = nextTimeout;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
     

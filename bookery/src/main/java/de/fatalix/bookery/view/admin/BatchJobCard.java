@@ -44,6 +44,7 @@ public class BatchJobCard extends CssLayout{
     private ComboBox batchJobTypeCombo;
     private CheckBox batchJobActive;
     private TextField cronjobExpression;
+    private TextField status;
     private TextArea batchJobConfiguration;
     private boolean noUpdate=false;
     
@@ -105,6 +106,7 @@ public class BatchJobCard extends CssLayout{
         nextRuntime = new Label("---");
         batchJobActive = new CheckBox("active", false);
         cronjobExpression = new TextField("Cronjob", "*******");
+        status = new TextField("Status","-");
         batchJobConfiguration = new TextArea("Configuration");
         
         Button updateButton = new Button("update", new Button.ClickListener() {
@@ -118,7 +120,7 @@ public class BatchJobCard extends CssLayout{
         });
         updateButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         
-        FormLayout batchJobCardContent = new FormLayout(batchJobTypeCombo,description,cronjobExpression,batchJobActive,batchJobConfiguration,nextRuntime,updateButton);
+        FormLayout batchJobCardContent = new FormLayout(batchJobTypeCombo,description,cronjobExpression,batchJobActive,batchJobConfiguration,nextRuntime,status,updateButton);
         batchJobCardContent.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
         batchJobCardContent.setMargin(true);
         return batchJobCardContent;
@@ -150,6 +152,7 @@ public class BatchJobCard extends CssLayout{
         }
         batchJobConfiguration.setValue(jobConfig.getConfigurationXML());
         batchJobActive.setValue(jobConfig.isActive());
+        status.setValue(jobConfig.getStatus());
         noUpdate = false;
     }
     

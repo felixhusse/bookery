@@ -4,6 +4,7 @@
  */
 package de.fatalix.bookery.view.home;
 
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
@@ -13,7 +14,9 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.ByteArrayInputStream;
@@ -46,6 +49,7 @@ public class BookDetailLayout extends HorizontalLayout {
 
         descriptionLabel = new Label("Description", ContentMode.HTML);
         descriptionLabel.addStyleName(ValoTheme.LABEL_LIGHT);
+        descriptionLabel.setValue("Keine Beschreibung vorhanden");
         this.setMargin(true);
         this.setSpacing(true);
         addStyleName("bookery-content");
@@ -91,9 +95,22 @@ public class BookDetailLayout extends HorizontalLayout {
         image = new Image();
         image.setImmediate(true);
         image.addStyleName("book-cover");
-
+        
         VerticalLayout result = new VerticalLayout(image);
+        result.addStyleName("pointer-cursor");
         result.setWidth("130px");
+        result.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                Window descriptionWindow = new Window("Description");
+                descriptionWindow.setWidth(400.0f, Unit.PIXELS);
+                descriptionWindow.setModal(true);
+                descriptionWindow.setContent(descriptionLabel);
+                
+                UI.getCurrent().addWindow(descriptionWindow);
+            }
+        });
         return result;
     }
 
@@ -112,7 +129,7 @@ public class BookDetailLayout extends HorizontalLayout {
 
         titleLabel.setValue(bookEntry.getTitle());
         authorLabel.setValue(bookEntry.getAuthor());
-        //descriptionLabel.setValue(bookEntry.getDescription());
+        descriptionLabel.setValue(bookEntry.getDescription());
         
         FileDownloader fileDownloader = new FileDownloader(new StreamResource(new EbookStreamSource(presenter, bookEntry),bookEntry.getTitle() + "-" + bookEntry.getAuthor()+".epub"));
         fileDownloader.extend(downloadButton);

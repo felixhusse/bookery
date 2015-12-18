@@ -109,6 +109,15 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
         }
     }
     
+    .pointer-cursor {
+        
+        cursor: pointer;
+        &:hover {
+            border-color: #BF8E45;
+            border-width: 1px;
+        }
+    }
+    
     .admin-screen {
         
         .dashed-border {

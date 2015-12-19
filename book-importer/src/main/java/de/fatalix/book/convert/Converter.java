@@ -10,15 +10,21 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.CopyOption;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -26,18 +32,18 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class Converter {
 
-    private static String EBOOK_CONVERT = "/Applications/calibre.app/Contents/MacOS/ebook-convert";
+    private static String EBOOK_CONVERT = "C:\\Program Files\\Calibre2\\ebook-convert.exe";
 
     private static String EPUB_FILE = "/Users/felixhusse1/Documents/fabian-books/Adler-Olsen, Jussi/Erbarmen (75)/Erbarmen - Adler-Olsen, Jussi.epub";
 
     private static String MOBI_FILE = "/Users/felixhusse1/Documents/fabian-books/Adler-Olsen, Jussi/Erbarmen (75)/Erbarmen - Adler-Olsen, Jussi.mobi";
 
-    static public void main(String[] args) throws IOException, InterruptedException {
+    static public void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         convertAllFiles();
     }
 
-    private static void convertAllFiles() throws IOException, InterruptedException {
-        File folder = new File("/Users/felixhusse1/Documents/test");
+    private static void convertAllFiles() throws IOException, InterruptedException, ExecutionException {
+        File folder = new File("F:\\test");
         File[] ebooks = folder.listFiles(new FilenameFilter() {
 
             @Override
@@ -46,26 +52,36 @@ public class Converter {
             }
         });
         System.out.println("Converting " +ebooks.length + " books");
-        int counter = 0;
-        StringBuffer output = new StringBuffer();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        Set<Callable<String>> callables = new HashSet<>();
+
         for (File ebook : ebooks) {
-            String mobiBook = ebook.getAbsolutePath();
-            mobiBook = mobiBook.substring(0, mobiBook.length()-3);
-            mobiBook = mobiBook + "mobi";
-            String[] cmds = {"/bin/sh", "-c",EBOOK_CONVERT, ebook.getAbsolutePath(), mobiBook};
-            Process p = Runtime.getRuntime().exec (cmds);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line = "";			
-            while ((line = reader.readLine())!= null) {
-                    output.append(line + "\n");
-            }
-
-            counter++;
-            System.out.println ("Book " + counter + " of " + ebooks.length + " converted");
+            ConverterTask task = new ConverterTask(ebook);
+            callables.add(task);
         }
+        
+        List<Future<String>> results = executorService.invokeAll(callables);
+        boolean running = true;
+        while (running) {
+            System.out.println("Check threads: " + results.size());
+            Thread.sleep(250);
+            for(Future<String> future : results){
+                System.out.println("future.get = " + future.get());
+            }
+            if (results.size() == ebooks.length) {
+                running = false;
+            }
+            else {
+                System.out.println("Finished: " + results.size());
+            }
+        }
+        executorService.shutdown();
+        System.out.println("Finished");
+        
+        
     }
+
 
     private static void copyAllFiles() throws IOException {
         Path start = Paths.get("/Users/felixhusse1/Documents/fabian-books");

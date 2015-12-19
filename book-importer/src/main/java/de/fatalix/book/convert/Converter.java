@@ -53,7 +53,7 @@ public class Converter {
         });
         System.out.println("Converting " +ebooks.length + " books");
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         Set<Callable<String>> callables = new HashSet<>();
 
         for (File ebook : ebooks) {

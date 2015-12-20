@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2015 Felix Husse under MIT License
- * see LICENSE file
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-package de.fatalix.bookery.view.home;
+package de.fatalix.bookery.view.newbooks;
 
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -14,13 +14,13 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.bl.TimeRange;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
+import de.fatalix.bookery.view.home.BookDetailLayout;
+import de.fatalix.bookery.view.home.HomeView;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,17 +35,15 @@ import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
  *
- * @author Fatalix
+ * @author felixhusse1
  */
-@CDIView(HomeView.id)
-@ViewMenuItem(title = "Home", icon = FontAwesome.HOME, order = ViewMenuItem.BEGINNING)
-public class HomeView extends AbstractView implements View {
-
-    public static final String id = "home";
-
-    @Inject
-    private HomePresenter presenter;
-
+@CDIView(NewBooksView.id)
+@ViewMenuItem(title = "New Books", icon = FontAwesome.BOOK, order = 2)
+public class NewBooksView extends AbstractView implements View {
+    public static final String id = "newbooks";
+    
+    @Inject private NewBooksPresenter presenter;
+    
     @Inject
     private Instance<BookDetailLayout> bookDetailLayoutInstances;
     private Label resultLabel;
@@ -53,7 +51,6 @@ public class HomeView extends AbstractView implements View {
     private HorizontalLayout resultLayout;
     private TextField searchText;
     private Button showMore;
-    private OptionGroup timeRangeGroup;
     
     private boolean initPhase;
     
@@ -67,7 +64,7 @@ public class HomeView extends AbstractView implements View {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (!initPhase) {
-                    searchBooks(searchText.getValue(), false,(TimeRange)timeRangeGroup.getValue());
+                    searchBooks(searchText.getValue(), false);
                 }
                 
             }
@@ -94,7 +91,7 @@ public class HomeView extends AbstractView implements View {
             @Override
             public void textChange(FieldEvents.TextChangeEvent event) {
                 if (!initPhase) {
-                    searchBooks(event.getText(),true,(TimeRange)timeRangeGroup.getValue());
+                    searchBooks(event.getText(),true);
                 }
                 
             }
@@ -105,23 +102,8 @@ public class HomeView extends AbstractView implements View {
         
         HorizontalLayout topSearchLayout = new HorizontalLayout(searchText, resultLabel);
         topSearchLayout.setSpacing(true);
-        timeRangeGroup = new OptionGroup();
-        timeRangeGroup.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-        for (TimeRange timeRange : TimeRange.values()) {
-            timeRangeGroup.addItem(timeRange);
-            timeRangeGroup.setItemCaption(timeRange, timeRange.getCaption());
-        }
-        timeRangeGroup.addValueChangeListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!initPhase) {
-                    searchBooks(searchText.getValue(), true, (TimeRange)timeRangeGroup.getValue());
-                }
-                
-            }
-        });
-        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout,timeRangeGroup);
+        
+        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout);
         searchLayout.setWidth(100, Unit.PERCENTAGE);
         searchLayout.setMargin(true);
         searchLayout.addStyleName("bookery-content");
@@ -133,22 +115,22 @@ public class HomeView extends AbstractView implements View {
         initPhase = true;
         try {
             searchText.setValue("");
-            timeRangeGroup.setValue(TimeRange.NONE);
-            searchBooks(searchText.getValue(),true, (TimeRange)timeRangeGroup.getValue());
+            searchBooks(searchText.getValue(),true);
         } catch (Exception ex) {
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NewBooksView.class.getName()).log(Level.SEVERE, null, ex);
         }
         initPhase = false;
+        
     }
-
-    private void searchBooks(String searchWord,boolean reset,TimeRange timeRange) {
+    
+    
+    private void searchBooks(String searchWord,boolean reset) {
         try {
             if (reset) {
-                
                 resultLayout.removeAllComponents();
             }
-            QueryResponse queryResponse = presenter.searchBooks(searchWord,20,resultLayout.getComponentCount(),timeRange,SecurityUtils.getSubject().getPrincipal().toString());
+            QueryResponse queryResponse = presenter.searchBooks(searchWord,20,resultLayout.getComponentCount(),SecurityUtils.getSubject().getPrincipal().toString());
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
             resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ ")");
             
@@ -167,5 +149,4 @@ public class HomeView extends AbstractView implements View {
         }
         
     }
-
 }

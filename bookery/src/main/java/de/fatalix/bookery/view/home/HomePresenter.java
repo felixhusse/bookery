@@ -34,10 +34,12 @@ public class HomePresenter {
         bookService.addBooks(bookEntries);
     }
     
-    public QueryResponse searchBooks(String search,int rows,int startOffset, TimeRange timeRange) throws SolrServerException {
-        
-        return bookService.searchBooks(search,rows,startOffset,timeRange);
+    public QueryResponse searchBooks(String search,int rows,int startOffset, TimeRange timeRange,String viewer) throws SolrServerException, IOException {
+        QueryResponse response = bookService.searchBooks(search,rows,startOffset,timeRange);
+        bookService.updateViewed(response.getBeans(BookEntry.class),viewer);
+        return response;
     }
+    
     
     public BookEntry getBookDetail(String id) throws SolrServerException {
         return bookService.getBookDetail(id);

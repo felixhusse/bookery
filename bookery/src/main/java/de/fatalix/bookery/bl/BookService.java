@@ -10,13 +10,16 @@ import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrInputDocument;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -59,7 +62,20 @@ public class BookService {
             queryString = queryString + " AND " + timeRangeQueryPart;
         }
         
-        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared,thumbnail";
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,viewed,shared,thumbnail";
+
+        return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
+    }
+    
+    public QueryResponse newBooksSearch(String searchword, int rows, int startOffset, String viewer) throws SolrServerException {
+        String queryString = "*:*";
+        if(searchword != null && !searchword.isEmpty()) {
+            queryString = "author:*" + searchword + "* OR title:*" + searchword + "*";
+        }
+        
+        queryString = queryString + " AND -viewed:"+viewer;
+        
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,viewed,shared,thumbnail";
 
         return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
     }
@@ -89,6 +105,7 @@ public class BookService {
         
         return result;
     }
+    
     
     public BookEntry updateShared(String bookId, String shared) throws SolrServerException {
         
@@ -125,41 +142,34 @@ public class BookService {
         }
     }
     
-    public BookEntry updateViewed(String bookId, String viewer) throws SolrServerException {
-        
-        QueryResponse response = solrHandler.searchSolrIndex("id:" + bookId, "", 1, 0);
-
-        if(response.getResults().getNumFound() == 1) {
-            BookEntry bookEntry = response.getBeans(BookEntry.class).get(0);
-            ArrayList<String> viewerList = new ArrayList<>();
-            if (bookEntry.getViewed()!= null) {
-                for(String existingViewed : bookEntry.getViewed()) {
-                    if(!existingViewed.equals(viewer)) {
-                        viewerList.add(existingViewed);
+    public void updateViewed(List<BookEntry> bookEntries, String viewer) throws SolrServerException, IOException {
+        List<SolrInputDocument> solrDocs = new ArrayList<>();
+        for (BookEntry book : bookEntries) {
+            boolean newView = true;
+            if (book.getViewed()!=null) {
+                for (String viewedBy : book.getViewed()) {
+                    if (viewedBy.equals(viewer)) {
+                        newView = false;
                     }
                 }    
             }
             
-            viewerList.add(viewer);
+            if (newView) {
+                SolrInputDocument doc = new SolrInputDocument();
+                doc.addField("id", book.getId());
 
-            bookEntry.setShared(viewerList.toArray(new String[viewerList.size()]));
-            try {
-                solrHandler.updateBean(bookEntry);
-            } catch(IOException ex) {
-                throw new SolrServerException("Could not update Book Entry with ID: " + bookId + " - " + ex.getMessage());
+                Map<String, Object> viewedData = new HashMap<>();
+                viewedData.put("add", viewer);
+                doc.addField("viewed", viewedData);
+                solrDocs.add(doc);
             }
-            String fields = "id,author,title,isbn,publisher,description,language,releaseDate,rating,uploader,cover,reader,shared,thumbnail,thumbnailgenerated";
-            QueryResponse result = solrHandler.searchSolrIndex("id:" + bookId, fields, 1, 0);
-            if(result.getResults().getNumFound() == 1) {
-                return result.getBeans(BookEntry.class).get(0);
-            } else {
-                throw new SolrServerException("Book Entry is not UNIQUE with ID: " + bookId);
-            }
-        } else {
-            throw new SolrServerException("Book Entry is not UNIQUE with ID: " + bookId);
         }
+        if (solrDocs.size()>0) {
+            solrHandler.updateDocument(solrDocs);
+        }
+        
     }
-
+   
     public BookEntry getBookDetail(String id) throws SolrServerException {
         return solrHandler.getBookDetail(id).get(0);
     }

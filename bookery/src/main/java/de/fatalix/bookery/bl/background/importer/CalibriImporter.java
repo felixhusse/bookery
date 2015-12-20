@@ -60,12 +60,12 @@ public class CalibriImporter implements BatchJobInterface{
             });
             for (File zipFile : zipFiles) {
                 try {
+                    System.out.println("Processing file " + zipFile.getName());
                     processArchive(zipFile.toPath(),config.getBatchSize());
                 } catch (IOException ex) {
                     Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
         }
         else {
             Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, "Import folder cannot read!",importFolder.getAbsolutePath());
@@ -80,7 +80,9 @@ public class CalibriImporter implements BatchJobInterface{
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-
+                if (dir.toString().contains("__MACOSX")) {
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
                 try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
                     BookEntry bookEntry = new BookEntry().setUploader("admin");
                     for (Path path : directoryStream) {
@@ -100,7 +102,7 @@ public class CalibriImporter implements BatchJobInterface{
                             }
                         }
                     }
-                    if (bookEntry.getMobi()!=null) {
+                    if (bookEntry.getMobi()!=null || bookEntry.getEpub()!=null) {
                         bookEntries.add(bookEntry);
                         if (bookEntries.size()>batchSize) {
                             System.out.println("Adding " + bookEntries.size() + " Books...");

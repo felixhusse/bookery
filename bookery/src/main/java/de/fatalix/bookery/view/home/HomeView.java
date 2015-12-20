@@ -53,6 +53,8 @@ public class HomeView extends AbstractView implements View {
     private Button showMore;
     private OptionGroup timeRangeGroup;
     
+    private boolean initPhase;
+    
     @PostConstruct
     private void postInit() {
         resultLayout = new HorizontalLayout();
@@ -62,7 +64,10 @@ public class HomeView extends AbstractView implements View {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                searchBooks(searchText.getValue(), false,(TimeRange)timeRangeGroup.getValue());
+                if (!initPhase) {
+                    searchBooks(searchText.getValue(), false,(TimeRange)timeRangeGroup.getValue());
+                }
+                
             }
         });
         showMore.setWidth(100, Unit.PERCENTAGE);
@@ -86,7 +91,10 @@ public class HomeView extends AbstractView implements View {
         searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {
             @Override
             public void textChange(FieldEvents.TextChangeEvent event) {
-                searchBooks(event.getText(),true,(TimeRange)timeRangeGroup.getValue());
+                if (!initPhase) {
+                    searchBooks(event.getText(),true,(TimeRange)timeRangeGroup.getValue());
+                }
+                
             }
         });
         
@@ -105,7 +113,10 @@ public class HomeView extends AbstractView implements View {
 
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                searchBooks(searchText.getValue(), true, (TimeRange)timeRangeGroup.getValue());
+                if (!initPhase) {
+                    searchBooks(searchText.getValue(), true, (TimeRange)timeRangeGroup.getValue());
+                }
+                
             }
         });
         VerticalLayout searchLayout = new VerticalLayout(topSearchLayout,timeRangeGroup);
@@ -117,9 +128,11 @@ public class HomeView extends AbstractView implements View {
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        initPhase = true;
         searchText.setValue("");
         timeRangeGroup.setValue(TimeRange.NONE);
         searchBooks(searchText.getValue(),true, (TimeRange)timeRangeGroup.getValue());
+        initPhase = false;
     }
 
     private void searchBooks(String searchWord,boolean reset,TimeRange timeRange) {

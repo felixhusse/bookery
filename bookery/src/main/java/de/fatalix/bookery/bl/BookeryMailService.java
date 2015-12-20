@@ -125,6 +125,9 @@ public class BookeryMailService {
         File mobiFile = new File(mobiBook);
         byte[] mobiData = Files.readAllBytes(mobiFile.toPath());
         updateBookEntry(book.getId(), mobiData);
+        epubFile.delete();
+        mobiFile.delete();
+        System.out.println("Converted EPub");
     }
 
     private void updateBookEntry(String bookID, byte[] data) throws SolrServerException, IOException {

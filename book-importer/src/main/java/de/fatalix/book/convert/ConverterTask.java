@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
  */
 public class ConverterTask implements Callable<String> {
     
-    private static String EBOOK_CONVERT = "C:\\Program Files\\Calibre2\\ebook-convert.exe";
+    private static String EBOOK_CONVERT = "/Applications/calibre.app/Contents/MacOS/ebook-convert";
     
     private final File epubFile;
 

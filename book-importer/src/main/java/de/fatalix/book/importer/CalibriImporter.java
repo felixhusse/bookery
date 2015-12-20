@@ -33,7 +33,7 @@ import org.joda.time.DateTime;
 public class CalibriImporter {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        readArchive(new File("E:/dumps/calibre-export.zip"));
+        readArchive(new File("/Users/felixhusse1/Documents/books-a.zip"));
     }
 
     public static void readArchive(File archive) throws IOException, URISyntaxException {
@@ -52,7 +52,9 @@ public class CalibriImporter {
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-
+                if (dir.toString().contains("__MACOSX")) {
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
                 try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
                     BookEntry bookEntry = new BookEntry().setUploader("admin");
                     for (Path path : directoryStream) {
@@ -94,6 +96,7 @@ public class CalibriImporter {
     }
 
     private static BookEntry parseOPF(Path pathToOPF, BookEntry bmd) throws IOException {
+        System.out.println("Path: " + pathToOPF.toString());
         List<String> lines = Files.readAllLines(pathToOPF, Charset.forName("UTF-8"));
         boolean multiLineDescription = false;
         String description = "";

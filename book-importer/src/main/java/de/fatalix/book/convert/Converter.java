@@ -43,7 +43,7 @@ public class Converter {
     }
 
     private static void convertAllFiles() throws IOException, InterruptedException, ExecutionException {
-        File folder = new File("F:\\test");
+        File folder = new File("/Users/felixhusse1/Documents/test");
         File[] ebooks = folder.listFiles(new FilenameFilter() {
 
             @Override

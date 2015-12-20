@@ -11,7 +11,9 @@ package de.fatalix.bookery.bl.model;
 public enum SettingKey {
     
     SOLR_URL("bookery.solr.url","Solr URL","http://localhost:8080/solr-4.10.3"),
-    SOLR_CORE("bookery.solr.core","Solr Core","bookery");
+    SOLR_CORE("bookery.solr.core","Solr Core","bookery"),
+    CALIBRE_PATH("calibre.path","Calibre Path","/opt/calibre"),
+    CALIBRE_WORK("calibre.work","Calibre Work","/home/bookconvert");
     
     private final String key;
     private final String defaultValue;

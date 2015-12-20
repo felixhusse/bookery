@@ -171,8 +171,6 @@ public class BookService {
 
     public void sendBookToKindle(String bookId, AppUser user) throws SolrServerException, MessagingException {
         BookEntry bookFileName = solrHandler.getBookDetail(bookId).get(0);
-        String filename = bookFileName.getTitle() + "-" + bookFileName.getAuthor();
-        BookEntry bookEntry = solrHandler.getBookData(bookId).get(0);
-        mailService.sendKindleMail(user, bookEntry.getMobi(), filename);
+        mailService.scheduleKindleMail(bookFileName, user);
     }
 }

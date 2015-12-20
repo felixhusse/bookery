@@ -106,7 +106,9 @@ public class BookDetailLayout extends HorizontalLayout {
                 Window descriptionWindow = new Window("Description");
                 descriptionWindow.setWidth(400.0f, Unit.PIXELS);
                 descriptionWindow.setModal(true);
-                descriptionWindow.setContent(descriptionLabel);
+                VerticalLayout content = new VerticalLayout(descriptionLabel);
+                content.setMargin(true);
+                descriptionWindow.setContent(content);
                 
                 UI.getCurrent().addWindow(descriptionWindow);
             }

@@ -98,7 +98,7 @@ public class SolrHandler {
         return rsp.getBeans(BookEntry.class);
     }
     
-    public List<BookEntry> getBookData(String bookID) throws SolrServerException {
+    public List<BookEntry> getMobiFormat(String bookID) throws SolrServerException {
         SolrServer solr = null;
         try {
             solr = bookeryService.getSolrConnection();

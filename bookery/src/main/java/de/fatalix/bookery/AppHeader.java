@@ -7,20 +7,19 @@ package de.fatalix.bookery;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.shared.ui.ShortCutConstants;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.view.login.LoginView;
+import de.fatalix.bookery.view.home.HomeView;
+import de.fatalix.bookery.view.newbooks.NewBooksView;
 import de.fatalix.bookery.view.search.SearchView;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
@@ -35,12 +34,15 @@ public class AppHeader extends MVerticalLayout{
     private TextField searchText;
     private Button logoutButton;
     
+    private Map<String,Button> navbarButtons = new HashMap<>();
+    
     @PostConstruct
     private void postInit() {
         addStyleName("bookery-header");
         setWidth(100, Unit.PERCENTAGE);
         add(createTop());       
         add(createSearchBar());
+        add(createSmallNavBar());
         setSpacing(true);
     }
     
@@ -83,11 +85,31 @@ public class AppHeader extends MVerticalLayout{
         searchText.addShortcutListener(new Button.ClickShortcut(searchButton, ShortcutAction.KeyCode.ENTER));
 
         MHorizontalLayout layout = new MHorizontalLayout(searchText,searchButton);
-        layout.addStyleName("v-component-group");
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setExpandRatio(searchText, 1.0f);
         return layout;
     }
+    
+    private MHorizontalLayout createSmallNavBar() {
+        Button homeButton = new Button("Home", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                ((App)UI.getCurrent()).getNavigator().navigateTo(HomeView.id);
+            }
+        });
+        homeButton.addStyleName(ValoTheme.BUTTON_TINY);
+        Button newBooks = new Button("neue Bücher", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                ((App)UI.getCurrent()).getNavigator().navigateTo(NewBooksView.id);
+            }
+        });
+        newBooks.addStyleName(ValoTheme.BUTTON_TINY);
+        
+        MHorizontalLayout layout = new MHorizontalLayout(homeButton,newBooks);
+        
+        return layout;
+    } 
     
     public void setLoginName(String loginName) {
         logoutButton.setCaption("Hallo, " + loginName);

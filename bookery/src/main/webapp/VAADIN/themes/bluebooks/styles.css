@@ -12144,6 +12144,7 @@ div.v-layout.v-horizontal.v-widget {
 .bluebooks .bookery-header {
 	color: #e7f1f8;
 	background-color: rgba(35, 47, 62, 0.85);
+	padding: 8px;
 	-webkit-animation: valo-animate-in-fade 1s;
 	-moz-animation: valo-animate-in-fade 1s;
 	animation: valo-animate-in-fade 1s;

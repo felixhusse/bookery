@@ -7,6 +7,8 @@ package de.fatalix.bookery;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.cdi.CDIUI;
+import com.vaadin.cdi.CDIViewProvider;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
@@ -14,6 +16,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.home.HomeView;
@@ -26,22 +29,24 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.DateTimeFormat;
-import org.vaadin.cdiviewmenu.ViewMenuUI;
-import static org.vaadin.cdiviewmenu.ViewMenuUI.getMenu;
 
  /*
  *
  * @author Fatalix
  */
 @CDIUI("")
-@Theme("mytheme")
+@Theme("bluebooks")
 @Title("Bookery")
-public class App extends ViewMenuUI{
+public class App extends UI{
 
-    private Button logout;
+    
     @Inject
     private AppUserService userService;
+    
+    @Inject
+    private AppLayout appLayout;
+    @Inject
+    private CDIViewProvider viewProvider;
     
     private final Button.ClickListener logoutClickListener = new Button.ClickListener() {
         private static final long serialVersionUID = -1545988729141348821L;
@@ -56,24 +61,27 @@ public class App extends ViewMenuUI{
 
     @Override
     protected void init(VaadinRequest request) {
-        super.init(request);
-        logout = new Button("Logout", logoutClickListener);
-        logout.setIcon(FontAwesome.SIGN_OUT);
-        logout.addStyleName("user-menu");
+        
+        Navigator navigator = new Navigator(this, appLayout.getMainContent());
+        
+        navigator.addProvider(viewProvider);
+        setContent(appLayout);
+
         getNavigator().addViewChangeListener(new ViewChangeListener() {
 
             @Override
             public boolean beforeViewChange(ViewChangeListener.ViewChangeEvent event) {
                if (!isLoggedIn()) {
-                    getMenu().setVisible(false);
+                    appLayout.getAppHeader().setVisible(false);
                     if (!event.getViewName().equals(LoginView.id)) {
                         getNavigator().navigateTo(LoginView.id);
                         return false;
                     }
                     return true;
                 } else {
-                    getMenu().setVisible(isLoggedIn());
-                    getMenu().addMenuItem(logout);
+                    appLayout.getAppHeader().setVisible(isLoggedIn());
+                    appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().toString());
+                    //getMenu().addMenuItem(logout);
                     if(event.getViewName().equals("")) {
                         getNavigator().navigateTo(HomeView.id);
                         return false;
@@ -88,6 +96,18 @@ public class App extends ViewMenuUI{
             }
         });
         
+        if (!isLoggedIn()) {
+            appLayout.getAppHeader().setVisible(false);
+            getNavigator().navigateTo(LoginView.id);
+        }
+        else {
+            appLayout.getAppHeader().setVisible(isLoggedIn());
+            appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().toString());
+            if (getNavigator().getState().isEmpty()) {
+                
+                getNavigator().navigateTo(HomeView.id);
+            }
+        }
 
     }
 
@@ -152,10 +172,18 @@ public class App extends ViewMenuUI{
         }
         
         
-        getMenu().navigateTo(HomeView.id);
-        getMenu().addMenuItem(logout);
-        getMenu().setVisible(isLoggedIn());
+        getNavigator().navigateTo(HomeView.id);
+        appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().getPrincipal().toString());
+        appLayout.getAppHeader().setVisible(isLoggedIn());
+        
     }
 
+    
+    public void logout() {
+        SecurityUtils.getSubject().logout();
+        getSession().close();
+        close();
+        getPage().setLocation("");
+    }
     
 }

@@ -73,65 +73,65 @@ public class CalibriImporter implements BatchJobInterface{
     }
     
     private void processArchive(final Path zipFile, final int batchSize) throws IOException {
-        FileSystem zipFileSystem = FileSystems.newFileSystem(zipFile, null);
-        final List<BookEntry> bookEntries = new ArrayList<>();
-        Path root = zipFileSystem.getPath("/");
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                if (dir.toString().contains("__MACOSX")) {
-                    return FileVisitResult.SKIP_SUBTREE;
-                }
-                try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
-                    BookEntry bookEntry = new BookEntry().setUploader("admin");
-                    for (Path path : directoryStream) {
-                        if (!Files.isDirectory(path)) {
-                            if (path.toString().contains(".opf")) {
-                                bookEntry = parseOPF(path, bookEntry);
-                            }
-                            if (path.toString().contains(".mobi")) {
-                                bookEntry.setMobi(Files.readAllBytes(path))
-                                        .setMimeType("MOBI");
-                            }
-                            if (path.toString().contains(".epub")) {
-                                bookEntry.setEpub(Files.readAllBytes(path));
-                            }
-                            if (path.toString().contains(".jpg")) {
-                                bookEntry.setCover(Files.readAllBytes(path));
+        try (FileSystem zipFileSystem = FileSystems.newFileSystem(zipFile, null)) {
+            final List<BookEntry> bookEntries = new ArrayList<>();
+            Path root = zipFileSystem.getPath("/");
+            Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+                
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    if (dir.toString().contains("__MACOSX")) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                        BookEntry bookEntry = new BookEntry().setUploader("admin");
+                        for (Path path : directoryStream) {
+                            if (!Files.isDirectory(path)) {
+                                if (path.toString().contains(".opf")) {
+                                    bookEntry = parseOPF(path, bookEntry);
+                                }
+                                if (path.toString().contains(".mobi")) {
+                                    bookEntry.setMobi(Files.readAllBytes(path))
+                                            .setMimeType("MOBI");
+                                }
+                                if (path.toString().contains(".epub")) {
+                                    bookEntry.setEpub(Files.readAllBytes(path));
+                                }
+                                if (path.toString().contains(".jpg")) {
+                                    bookEntry.setCover(Files.readAllBytes(path));
+                                }
                             }
                         }
-                    }
-                    if (bookEntry.getMobi()!=null || bookEntry.getEpub()!=null) {
-                        bookEntries.add(bookEntry);
-                        if (bookEntries.size()>batchSize) {
-                            System.out.println("Adding " + bookEntries.size() + " Books...");
-                            try {
-                                solrHandler.addBeans(bookEntries);
-                            } catch (SolrServerException ex) {
-                                Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                        if (bookEntry.getMobi()!=null || bookEntry.getEpub()!=null) {
+                            bookEntries.add(bookEntry);
+                            if (bookEntries.size()>batchSize) {
+                                System.out.println("Adding " + bookEntries.size() + " Books...");
+                                try {
+                                    solrHandler.addBeans(bookEntries);
+                                } catch (SolrServerException ex) {
+                                    Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                bookEntries.clear();
                             }
-                            bookEntries.clear();
                         }
+                    } catch (IOException ex) {
+                        Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                    return super.preVisitDirectory(dir, attrs);
                 }
-                return super.preVisitDirectory(dir, attrs); 
-            }
-        });
-        
-        try {
-            if (!bookEntries.isEmpty()) {
-                System.out.println("Adding " + bookEntries.size() + " Books...");
-                solrHandler.addBeans(bookEntries);
-            }
-            
+            });
+            try {
+                if (!bookEntries.isEmpty()) {
+                    System.out.println("Adding " + bookEntries.size() + " Books...");
+                    solrHandler.addBeans(bookEntries);
+                }
+            } catch (SolrServerException ex) {
+                Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        } finally {
             Files.delete(zipFile);
-            
-        } catch (SolrServerException ex) {
-            Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }       
+        
     }
     
     private static BookEntry parseOPF(Path pathToOPF, BookEntry bmd) throws IOException {

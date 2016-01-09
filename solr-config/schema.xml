@@ -122,12 +122,15 @@
 	<field name="releaseDate" type="tdate" indexed="true" stored="true"/>
 	<field name="uploadDate" type="tdate" indexed="true" stored="true" />
 	
-	<field name="rating" type="int" indexed="true" stored="true"/>
-	<field name="uploader" type="string" indexed="true" stored="true" />
+        <field name="likes" type="int" indexed="true" stored="true"/>
+	<field name="downloadcount" type="int" indexed="true" stored="true"/>
+	
+        <field name="uploader" type="string" indexed="true" stored="true" />
 	<field name="mimetype" type="string" indexed="true" stored="true" />
 	
 	<field name="collection" type="string" indexed="true" stored="true" multiValued="true"/>
 	<field name="shared" type="string" indexed="true" stored="true" multiValued="true"/>
+        <field name="likedby" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="viewed" type="string" indexed="true" stored="true" multiValued="true"/>
     
     <field name="mobi" type="binary" indexed="false" stored="true" />

@@ -13,6 +13,7 @@ import com.vaadin.shared.ui.ShortCutConstants;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -38,8 +39,7 @@ public class AppHeader extends MVerticalLayout{
     private void postInit() {
         addStyleName("bookery-header");
         setWidth(100, Unit.PERCENTAGE);
-        add(createTop());
-       
+        add(createTop());       
         add(createSearchBar());
         setSpacing(true);
     }
@@ -56,6 +56,7 @@ public class AppHeader extends MVerticalLayout{
                 ((App)UI.getCurrent()).logout();
             }
         });
+        logoutButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         
         MHorizontalLayout layout = new MHorizontalLayout(header,logoutButton);
         layout.setWidth(100, Unit.PERCENTAGE);
@@ -65,23 +66,24 @@ public class AppHeader extends MVerticalLayout{
         return layout;
     }
     
-    private HorizontalLayout createSearchBar() {
+    private MHorizontalLayout createSearchBar() {
         searchText = new TextField();
         searchText.setIcon(FontAwesome.SEARCH);
         searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
         searchText.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         searchText.setWidth(100, Unit.PERCENTAGE);
-        
-        Button searchButton = new Button("search", new Button.ClickListener() {
+        searchText.setInputPrompt("hier einfach suchen..");
+        Button searchButton = new Button("such!", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 ((App)UI.getCurrent()).getNavigator().navigateTo(SearchView.id);
             }
         });
+        searchButton.addStyleName(ValoTheme.BUTTON_LARGE);
         searchText.addShortcutListener(new Button.ClickShortcut(searchButton, ShortcutAction.KeyCode.ENTER));
-        
+
         MHorizontalLayout layout = new MHorizontalLayout(searchText,searchButton);
-        
+        layout.addStyleName("v-component-group");
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setExpandRatio(searchText, 1.0f);
         return layout;

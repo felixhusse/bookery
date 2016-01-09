@@ -29,6 +29,11 @@ public class BookSearchPresenter {
         return response;
     }
     
+    public QueryResponse searchNewBooks(String search,int rows,int startOffset, String viewer) throws SolrServerException, IOException {
+        QueryResponse response = bookService.newBooksSearch(search,rows,startOffset,viewer);
+        return response;
+    }
+    
     public void updateViewed(List<BookEntry> bookEntries, String viewer) throws SolrServerException, IOException {
         bookService.updateViewed(bookEntries,viewer);
     }

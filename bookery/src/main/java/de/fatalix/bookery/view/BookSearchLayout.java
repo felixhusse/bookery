@@ -5,18 +5,14 @@
  */
 package de.fatalix.bookery.view;
 
-import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.AppHeader;
-import de.fatalix.bookery.bl.TimeRange;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.home.HomeView;
 import java.io.IOException;
@@ -24,33 +20,33 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.vaadin.viritin.label.Header;
 
 /**
  *
  * @author felix.husse
  */
+@Default
 public class BookSearchLayout extends CustomComponent {
 
-    private Label resultText;
+    protected Label resultText;
 
     @Inject
-    private AppHeader appHeader;
+    protected AppHeader appHeader;
     @Inject
-    private BookSearchPresenter presenter;
+    protected BookSearchPresenter presenter;
     @Inject
-    private Instance<BookDetailLayout> bookDetailLayoutInstances;
-    private HorizontalLayout resultLayout;
-    private Button showMore;
+    protected Instance<BookDetailLayout> bookDetailLayoutInstances;
+    protected HorizontalLayout resultLayout;
+    protected Button showMore;
 
     @PostConstruct
     private void postInit() {
-        
         VerticalLayout rootLayout = new VerticalLayout();
         rootLayout.setWidth(100, Unit.PERCENTAGE);
         rootLayout.setMargin(true);

@@ -36,16 +36,25 @@ public class BookEntry {
     @Field("uploadDate")
     private Date uploadDate;
     
-    @Field("rating")
-    private int rating;
+    @Field("likes")
+    private int likes;
+    
+    @Field("downloadcount")
+    private int downloads;
+    
     @Field("uploader")
     private String uploader;
     @Field("viewed")
     private String[] viewed;
     @Field("shared")
     private String[] shared;
+    @Field("likedby")
+    private String[] likedby;
+    
+    
     @Field("mimetype")
     private String mimeType;
+    
     
     @Field("cover")
     private byte[] cover;
@@ -82,10 +91,20 @@ public class BookEntry {
         return releaseDate;
     }
 
-    public int getRating() {
-        return rating;
+    public int getLikes() {
+        return likes;
     }
 
+    public int getDownloads() {
+        return downloads;
+    }
+
+    public String[] getLikedby() {
+        return likedby;
+    }
+    
+    
+    
     public String getUploader() {
         return uploader;
     }
@@ -154,9 +173,21 @@ public class BookEntry {
         this.releaseDate = releaseDate;
         return this;
     }
+
+    public BookEntry setLikedby(String[] likedby) {
+        this.likedby = likedby;
+        return this;
+    }
     
-    public BookEntry setRating(int rating) {
-        this.rating = rating;
+    
+    
+    public BookEntry setLikes(int likes) {
+        this.likes = likes;
+        return this;
+    }
+
+    public BookEntry setDownloads(int downloads) {
+        this.downloads = downloads;
         return this;
     }
 

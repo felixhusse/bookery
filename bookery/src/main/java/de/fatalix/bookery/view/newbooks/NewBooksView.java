@@ -19,7 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
-import de.fatalix.bookery.view.home.BookDetailLayout;
+import de.fatalix.bookery.view.BookDetailLayout;
 import de.fatalix.bookery.view.home.HomeView;
 import java.io.IOException;
 import java.util.List;

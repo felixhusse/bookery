@@ -40,19 +40,4 @@ public class HomePresenter {
         return response;
     }
     
-    
-    public BookEntry getBookDetail(String id) throws SolrServerException {
-        return bookService.getBookDetail(id);
-    }
-    
-    public void shareBookWithKindle(String bookId, String username) throws SolrServerException, MessagingException {
-        AppUser appUser = userService.getAppUser(username);
-        bookService.sendBookToKindle(bookId, appUser);
-        bookService.updateShared(bookId, username);
-    }
-    
-    public byte[] getEbookFile(String bookId) throws SolrServerException {
-        return bookService.getEBookFile(bookId);
-    }
-    
 }

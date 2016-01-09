@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fatalix.bookery.view.home;
+package de.fatalix.bookery.view;
 
 import com.vaadin.server.StreamResource;
 import de.fatalix.bookery.solr.model.BookEntry;
+import de.fatalix.bookery.view.BookDetailPresenter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -21,10 +22,10 @@ import org.apache.solr.client.solrj.SolrServerException;
  */
 public class EbookStreamSource implements StreamResource.StreamSource{
 
-    private final HomePresenter presenter;
+    private final BookDetailPresenter presenter;
     private final BookEntry bookEntry;
     
-    public EbookStreamSource(HomePresenter presenter, BookEntry bookEntry) {
+    public EbookStreamSource(BookDetailPresenter presenter, BookEntry bookEntry) {
         this.presenter = presenter;
         this.bookEntry = bookEntry;
     }

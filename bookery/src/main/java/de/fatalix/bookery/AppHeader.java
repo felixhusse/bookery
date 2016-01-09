@@ -44,7 +44,9 @@ public class AppHeader extends MVerticalLayout{
     }
     
     private HorizontalLayout createTop() {
-        Label header = new Label("<h3>Bookerys</h3>", ContentMode.HTML);
+        Label header = new Label("Bookerys");
+        header.addStyleName(ValoTheme.LABEL_BOLD);
+        //header.addStyleName(ValoTheme.LABEL_H3);
         header.setSizeUndefined();
         logoutButton = new Button("Hallo", new Button.ClickListener() {
 
@@ -63,8 +65,11 @@ public class AppHeader extends MVerticalLayout{
     }
     
     public void setLoginName(String loginName) {
-        
         logoutButton.setCaption("Hallo, " + loginName);
+    }
+    
+    public String getSearchText() {
+        return searchText.getValue();
     }
     
     

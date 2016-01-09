@@ -47,17 +47,6 @@ public class App extends UI{
     private AppLayout appLayout;
     @Inject
     private CDIViewProvider viewProvider;
-    
-    private final Button.ClickListener logoutClickListener = new Button.ClickListener() {
-        private static final long serialVersionUID = -1545988729141348821L;
-
-        @Override
-        public void buttonClick(Button.ClickEvent event) {
-            SecurityUtils.getSubject().logout();
-            VaadinSession.getCurrent().close();
-            Page.getCurrent().setLocation("");
-        }
-    };
 
     @Override
     protected void init(VaadinRequest request) {
@@ -80,8 +69,7 @@ public class App extends UI{
                     return true;
                 } else {
                     appLayout.getAppHeader().setVisible(isLoggedIn());
-                    appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().toString());
-                    //getMenu().addMenuItem(logout);
+                    appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().getPrincipal().toString());
                     if(event.getViewName().equals("")) {
                         getNavigator().navigateTo(HomeView.id);
                         return false;
@@ -102,7 +90,7 @@ public class App extends UI{
         }
         else {
             appLayout.getAppHeader().setVisible(isLoggedIn());
-            appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().toString());
+            appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().getPrincipal().toString());
             if (getNavigator().getState().isEmpty()) {
                 
                 getNavigator().navigateTo(HomeView.id);

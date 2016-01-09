@@ -4,29 +4,23 @@
  */
 package de.fatalix.bookery.view.home;
 
+import de.fatalix.bookery.view.BookDetailLayout;
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.Property;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
+import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.bl.TimeRange;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
+import de.fatalix.bookery.view.BookSearchLayout;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -45,127 +39,30 @@ public class HomeView extends AbstractView implements View {
 
     @Inject
     private HomePresenter presenter;
-
-    @Inject
-    private Instance<BookDetailLayout> bookDetailLayoutInstances;
-    private Label resultLabel;
     
-    private HorizontalLayout resultLayout;
-    private TextField searchText;
-    private Button showMore;
-    private OptionGroup timeRangeGroup;
+    @Inject private AppHeader appHeader;
+    @Inject private BookSearchLayout searchLayout;
+
+    
     
     private boolean initPhase;
     
     @PostConstruct
     private void postInit() {
-        resultLayout = new HorizontalLayout();
-        resultLayout.setSpacing(true);
-        resultLayout.addStyleName("wrapping"); 
-        showMore = new Button("show more", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                if (!initPhase) {
-                    searchBooks(searchText.getValue(), false,(TimeRange)timeRangeGroup.getValue());
-                }
-                
-            }
-        });
-        showMore.setWidth(100, Unit.PERCENTAGE);
-        showMore.addStyleName(ValoTheme.BUTTON_HUGE);
-        showMore.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        
         VerticalLayout root = new VerticalLayout();
         root.setSpacing(true);
         root.setMargin(true);
-        root.addComponents(createSearchLayout(), resultLayout,showMore);
+        root.addComponents(searchLayout);
         
         this.setCompositionRoot(root);
     }
     
-    private VerticalLayout createSearchLayout() {
-        searchText = new TextField();
-        searchText.setIcon(FontAwesome.SEARCH);
-        searchText.setImmediate(true);
-        searchText.setColumns(20);
-        //searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
-        searchText.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-        searchText.addTextChangeListener(new FieldEvents.TextChangeListener() {
-            @Override
-            public void textChange(FieldEvents.TextChangeEvent event) {
-                if (!initPhase) {
-                    searchBooks(event.getText(),true,(TimeRange)timeRangeGroup.getValue());
-                }
-                
-            }
-        });
-        
-        resultLabel = new Label("(0 Books)");
-        //resultLabel.addStyleName(ValoTheme.LABEL_HUGE);
-        
-        HorizontalLayout topSearchLayout = new HorizontalLayout(searchText, resultLabel);
-        topSearchLayout.setSpacing(true);
-        timeRangeGroup = new OptionGroup();
-        timeRangeGroup.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-        for (TimeRange timeRange : TimeRange.values()) {
-            timeRangeGroup.addItem(timeRange);
-            timeRangeGroup.setItemCaption(timeRange, timeRange.getCaption());
-        }
-        timeRangeGroup.addValueChangeListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!initPhase) {
-                    searchBooks(searchText.getValue(), true, (TimeRange)timeRangeGroup.getValue());
-                }
-                
-            }
-        });
-        VerticalLayout searchLayout = new VerticalLayout(topSearchLayout,timeRangeGroup);
-        searchLayout.setWidth(100, Unit.PERCENTAGE);
-        searchLayout.setMargin(true);
-        searchLayout.addStyleName("bookery-content");
-        return searchLayout;
-    }
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        initPhase = true;
-        try {
-            searchText.setValue("");
-            timeRangeGroup.setValue(TimeRange.NONE);
-            searchBooks(searchText.getValue(),true, (TimeRange)timeRangeGroup.getValue());
-        } catch (Exception ex) {
-            Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initPhase = false;
+        searchLayout.searchBooks(appHeader.getSearchText(),true);
     }
 
-    private void searchBooks(String searchWord,boolean reset,TimeRange timeRange) {
-        try {
-            if (reset) {
-                
-                resultLayout.removeAllComponents();
-            }
-            QueryResponse queryResponse = presenter.searchBooks(searchWord,20,resultLayout.getComponentCount(),timeRange,SecurityUtils.getSubject().getPrincipal().toString());
-            List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
-            resultLabel.setValue("(" + queryResponse.getResults().getNumFound()+ ")");
-            
-            for (BookEntry bookEntry : bookEntries) {
-                BookDetailLayout detailLayout = bookDetailLayoutInstances.get();
-                detailLayout.loadData(bookEntry);
-                resultLayout.addComponent(detailLayout);
-            }
-            showMore.setEnabled(queryResponse.getResults().getNumFound() > resultLayout.getComponentCount());
-            
-        } catch(SolrServerException ex) {
-            Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-
+   
 }

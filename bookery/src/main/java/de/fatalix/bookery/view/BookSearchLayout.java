@@ -50,17 +50,17 @@ public class BookSearchLayout extends CustomComponent {
 
     @PostConstruct
     private void postInit() {
-        createSearchResultLayout();
+        
         VerticalLayout rootLayout = new VerticalLayout();
         rootLayout.setWidth(100, Unit.PERCENTAGE);
         rootLayout.setMargin(true);
         rootLayout.addStyleName("bookery-content");
         resultText = new Label(" 0 Ergebnisse gefunden");
-        rootLayout.addComponents(resultText,resultLayout);
+        rootLayout.addComponents(resultText,createSearchResultLayout());
         setCompositionRoot(rootLayout);
     }
 
-    private void createSearchResultLayout() {
+    private VerticalLayout createSearchResultLayout() {
         resultLayout = new HorizontalLayout();
         resultLayout.setSpacing(true);
         resultLayout.addStyleName("wrapping");
@@ -79,6 +79,7 @@ public class BookSearchLayout extends CustomComponent {
         root.setSpacing(true);
         root.setMargin(true);
         root.addComponents(resultLayout, showMore);
+        return root;
     }
 
     public void searchBooks(String searchWord, boolean reset) {

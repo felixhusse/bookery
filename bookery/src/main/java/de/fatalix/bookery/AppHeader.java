@@ -6,7 +6,10 @@
 package de.fatalix.bookery;
 
 import com.vaadin.cdi.UIScoped;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.ShortCutConstants;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -15,6 +18,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
+import de.fatalix.bookery.view.login.LoginView;
+import de.fatalix.bookery.view.search.SearchView;
 import javax.annotation.PostConstruct;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
@@ -34,12 +39,8 @@ public class AppHeader extends MVerticalLayout{
         addStyleName("bookery-header");
         setWidth(100, Unit.PERCENTAGE);
         add(createTop());
-        searchText = new TextField();
-        searchText.setIcon(FontAwesome.SEARCH);
-        searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
-        searchText.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-        searchText.setWidth(100, Unit.PERCENTAGE);
-        add(searchText);
+       
+        add(createSearchBar());
         setSpacing(true);
     }
     
@@ -61,6 +62,28 @@ public class AppHeader extends MVerticalLayout{
         layout.setExpandRatio(header, 1.0f);
         layout.setComponentAlignment(header, Alignment.MIDDLE_LEFT);
         layout.setComponentAlignment(logoutButton, Alignment.BOTTOM_RIGHT);
+        return layout;
+    }
+    
+    private HorizontalLayout createSearchBar() {
+        searchText = new TextField();
+        searchText.setIcon(FontAwesome.SEARCH);
+        searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
+        searchText.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        searchText.setWidth(100, Unit.PERCENTAGE);
+        
+        Button searchButton = new Button("search", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                ((App)UI.getCurrent()).getNavigator().navigateTo(SearchView.id);
+            }
+        });
+        searchText.addShortcutListener(new Button.ClickShortcut(searchButton, ShortcutAction.KeyCode.ENTER));
+        
+        MHorizontalLayout layout = new MHorizontalLayout(searchText,searchButton);
+        
+        layout.setWidth(100, Unit.PERCENTAGE);
+        layout.setExpandRatio(searchText, 1.0f);
         return layout;
     }
     

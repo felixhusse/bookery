@@ -2,8 +2,9 @@
  * Copyright (c) 2015 Felix Husse under MIT License
  * see LICENSE file
  */
-package de.fatalix.bookery.view.home;
+package de.fatalix.bookery.view.search;
 
+import de.fatalix.bookery.view.home.*;
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookService;
@@ -21,7 +22,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
  * @author Fatalix
  */
 @UIScoped
-public class HomePresenter {
+public class SearchPresenter {
     @Inject private BookService bookService;
     @Inject private AppUserService userService;
 

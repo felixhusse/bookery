@@ -5,7 +5,7 @@
     <groupId>de.fatalix</groupId>
     <artifactId>bookery-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
     <name>bookery-parent</name>
 
     <developers>
@@ -34,7 +34,7 @@
         <url>git://github.com/felixhusse/bookery.git</url>
         <connection>scm:git:git://github.com/felixhusse/bookery.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:/felixhusse/bookery.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>bookery-parent-1.3</tag>
     </scm>    
     
     <dependencyManagement>

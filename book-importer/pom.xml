@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.fatalix</groupId>
         <artifactId>bookery-parent</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3</version>
     </parent>
     <artifactId>book-importer</artifactId>
     <packaging>jar</packaging>

@@ -50,7 +50,8 @@ public class BookEntry {
     private String[] shared;
     @Field("likedby")
     private String[] likedby;
-    
+    @Field("collection")
+    private String[] collection;
     
     @Field("mimetype")
     private String mimeType;
@@ -58,10 +59,8 @@ public class BookEntry {
     
     @Field("cover")
     private byte[] cover;
-
     @Field("thumbnail")
-    private byte[] thumbnail;
-    
+    private byte[] thumbnail;  
     @Field("epub")
     private byte[] epub;
     @Field("mobi")
@@ -102,7 +101,10 @@ public class BookEntry {
     public String[] getLikedby() {
         return likedby;
     }
-    
+
+    public String[] getCollection() {
+        return collection;
+    }
     
     
     public String getUploader() {
@@ -129,6 +131,7 @@ public class BookEntry {
         return cover;
     }
 
+    
     public String getPublisher() {
         return publisher;
     }
@@ -178,8 +181,11 @@ public class BookEntry {
         this.likedby = likedby;
         return this;
     }
-    
-    
+
+    public BookEntry setCollection(String[] collection) {
+        this.collection = collection;
+        return this;
+    }
     
     public BookEntry setLikes(int likes) {
         this.likes = likes;

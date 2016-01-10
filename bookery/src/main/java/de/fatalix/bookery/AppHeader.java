@@ -109,14 +109,14 @@ public class AppHeader extends MVerticalLayout{
         Button newBooks = new Button("neue Bücher", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                ((App)UI.getCurrent()).getNavigator().navigateTo(NewBooksView.id);
+                ((App)UI.getCurrent()).getNavigator().navigateTo(SearchView.id + "/author/true");
             }
         });
         newBooks.addStyleName(ValoTheme.BUTTON_TINY);
         Button bestBooks = new Button("Die besten Bücher", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                ((App)UI.getCurrent()).getNavigator().navigateTo(NewBooksView.id);
+                ((App)UI.getCurrent()).getNavigator().navigateTo(SearchView.id + "/likes");
             }
         });
         bestBooks.addStyleName(ValoTheme.BUTTON_TINY);

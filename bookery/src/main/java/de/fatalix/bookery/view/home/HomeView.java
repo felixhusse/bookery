@@ -10,15 +10,19 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.VerticalLayout;
 import de.fatalix.bookery.AppHeader;
+import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
 import de.fatalix.bookery.view.BookSearchLayout;
 import de.fatalix.bookery.view.SuggestLaneLayout;
+import de.fatalix.bookery.view.search.SearchView;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
@@ -53,14 +57,29 @@ public class HomeView extends AbstractView implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         try {
-            QueryResponse response = presenter.searchBooks("", 6);
-            newBooksLane.loadLane("Neue Bücher", response.getBeans(BookEntry.class));
-            response = presenter.searchMostLikedBooks("", 6);
-            mostLikedLane.loadLane("Beliebteste Bücher", response.getBeans(BookEntry.class));
-            response = presenter.searchMostLoadedBooks("", 6);
-            mostLoadedLane.loadLane("Meist geladene Bücher", response.getBeans(BookEntry.class));
+            String searchString = SolrSearchUtil.generateSearchString("");
             
-        } catch (SolrServerException | IOException ex) {
+            SolrQuery query = new SolrQuery();
+            query.setRows(6);
+            query.setStart(0);
+            query.setQuery(searchString);
+            query.setSort(SolrQuery.SortClause.desc("likes"));
+            query.setFields(SolrSearchUtil.DEFAULT_FIELDS);
+            
+            
+            QueryResponse response = presenter.searchBooks(query);
+            mostLikedLane.loadLane("Beliebteste Bücher", response.getBeans(BookEntry.class),SearchView.id + "/likes");
+            
+            query.setSort(SolrQuery.SortClause.desc("downloadcount"));
+            response = presenter.searchBooks(query);
+            mostLoadedLane.loadLane("Meist geladene Bücher", response.getBeans(BookEntry.class),SearchView.id + "/downloads");
+            
+            searchString = SolrSearchUtil.addNewBooksSearchString(SecurityUtils.getSubject().getPrincipal().toString(), searchString);
+            query.setQuery(searchString);
+            query.setSort(SolrQuery.SortClause.asc("author"));
+            response = presenter.searchBooks(query);
+            newBooksLane.loadLane("Neue Bücher", response.getBeans(BookEntry.class),SearchView.id + "/auhtor/true");
+        } catch (SolrServerException ex) {
             Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

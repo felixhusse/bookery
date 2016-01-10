@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
@@ -23,7 +24,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 @UIScoped
 public class HomePresenter {
     @Inject private BookService bookService;
-    @Inject private AppUserService userService;
 
     public void addBook(BookEntry book) throws SolrServerException, IOException {
         List<BookEntry> bookEntries = new ArrayList<>();
@@ -31,21 +31,9 @@ public class HomePresenter {
         bookService.addBooks(bookEntries);
     }
     
-    public QueryResponse searchBooks(String search,int rows) throws SolrServerException, IOException {
-        QueryResponse response = bookService.searchBooks(search,rows,0,TimeRange.NONE);
-        
-        return response;
+    public QueryResponse searchBooks(SolrQuery solrQuery) throws SolrServerException {
+        return bookService.searchBooks(solrQuery);
     }
     
-    public QueryResponse searchMostLikedBooks(String search,int rows) throws SolrServerException, IOException {
-        QueryResponse response = bookService.searchBooksSorted(search,rows,0,"likes");
-        
-        return response;
-    }
-    
-    public QueryResponse searchMostLoadedBooks(String search,int rows) throws SolrServerException, IOException {
-        QueryResponse response = bookService.searchBooksSorted(search,rows,0,"downloadcount");
-        return response;
-    }
     
 }

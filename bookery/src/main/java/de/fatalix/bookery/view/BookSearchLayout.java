@@ -5,17 +5,24 @@
  */
 package de.fatalix.bookery.view;
 
+import com.vaadin.event.LayoutEvents;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.home.HomeView;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +48,9 @@ public class BookSearchLayout extends CustomComponent {
     protected AppHeader appHeader;
     @Inject
     protected BookSearchPresenter presenter;
+    
+    @Inject private Instance<BookDetailDialog> bookDetail;
+    
     @Inject
     protected Instance<BookDetailLayout> bookDetailLayoutInstances;
     protected HorizontalLayout resultLayout;
@@ -97,15 +107,63 @@ public class BookSearchLayout extends CustomComponent {
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
             
             for (BookEntry bookEntry : bookEntries) {
-                BookDetailLayout detailLayout = bookDetailLayoutInstances.get();
-                detailLayout.loadData(bookEntry);
-                resultLayout.addComponent(detailLayout);
+//                BookDetailLayout detailLayout = bookDetailLayoutInstances.get();
+//                detailLayout.loadData(bookEntry);
+                resultLayout.addComponent(createBookCoverLayout(bookEntry));
             }
             showMore.setEnabled(queryResponse.getResults().getNumFound() > resultLayout.getComponentCount());
 
         } catch (SolrServerException ex) {
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
             Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+    private VerticalLayout createBookCoverLayout(final BookEntry bookEntry) {
+        Image image = new Image();
+        image.setDescription(bookEntry.getTitle() + " von " + bookEntry.getAuthor());
+        image.setHeight("200px");
+        image.setWidth("130px");
+        image.setImmediate(true);
+        if(bookEntry.getThumbnail() != null) {
+            StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getThumbnail());
+            image.setSource(new StreamResource(source, bookEntry.getId() + "_thumb.png"));
+        } else if(bookEntry.getCover() != null) {
+            StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
+            image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
+        }
+        
+        VerticalLayout result = new VerticalLayout(image);
+        result.setHeight("210px");
+        result.setWidth("140px");
+        result.addStyleName("pointer-cursor");
+        result.addStyleName("book-cover");
+        result.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
+
+        result.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                BookDetailDialog dialogInstance = bookDetail.get();
+                dialogInstance.loadData(bookEntry);
+                UI.getCurrent().addWindow(dialogInstance);
+            }
+        });
+        return result;
+    }
+    
+    protected class ByteStreamResource implements StreamResource.StreamSource {
+
+        private final ByteArrayInputStream imageBuffer;
+
+        public ByteStreamResource(byte[] data) {
+            imageBuffer = new ByteArrayInputStream(data);
+        }
+
+        @Override
+        public InputStream getStream() {
+            return imageBuffer;
         }
 
     }

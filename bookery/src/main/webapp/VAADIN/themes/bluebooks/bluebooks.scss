@@ -68,6 +68,10 @@ $login-info-width: 300px !default;
         }
     }
     
+    .book-cover {
+        border: 1px solid grey;
+    }
+    
     .pointer-cursor {
         cursor: pointer;
         &:hover {

@@ -42,30 +42,45 @@ public class BookDetailDialog extends Window{
     private Label titleLabel;
     private Label descriptionLabel;
     private Image image;
-    
+    private FileDownloader fileDownloader;
     private Button shareButton;
     private Button downloadButton;
     private Button likeButton;
     
+    private Label likeCountLabel;
+    private Label loadCountLabel;
     
     @PostConstruct
     private void postInit() {
         setCaption("Buch details");
-        
-        image = new Image();
-        image.setImmediate(true);
-        
-        image.setHeight("200px");
-        
-        HorizontalLayout root = new HorizontalLayout(image,createLeftSide());
+
+        HorizontalLayout root = new HorizontalLayout(createRightSide(),createLeftSide());
         root.setSpacing(true);
         root.setMargin(true);
         setWidth(600, Unit.PIXELS);
+        setHeight(600, Unit.PIXELS);
         setModal(true);
         this.setContent(root);
     }
     
+    private VerticalLayout createRightSide() {
+        image = new Image();
+        image.setImmediate(true);
+        image.setHeight("200px");
+        image.setWidth("130px");
+        
+        likeCountLabel = new Label("0 likes");
+        loadCountLabel = new Label("0 downloads");
+        
+        VerticalLayout rightRoot = new VerticalLayout(image,likeCountLabel,loadCountLabel);
+        rightRoot.setWidth("140px");
+        //rightRoot.setSpacing(true);
+        
+        return rightRoot;
+    }
+    
     private VerticalLayout createLeftSide() {
+        
         titleLabel = new Label("Title");
         titleLabel.addStyleName(ValoTheme.LABEL_H3);
         
@@ -109,7 +124,7 @@ public class BookDetailDialog extends Window{
                 }
             }
         });
-        downloadButton.setEnabled(false);
+        //downloadButton.setEnabled(false);
         
         likeButton = new Button(FontAwesome.THUMBS_O_UP);
         likeButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
@@ -143,6 +158,8 @@ public class BookDetailDialog extends Window{
         this.bookEntry = bookEntry;
         titleLabel.setValue(bookEntry.getTitle() + " - " + bookEntry.getAuthor());
         descriptionLabel.setValue(bookEntry.getDescription());
+        likeCountLabel.setValue(bookEntry.getLikes() + " likes");
+        loadCountLabel.setValue(bookEntry.getDownloads()+ " downloads");
         if (bookEntry.getLikedby()!=null) {
             for (String likedBy : bookEntry.getLikedby()) {
                 if (likedBy.equals(user)) {
@@ -159,9 +176,10 @@ public class BookDetailDialog extends Window{
             StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
             image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
         }
-        
-        FileDownloader fileDownloader = new FileDownloader(new StreamResource(new EbookStreamSource(presenter, bookEntry),bookEntry.getTitle() + "-" + bookEntry.getAuthor()+".epub"));
+
+        fileDownloader = new FileDownloader(new StreamResource(new EbookStreamSource(presenter, bookEntry),bookEntry.getTitle() + "-" + bookEntry.getAuthor()+".epub"));
         fileDownloader.extend(downloadButton);
+        
     }
     
     

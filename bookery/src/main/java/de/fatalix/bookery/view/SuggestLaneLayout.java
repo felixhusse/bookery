@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
@@ -35,7 +36,7 @@ public class SuggestLaneLayout extends VerticalLayout{
     private Button moreLink;
     private HorizontalLayout layout;
     private String searchLink;
-    @Inject private BookDetailDialog bookDetail;
+    @Inject private Instance<BookDetailDialog> bookDetail;
     
     
     @PostConstruct
@@ -91,7 +92,7 @@ public class SuggestLaneLayout extends VerticalLayout{
         }
         
         VerticalLayout result = new VerticalLayout(image);
-        result.setHeight("200px");
+        result.setHeight("210px");
         result.addStyleName("pointer-cursor");
         result.addStyleName("book-cover");
         result.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
@@ -100,8 +101,9 @@ public class SuggestLaneLayout extends VerticalLayout{
 
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                bookDetail.loadData(bookEntry);
-                UI.getCurrent().addWindow(bookDetail);
+                BookDetailDialog dialogInstance = bookDetail.get();
+                dialogInstance.loadData(bookEntry);
+                UI.getCurrent().addWindow(dialogInstance);
             }
         });
         return result;

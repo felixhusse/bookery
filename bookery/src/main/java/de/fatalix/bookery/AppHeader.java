@@ -17,7 +17,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.view.home.HomeView;
-import de.fatalix.bookery.view.newbooks.NewBooksView;
 import de.fatalix.bookery.view.search.SearchView;
 import java.util.HashMap;
 import java.util.Map;

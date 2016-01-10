@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -154,7 +156,7 @@ public class BookService {
         return solrHandler.getBookDetail(bookEntry.getId()).get(0);
     }
 
-    public void updateViewed(List<BookEntry> bookEntries, String viewer) throws SolrServerException, IOException {
+    public void updateViewed(List<BookEntry> bookEntries, String viewer) throws SolrServerException {
         List<SolrInputDocument> solrDocs = new ArrayList<>();
         for (BookEntry book : bookEntries) {
             boolean newView = true;
@@ -177,7 +179,11 @@ public class BookService {
             }
         }
         if (solrDocs.size() > 0) {
-            solrHandler.updateDocument(solrDocs);
+            try {
+                solrHandler.updateDocument(solrDocs);
+            } catch (IOException ex) {
+                throw new SolrServerException(ex);
+            }
         }
     }
 

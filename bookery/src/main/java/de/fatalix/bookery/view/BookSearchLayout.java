@@ -82,12 +82,13 @@ public class BookSearchLayout extends CustomComponent {
 
     public void searchBooks(SolrQuery query, boolean reset) {
         try {
+            String user = SecurityUtils.getSubject().getPrincipals().toString();
             this.query = query;
             if (reset) {
                 resultLayout.removeAllComponents();
             }
             query.setStart(resultLayout.getComponentCount());
-            QueryResponse queryResponse = presenter.searchBooks(query);
+            QueryResponse queryResponse = presenter.searchBooks(query,user);
 
             if (reset) {
                 resultText.setValue(queryResponse.getResults().getNumFound() + " Ergebnisse mit \"" + appHeader.getSearchText() +"\" gefunden.");

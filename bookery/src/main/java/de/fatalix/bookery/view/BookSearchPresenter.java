@@ -25,8 +25,10 @@ public class BookSearchPresenter {
     
     @Inject private BookService bookService;
     
-    public QueryResponse searchBooks(SolrQuery solrQuery) throws SolrServerException {
-        return bookService.searchBooks(solrQuery);
+    public QueryResponse searchBooks(SolrQuery solrQuery, String viewer) throws SolrServerException {
+        QueryResponse response = bookService.searchBooks(solrQuery);
+        bookService.updateViewed(response.getBeans(BookEntry.class),viewer);
+        return response;
     }
     
     public QueryResponse searchBooks(String search,int rows,int startOffset,String viewer) throws SolrServerException, IOException {

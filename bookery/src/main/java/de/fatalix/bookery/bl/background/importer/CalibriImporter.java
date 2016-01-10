@@ -9,6 +9,8 @@ import de.fatalix.bookery.bl.background.BatchJobInterface;
 import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.solr.SolrHandler;
 import de.fatalix.bookery.solr.model.BookEntry;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -28,6 +30,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.inject.Inject;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
@@ -99,6 +102,12 @@ public class CalibriImporter implements BatchJobInterface{
                                 }
                                 if (path.toString().contains(".jpg")) {
                                     bookEntry.setCover(Files.readAllBytes(path));
+                                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                    Thumbnails.of(new ByteArrayInputStream(bookEntry.getCover()))
+                                                .size(130, 200)
+                                                .toOutputStream(output);
+                                    bookEntry.setThumbnail(output.toByteArray());
+                                    bookEntry.setThumbnailGenerated("done");
                                 }
                             }
                         }
@@ -181,6 +190,7 @@ public class CalibriImporter implements BatchJobInterface{
                 } else if (line.contains("opf:scheme=\"ISBN\"")) {
                     String value = line.split(">")[1].split("<")[0];
                     bmd.setIsbn(value);
+                    
                 }
             }
         }

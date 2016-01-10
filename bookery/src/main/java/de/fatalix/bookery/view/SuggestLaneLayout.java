@@ -5,6 +5,7 @@
  */
 package de.fatalix.bookery.view;
 
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -13,6 +14,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.App;
 import de.fatalix.bookery.solr.model.BookEntry;
@@ -21,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  *
@@ -32,6 +35,8 @@ public class SuggestLaneLayout extends VerticalLayout{
     private Button moreLink;
     private HorizontalLayout layout;
     private String searchLink;
+    @Inject private BookDetailDialog bookDetail;
+    
     
     @PostConstruct
     private void postInit() {
@@ -65,14 +70,14 @@ public class SuggestLaneLayout extends VerticalLayout{
         }
         else {
             for (BookEntry bookEntry : bookEntries) {
-                layout.addComponent(createImage(bookEntry));
+                layout.addComponent(createBookCoverLayout(bookEntry));
             }
             layout.addComponent(moreLink);
             layout.setComponentAlignment(moreLink, Alignment.MIDDLE_CENTER);
         }
     }
     
-    private Image createImage(BookEntry bookEntry) {
+    private VerticalLayout createBookCoverLayout(final BookEntry bookEntry) {
         Image image = new Image();
         image.setDescription(bookEntry.getTitle() + " von " + bookEntry.getAuthor());
         image.setHeight("200px");
@@ -84,8 +89,24 @@ public class SuggestLaneLayout extends VerticalLayout{
             StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getCover());
             image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
         }
-        return image;
+        
+        VerticalLayout result = new VerticalLayout(image);
+        result.setHeight("200px");
+        result.addStyleName("pointer-cursor");
+        result.addStyleName("book-cover");
+        result.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
+
+        result.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                bookDetail.loadData(bookEntry);
+                UI.getCurrent().addWindow(bookDetail);
+            }
+        });
+        return result;
     }
+    
     
     private VerticalLayout createEmptyDummy() {
         Label label = new Label("hab nix gfundn");

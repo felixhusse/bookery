@@ -15,6 +15,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.search.SearchView;
@@ -40,35 +41,32 @@ public class AppHeader extends MVerticalLayout{
     private void postInit() {
         addStyleName("bookery-header");
         setWidth(100, Unit.PERCENTAGE);
-        add(createTop());       
+        //add(createTop());       
         add(createSearchBar());
         add(createSmallNavBar());
         setSpacing(true);
     }
     
     private HorizontalLayout createTop() {
-        Label header = new Label("Bookerys");
+        Label header = new Label("Bookery");
         header.addStyleName(ValoTheme.LABEL_BOLD);
         //header.addStyleName(ValoTheme.LABEL_H3);
         header.setSizeUndefined();
-        logoutButton = new Button("Hallo", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                ((App)UI.getCurrent()).logout();
-            }
-        });
-        logoutButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         
-        MHorizontalLayout layout = new MHorizontalLayout(header,logoutButton);
+        MHorizontalLayout layout = new MHorizontalLayout(header);
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setExpandRatio(header, 1.0f);
         layout.setComponentAlignment(header, Alignment.MIDDLE_LEFT);
-        layout.setComponentAlignment(logoutButton, Alignment.BOTTOM_RIGHT);
+        //layout.setComponentAlignment(logoutButton, Alignment.BOTTOM_RIGHT);
         return layout;
     }
     
     private MHorizontalLayout createSearchBar() {
+        Label header = new Label("Bookery");
+        header.addStyleName(ValoTheme.LABEL_BOLD);
+        header.setSizeUndefined();
+        header.addStyleName(ValoTheme.LABEL_H3);
+        
         searchText = new TextField();
         searchText.setIcon(FontAwesome.SEARCH);
         searchText.addStyleName(ValoTheme.TEXTFIELD_LARGE);
@@ -80,7 +78,8 @@ public class AppHeader extends MVerticalLayout{
             public void buttonClick(Button.ClickEvent event) {
                 Navigator navigator = ((App)UI.getCurrent()).getNavigator();
                 if (navigator.getState().contains("search")) {
-                    navigator.navigateTo(navigator.getState());
+                    String[] path = navigator.getState().split("/");
+                    navigator.navigateTo(path[0]+"/"+path[1]);
                 }
                 else {
                     navigator.navigateTo(SearchView.id);
@@ -91,7 +90,7 @@ public class AppHeader extends MVerticalLayout{
         searchButton.addStyleName(ValoTheme.BUTTON_LARGE);
         searchText.addShortcutListener(new Button.ClickShortcut(searchButton, ShortcutAction.KeyCode.ENTER));
 
-        MHorizontalLayout layout = new MHorizontalLayout(searchText,searchButton);
+        MHorizontalLayout layout = new MHorizontalLayout(header,searchText,searchButton);
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setExpandRatio(searchText, 1.0f);
         return layout;
@@ -105,6 +104,13 @@ public class AppHeader extends MVerticalLayout{
             }
         });
         homeButton.addStyleName(ValoTheme.BUTTON_TINY);
+        Button plainSearchButton = new Button("einfach stöbern", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                ((App)UI.getCurrent()).getNavigator().navigateTo(SearchView.id + "/author");
+            }
+        });
+        plainSearchButton.addStyleName(ValoTheme.BUTTON_TINY);
         Button newBooks = new Button("neue Bücher", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -120,7 +126,23 @@ public class AppHeader extends MVerticalLayout{
         });
         bestBooks.addStyleName(ValoTheme.BUTTON_TINY);
         
-        MHorizontalLayout layout = new MHorizontalLayout(homeButton,newBooks,bestBooks);
+        logoutButton = new Button("Hallo", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                ((App)UI.getCurrent()).logout();
+            }
+        });
+        logoutButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        logoutButton.addStyleName(ValoTheme.BUTTON_SMALL);
+        
+        VerticalLayout buttonLayout = new VerticalLayout(logoutButton);
+        buttonLayout.setMargin(false);
+        buttonLayout.setSpacing(false);
+        buttonLayout.setComponentAlignment(logoutButton, Alignment.MIDDLE_RIGHT);
+        
+        MHorizontalLayout layout = new MHorizontalLayout(homeButton,plainSearchButton,newBooks,bestBooks,buttonLayout);
+        layout.expand(buttonLayout);
         
         return layout;
     } 

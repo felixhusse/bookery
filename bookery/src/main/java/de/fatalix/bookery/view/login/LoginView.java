@@ -80,7 +80,8 @@ public class LoginView extends AbstractView implements View{
         username.setWidth(15, Unit.EM);
         loginForm.addComponent(password = new PasswordField("Password"));
         password.setWidth(15, Unit.EM);
-        password.setDescription("Write anything");
+        password.setDescription("");
+        
         CssLayout buttons = new CssLayout();
         buttons.setStyleName("buttons");
         loginForm.addComponent(buttons);
@@ -106,7 +107,7 @@ public class LoginView extends AbstractView implements View{
         forgotPassword.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                showNotification(new Notification("Hint: Try anything",Notification.Type.HUMANIZED_MESSAGE),ValoTheme.NOTIFICATION_SUCCESS);
+                showNotification(new Notification("Hint: Ask me",Notification.Type.HUMANIZED_MESSAGE),ValoTheme.NOTIFICATION_SUCCESS);
             }
         });
         forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);

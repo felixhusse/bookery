@@ -44,6 +44,9 @@ $login-info-width: 300px !default;
         color: $bookery-panel-text-color;
         background-color: $bookery-panel-background;
         padding: 8px;
+        .v-label-h3 {
+           color: $bookery-panel-text-color; 
+        }
         @include valo-animate-in-fade($duration: 1s);
     }
     

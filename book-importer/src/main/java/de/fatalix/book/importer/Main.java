@@ -26,7 +26,7 @@ public class Main {
 //            //BookExporterOld.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "E:\\dumps\\bookery-web");
 //            //BookMigrator.exportBooks("http://jboss.fatalix.de/solr-4.10.4", "bookery", 20, "E:\\dumps\\bookery-web");
             DateTimeZone.setDefault(DateTimeZone.UTC);
-            BookMigrator.clearDB("http://localhost:8080/solr-4.10.4", "bookery");
+            //BookMigrator.clearDB("http://localhost:8080/solr-4.10.4", "bookery");
             //List<File> bookFolder = BookMigrator.findAllBooks("E:\\import\\prepared-books");
             //BookMigrator.filterBooks(bookFolder, new File("E:\\import\\fabian-incomplete"));
             //BookMigrator.importBooks("http://localhost:8080/solr-4.10.4", "bookery", 20, bookFolder,true);

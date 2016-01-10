@@ -31,6 +31,10 @@ public class HomePresenter {
         bookService.addBooks(bookEntries);
     }
     
+    public long getBookCount() throws SolrServerException {
+        return bookService.getTotalCount("", TimeRange.NONE);
+    }
+    
     public QueryResponse searchBooks(SolrQuery solrQuery) throws SolrServerException {
         return bookService.searchBooks(solrQuery);
     }

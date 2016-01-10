@@ -8,7 +8,9 @@ import com.vaadin.cdi.CDIView;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.solr.model.BookEntry;
@@ -41,6 +43,8 @@ public class HomeView extends AbstractView implements View {
     @Inject private SuggestLaneLayout newBooksLane;
     @Inject private SuggestLaneLayout mostLikedLane;
     @Inject private SuggestLaneLayout mostLoadedLane;
+    
+    private Label bookCount = new Label("Zur zeit gibt es 0 Bücher in der Bookery");
 
     @PostConstruct
     private void postInit() {
@@ -48,8 +52,8 @@ public class HomeView extends AbstractView implements View {
         VerticalLayout root = new VerticalLayout();
         root.setSpacing(true);
         root.setMargin(true);
-        root.addComponents(newBooksLane,mostLikedLane,mostLoadedLane);
-        
+        root.addComponents(bookCount,newBooksLane,mostLikedLane,mostLoadedLane);
+        bookCount.addStyleName(ValoTheme.LABEL_BOLD);
         this.setCompositionRoot(root);
     }
     
@@ -57,6 +61,8 @@ public class HomeView extends AbstractView implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         try {
+            bookCount.setValue("Aktuell sind "+presenter.getBookCount()+" Bücher in der Bookery");
+            
             String searchString = SolrSearchUtil.generateSearchString("");
             
             SolrQuery query = new SolrQuery();

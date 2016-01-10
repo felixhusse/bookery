@@ -24,6 +24,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
@@ -44,7 +45,8 @@ public class BookSearchLayout extends CustomComponent {
     protected Instance<BookDetailLayout> bookDetailLayoutInstances;
     protected HorizontalLayout resultLayout;
     protected Button showMore;
-
+    protected SolrQuery query;
+    
     @PostConstruct
     private void postInit() {
         VerticalLayout rootLayout = new VerticalLayout();
@@ -64,7 +66,7 @@ public class BookSearchLayout extends CustomComponent {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                searchBooks(appHeader.getSearchText(), false);
+                searchBooks(query, false);
 
             }
         });
@@ -78,15 +80,17 @@ public class BookSearchLayout extends CustomComponent {
         return root;
     }
 
-    public void searchBooks(String searchWord, boolean reset) {
+    public void searchBooks(SolrQuery query, boolean reset) {
         try {
+            this.query = query;
             if (reset) {
                 resultLayout.removeAllComponents();
             }
-            QueryResponse queryResponse = presenter.searchBooks(searchWord, 20, resultLayout.getComponentCount(), SecurityUtils.getSubject().getPrincipal().toString());
-            
+            query.setStart(resultLayout.getComponentCount());
+            QueryResponse queryResponse = presenter.searchBooks(query);
+
             if (reset) {
-                resultText.setValue(queryResponse.getResults().getNumFound() + " Ergebnisse mit \"" + searchWord +"\" gefunden.");
+                resultText.setValue(queryResponse.getResults().getNumFound() + " Ergebnisse mit \"" + appHeader.getSearchText() +"\" gefunden.");
             }
             
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
@@ -100,8 +104,6 @@ public class BookSearchLayout extends CustomComponent {
 
         } catch (SolrServerException ex) {
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
             Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
         }
 

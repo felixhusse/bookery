@@ -43,6 +43,7 @@ public class BookDetailPresenter {
     }
     
     public byte[] getEbookFile(String bookId) throws SolrServerException {
+        
         return bookService.getEBookFile(bookId);
     }
     

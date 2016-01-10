@@ -51,6 +51,15 @@ public class SolrHandler {
         solr.commit();
     }
     
+    public QueryResponse searchSolr(SolrQuery solrQuery) throws SolrServerException {
+        try {
+            SolrServer solr = bookeryService.getSolrConnection();
+            return solr.query(solrQuery);
+        } catch (IOException ex) {
+            throw new SolrServerException(ex.getMessage());
+        }
+    }
+    
     public QueryResponse searchSolrIndex(String queryString, String fields, int rows, int startOffset) throws SolrServerException  {
         SolrServer solr = null;
         try {
@@ -63,6 +72,23 @@ public class SolrHandler {
         query.setRows(rows);
         query.setStart(startOffset);
         
+        query.setFields(fields);
+        QueryResponse rsp = solr.query(query);
+        return rsp;
+    }
+    
+    public QueryResponse searchSolrIndexSorted(String queryString, String fields, int rows, int startOffset, String sortField) throws SolrServerException  {
+        SolrServer solr = null;
+        try {
+            solr = bookeryService.getSolrConnection();
+        } catch (IOException ex) {
+            throw new SolrServerException(ex.getMessage());
+        }
+        SolrQuery query = new SolrQuery();
+        query.setQuery(queryString);
+        query.setRows(rows);
+        query.setStart(startOffset);
+        query.setSort(sortField, SolrQuery.ORDER.desc);
         query.setFields(fields);
         QueryResponse rsp = solr.query(query);
         return rsp;

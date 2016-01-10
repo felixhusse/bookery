@@ -7,6 +7,7 @@ package de.fatalix.bookery;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -78,7 +79,14 @@ public class AppHeader extends MVerticalLayout{
         Button searchButton = new Button("such!", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                ((App)UI.getCurrent()).getNavigator().navigateTo(SearchView.id);
+                Navigator navigator = ((App)UI.getCurrent()).getNavigator();
+                if (navigator.getState().contains("search")) {
+                    navigator.navigateTo(navigator.getState());
+                }
+                else {
+                    navigator.navigateTo(SearchView.id);
+                }
+                
             }
         });
         searchButton.addStyleName(ValoTheme.BUTTON_LARGE);
@@ -105,8 +113,15 @@ public class AppHeader extends MVerticalLayout{
             }
         });
         newBooks.addStyleName(ValoTheme.BUTTON_TINY);
+        Button bestBooks = new Button("Die besten Bücher", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                ((App)UI.getCurrent()).getNavigator().navigateTo(NewBooksView.id);
+            }
+        });
+        bestBooks.addStyleName(ValoTheme.BUTTON_TINY);
         
-        MHorizontalLayout layout = new MHorizontalLayout(homeButton,newBooks);
+        MHorizontalLayout layout = new MHorizontalLayout(homeButton,newBooks,bestBooks);
         
         return layout;
     } 

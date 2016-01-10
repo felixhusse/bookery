@@ -34,6 +34,12 @@ $login-info-width: 300px !default;
 @mixin bluebooks {
     @include valo;
     
+    .bookery-lane {
+        
+        border-top: 1px solid;
+        @include valo-animate-in-fade($duration: 1s);
+    }
+    
     .bookery-header {
         color: $bookery-panel-text-color;
         background-color: $bookery-panel-background;

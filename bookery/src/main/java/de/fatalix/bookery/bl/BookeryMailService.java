@@ -159,5 +159,16 @@ public class BookeryMailService {
             return user;
         }
     }
-
+    
+    public void sendTestMail(String receiver) throws AddressException, MessagingException {
+        System.out.println("Sending Email");
+        MimeMessage message = new MimeMessage(mailSession);
+        InternetAddress[] address = {new InternetAddress(receiver)};
+        message.setRecipients(Message.RecipientType.TO, address);
+        message.setSubject("Test Message");
+        message.setSentDate(new Date());
+        message.setText("This message was sent via wildfly!");
+        Transport.send(message);
+    }
+    
 }

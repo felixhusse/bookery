@@ -11,11 +11,14 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.VerticalLayout;
 import de.fatalix.bookery.AppHeader;
+import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.view.AbstractView;
 import de.fatalix.bookery.view.BookSearchLayout;
 import de.fatalix.bookery.view.ComponentType;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
 /**
@@ -46,7 +49,16 @@ public class NewBooksView extends AbstractView implements View {
     
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        searchLayout.searchBooks(appHeader.getSearchText(),true);
+        String viewer = SecurityUtils.getSubject().getPrincipal().toString();
+        String searchString = SolrSearchUtil.generateSearchString(appHeader.getSearchText());
+        searchString = SolrSearchUtil.addNewBooksSearchString(viewer, searchString);
+        SolrQuery query = new SolrQuery();
+        query.setRows(20);
+        query.setStart(0);
+        query.setQuery(searchString);
+        query.setSort(SolrQuery.SortClause.asc("author"));
+        query.setFields(SolrSearchUtil.DEFAULT_FIELDS);
+        searchLayout.searchBooks(query,true);
     }
     
 }

@@ -88,7 +88,8 @@ public class AdminPresenter {
     }
     
     public void sendEmail(String receiver) throws MessagingException {
-        //mailService.sendTestMail(receiver);
+        System.out.println("Getting to Testsend");
+        mailService.sendTestMail(receiver);
     }
     
     public long getSolrInfo() throws SolrServerException, IOException {

@@ -12,6 +12,7 @@ import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
@@ -23,6 +24,10 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 public class BookSearchPresenter {
     
     @Inject private BookService bookService;
+    
+    public QueryResponse searchBooks(SolrQuery solrQuery) throws SolrServerException {
+        return bookService.searchBooks(solrQuery);
+    }
     
     public QueryResponse searchBooks(String search,int rows,int startOffset,String viewer) throws SolrServerException, IOException {
         QueryResponse response = bookService.searchBooks(search,rows,startOffset,TimeRange.NONE);        

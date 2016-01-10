@@ -8,6 +8,7 @@ import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookeryService;
 import de.fatalix.bookery.bl.model.AppUser;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -42,5 +43,7 @@ public class AppStartup {
         }
         bookeryService.fireUpBatchJobs();
     }
+    
+   
     
 }

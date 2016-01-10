@@ -31,9 +31,20 @@ public class HomePresenter {
         bookService.addBooks(bookEntries);
     }
     
-    public QueryResponse searchBooks(String search,int rows,int startOffset, TimeRange timeRange,String viewer) throws SolrServerException, IOException {
-        QueryResponse response = bookService.searchBooks(search,rows,startOffset,timeRange);
-        bookService.updateViewed(response.getBeans(BookEntry.class),viewer);
+    public QueryResponse searchBooks(String search,int rows) throws SolrServerException, IOException {
+        QueryResponse response = bookService.searchBooks(search,rows,0,TimeRange.NONE);
+        
+        return response;
+    }
+    
+    public QueryResponse searchMostLikedBooks(String search,int rows) throws SolrServerException, IOException {
+        QueryResponse response = bookService.searchBooksSorted(search,rows,0,"likes");
+        
+        return response;
+    }
+    
+    public QueryResponse searchMostLoadedBooks(String search,int rows) throws SolrServerException, IOException {
+        QueryResponse response = bookService.searchBooksSorted(search,rows,0,"downloadcount");
         return response;
     }
     

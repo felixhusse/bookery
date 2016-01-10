@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.shiro.SecurityUtils;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrInputDocument;
@@ -35,7 +36,11 @@ public class BookService {
     private BookeryMailService mailService;
     @Inject
     private AppUserService userService;
-
+    
+    public QueryResponse searchBooks(SolrQuery solrQuery) throws SolrServerException {
+        return solrHandler.searchSolr(solrQuery);
+    }
+    
     public void addBooks(List<BookEntry> bookEntries) throws SolrServerException, IOException {
         solrHandler.addBeans(bookEntries);
     }
@@ -77,6 +82,17 @@ public class BookService {
         String fields = "id,author,title,isbn,publisher,description,language,releaseDate,likes,downloadcount,uploader,viewed,shared,cover,thumbnail,thumbnailgenerated,likedby";
 
         return solrHandler.searchSolrIndex(queryString, fields, rows, startOffset);
+    }
+    
+    public QueryResponse searchBooksSorted(String searchword, int rows, int startOffset, String sortField) throws SolrServerException {
+        String queryString = "*:*";
+        if (searchword != null && !searchword.isEmpty()) {
+            queryString = "author:*" + searchword + "* OR title:*" + searchword + "*";
+        }
+
+        String fields = "id,author,title,isbn,publisher,description,language,releaseDate,likes,downloadcount,uploader,viewed,shared,cover,thumbnail,thumbnailgenerated,likedby";
+
+        return solrHandler.searchSolrIndexSorted(queryString, fields, rows, startOffset,sortField);
     }
 
     private String getTimeRangeQuery(TimeRange timeRange) {

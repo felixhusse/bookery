@@ -95,6 +95,21 @@ public class BookDetailLayout extends HorizontalLayout {
         //shareButton.setWidth("100px");
 
         downloadButton = new Button("");
+        downloadButton.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                System.out.println("Counting");
+                try {
+                    loadData(presenter.updateShared(bookEntry, SecurityUtils.getSubject().getPrincipal().toString()));
+                } catch(SolrServerException ex) {
+                    Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    Notification.show("Unexpected Error!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    Logger.getLogger(BookDetailLayout.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
         downloadButton.setDescription("Download");
         downloadButton.setIcon(FontAwesome.DOWNLOAD);
         downloadButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);

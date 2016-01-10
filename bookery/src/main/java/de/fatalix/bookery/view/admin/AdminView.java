@@ -152,7 +152,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 }
             }
         });
-        testMail.setEnabled(false);
+        testMail.setEnabled(true);
         HorizontalLayout mailLayout = new HorizontalLayout(eMailAdress,testMail);
         layout.addComponents(resetIndex,path,importFiles,mailLayout);
         

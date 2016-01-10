@@ -33,6 +33,14 @@ public class BookeryService {
         }
     }
     
+    public void destroyAllBatchJobs() {
+        List<BatchJobConfiguration> batchJobs = batchJobService.getAllJobs();
+        for (BatchJobConfiguration batchJob : batchJobs) {
+            batchJobService.deleteJob(batchJob);
+        }
+        
+    }
+    
     public void updateConfiguration() throws SolrServerException, IOException {
         String solrURL = settingDAO.findByKey(SettingKey.SOLR_URL).getConfigurationValue();
         String solrCore = settingDAO.findByKey(SettingKey.SOLR_CORE).getConfigurationValue();

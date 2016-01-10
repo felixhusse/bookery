@@ -4,7 +4,7 @@
     <parent>
         <artifactId>bookery-parent</artifactId>
         <groupId>de.fatalix</groupId>
-        <version>1.3</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
     
     <groupId>de.fatalix</groupId>

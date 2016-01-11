@@ -18,6 +18,11 @@ data-source add --name=bookeryDS --driver-name=h2 --jndi-name=java:jboss/datasou
 # Increase max-post size
 /subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=max-post-size, value=104857600)
 
+# Configure Logging
+/subsystem=logging/periodic-rotating-file-handler=solrhandler:add(level=WARN, file={"relative-to"=>"jboss.server.log.dir", "path"=>"solr.log"},suffix=".yyyy-MM-dd", append=true, autoflush=true)
+/subsystem=logging/logger=org.apache.solr:add(use-parent-handlers=false,handlers=["solrhandler"])
+
+
 # Execute and reload
 run-batch
 :reload

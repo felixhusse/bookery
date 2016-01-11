@@ -9,8 +9,7 @@ import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.annotation.Resource;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.Stateless;
@@ -22,6 +21,7 @@ import javax.inject.Inject;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -29,10 +29,14 @@ import javax.naming.NamingException;
  */
 @Stateless
 public class BatchJobService {
-
+    
+    
+    
     @Resource
     private TimerService timerService;	//Resource Injection
-    static Logger logger = Logger.getLogger("JobSessionBean");
+    
+    @Inject private Logger logger;
+    
 
     @Inject private BatchJobConfigurationDAO batchJobConfigurationDAO;
 
@@ -43,7 +47,7 @@ public class BatchJobService {
             BatchJobInterface batchJob = (BatchJobInterface)InitialContext.doLookup(jobConfig.getType().getModuleName());
             batchJob.executeJob(timer); //Asynchronous method
         } catch(NamingException ex) {
-            Logger.getLogger(BatchJobService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex,ex);
         }
     }
     

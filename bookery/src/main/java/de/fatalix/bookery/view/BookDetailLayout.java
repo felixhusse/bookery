@@ -24,11 +24,11 @@ import de.fatalix.bookery.view.BookDetailPresenter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 
@@ -40,7 +40,9 @@ public class BookDetailLayout extends HorizontalLayout {
 
     @Inject
     private BookDetailPresenter presenter;
-
+    
+    @Inject private Logger logger;
+    
     private Image image;
     private String bookId;
     private Label titleLabel;
@@ -51,7 +53,7 @@ public class BookDetailLayout extends HorizontalLayout {
     private Button likeButton;
     private Label downloadCount;
     private BookEntry bookEntry;
-
+    
     @PostConstruct
     private void postInit() {
 
@@ -81,11 +83,13 @@ public class BookDetailLayout extends HorizontalLayout {
                     loadData(presenter.updateShared(bookEntry, SecurityUtils.getSubject().getPrincipal().toString()));
                 } catch(SolrServerException ex) {
                     Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    logger.error(ex, ex);
                 } catch(MessagingException ex) {
                     Notification.show("Mail crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    logger.error(ex, ex);
                 } catch (IOException ex) {
                     Notification.show("Unexpected Error!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
-                    Logger.getLogger(BookDetailLayout.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error(ex, ex);
                 }
             }
         });
@@ -99,14 +103,14 @@ public class BookDetailLayout extends HorizontalLayout {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                System.out.println("Counting");
                 try {
                     loadData(presenter.updateShared(bookEntry, SecurityUtils.getSubject().getPrincipal().toString()));
                 } catch(SolrServerException ex) {
                     Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    logger.error(ex, ex);
                 } catch (IOException ex) {
                     Notification.show("Unexpected Error!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
-                    Logger.getLogger(BookDetailLayout.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error(ex, ex);
                 }
             }
         });
@@ -128,10 +132,10 @@ public class BookDetailLayout extends HorizontalLayout {
                     loadData(updatedEntry);
                 } catch (SolrServerException ex) {
                     Notification.show("Solr crashed!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
-                    Logger.getLogger(BookDetailLayout.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error(ex, ex);
                 } catch (IOException ex) {
-                     Notification.show("Unexpected Error!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
-                    Logger.getLogger(BookDetailLayout.class.getName()).log(Level.SEVERE, null, ex);
+                    Notification.show("Unexpected Error!\n" + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    logger.error(ex, ex);
                 }
             }
         });

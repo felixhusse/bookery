@@ -24,12 +24,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -43,7 +42,10 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 public class BookSearchLayout extends CustomComponent {
 
     protected Label resultText;
-
+    
+    @Inject
+    private Logger logger;
+    
     @Inject
     protected AppHeader appHeader;
     @Inject
@@ -115,7 +117,7 @@ public class BookSearchLayout extends CustomComponent {
 
         } catch (SolrServerException ex) {
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex, ex);
         }
 
     }

@@ -19,10 +19,9 @@ import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 
 /**
@@ -30,7 +29,8 @@ import org.apache.solr.client.solrj.SolrServerException;
  * @author Fatalix
  */
 public class ServerSettingsLayout extends VerticalLayout implements FieldEvents.BlurListener {
-
+    @Inject
+    private Logger logger;
     @Inject
     private AdminPresenter presenter;
     private FormLayout formLayout;
@@ -125,7 +125,7 @@ public class ServerSettingsLayout extends VerticalLayout implements FieldEvents.
                 }
             }
         } catch(SolrServerException | IOException ex) {
-            Logger.getLogger(ServerSettingsLayout.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex, ex);
             for(Label label : statusFields) {
                 if(label.getCaption().equals("Status")) {
                     label.setValue(ex.getLocalizedMessage() + " " + FontAwesome.CHECK_CIRCLE.getHtml());

@@ -7,13 +7,10 @@ package de.fatalix.bookery.view;
 
 import com.vaadin.server.StreamResource;
 import de.fatalix.bookery.solr.model.BookEntry;
-import de.fatalix.bookery.view.BookDetailPresenter;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 
 /**
@@ -21,7 +18,8 @@ import org.apache.solr.client.solrj.SolrServerException;
  * @author felix.husse
  */
 public class EbookStreamSource implements StreamResource.StreamSource{
-
+    
+    @Inject private Logger logger;
     private final BookDetailPresenter presenter;
     private final BookEntry bookEntry;
     
@@ -35,7 +33,7 @@ public class EbookStreamSource implements StreamResource.StreamSource{
         try {
             return new ByteArrayInputStream(presenter.getEbookFile(bookEntry.getId()));
         } catch(SolrServerException ex) {
-            Logger.getLogger(EbookStreamSource.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex, ex);
         }
         return null;
     }

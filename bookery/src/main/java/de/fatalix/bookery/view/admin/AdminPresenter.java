@@ -20,10 +20,10 @@ import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 
 /**
@@ -32,6 +32,8 @@ import org.apache.solr.client.solrj.SolrServerException;
  */
 @UIScoped
 public class AdminPresenter {
+    
+    @Inject private Logger logger;
     @Inject private BookeryService bookeryService;
     @Inject private AppUserService service;
     @Inject private AppSettingDAO settingDAO;
@@ -74,7 +76,7 @@ public class AdminPresenter {
         try {
             bookeryService.updateConfiguration();
         } catch(SolrServerException | IOException ex) {
-            Logger.getLogger(AdminPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex,ex);
         }
         return setting;
     }
@@ -88,7 +90,6 @@ public class AdminPresenter {
     }
     
     public void sendEmail(String receiver) throws MessagingException {
-        System.out.println("Getting to Testsend");
         mailService.sendTestMail(receiver);
     }
     

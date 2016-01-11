@@ -105,6 +105,12 @@
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -191,21 +197,21 @@
     </build>
     <profiles>
         <profile>
-           <id>sonar</id>
+            <id>sonar</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <!-- Example for MySQL-->
                 <sonar.jdbc.url>
-                  jdbc:h2:tcp://localhost:9092/sonar
+                    jdbc:h2:tcp://localhost:9092/sonar
                 </sonar.jdbc.url>
                 <sonar.jdbc.username>sonar</sonar.jdbc.username>
                 <sonar.jdbc.password>sonar</sonar.jdbc.password>
  
                 <!-- Optional URL to server. Default value is http://localhost:9000 -->
                 <sonar.host.url>
-                  http://localhost:9000
+                    http://localhost:9000
                 </sonar.host.url>
             </properties> 
         </profile>

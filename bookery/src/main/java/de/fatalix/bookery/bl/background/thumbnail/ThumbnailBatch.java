@@ -17,12 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.inject.Inject;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrInputDocument;
@@ -36,6 +35,8 @@ public class ThumbnailBatch implements BatchJobInterface{
     
     @Inject private SolrHandler solrHandler;
     @Inject private BatchJobConfigurationDAO dao;
+    
+    @Inject private Logger logger;
     
     @Override
     public void executeJob(Timer timer) {
@@ -69,7 +70,7 @@ public class ThumbnailBatch implements BatchJobInterface{
                         }
                         
                     } catch(IOException ex) {
-                        Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.error(ex, ex);
                     }
             }
             long totalLeft = response.getResults().getNumFound();
@@ -87,7 +88,7 @@ public class ThumbnailBatch implements BatchJobInterface{
             
             solrHandler.updateDocument(solrDocs);
         } catch(SolrServerException | IOException ex) {
-            Logger.getLogger(ThumbnailBatch.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex, ex);
         }
     }
     

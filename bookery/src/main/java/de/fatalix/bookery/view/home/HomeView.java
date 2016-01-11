@@ -15,14 +15,11 @@ import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.AbstractView;
-import de.fatalix.bookery.view.BookSearchLayout;
 import de.fatalix.bookery.view.SuggestLaneLayout;
 import de.fatalix.bookery.view.search.SearchView;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -43,6 +40,7 @@ public class HomeView extends AbstractView implements View {
     @Inject private SuggestLaneLayout newBooksLane;
     @Inject private SuggestLaneLayout mostLikedLane;
     @Inject private SuggestLaneLayout mostLoadedLane;
+    @Inject private Logger logger;
     
     private Label bookCount = new Label("Zur zeit gibt es 0 Bücher in der Bookery");
 
@@ -86,7 +84,7 @@ public class HomeView extends AbstractView implements View {
             response = presenter.searchBooks(query);
             newBooksLane.loadLane("Neue Bücher", response.getBeans(BookEntry.class),SearchView.id + "/auhtor/true");
         } catch (SolrServerException ex) {
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex,ex);
         }
     }
     

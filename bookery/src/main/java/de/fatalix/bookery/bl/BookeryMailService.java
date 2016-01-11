@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
@@ -40,6 +38,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 
@@ -54,7 +53,9 @@ public class BookeryMailService {
     private Session mailSession;
     @Resource
     private TimerService timerService;
-
+    
+    @Inject private Logger logger;
+    
     @Inject
     private SolrHandler solrHandler;
     @Inject
@@ -82,7 +83,7 @@ public class BookeryMailService {
             String filename = book.getTitle() + "-" + book.getAuthor();
             sendKindleMail(user, attachment, filename);
         } catch (SolrServerException | MessagingException | IOException | InterruptedException ex) {
-            Logger.getLogger(BookeryMailService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("failed to create Kindle mail.",ex);
         }
     }
 
@@ -127,7 +128,7 @@ public class BookeryMailService {
         updateBookEntry(book.getId(), mobiData);
         epubFile.delete();
         mobiFile.delete();
-        System.out.println("Converted EPub");
+        logger.info("Converted ePub File to Mobi");
     }
 
     private void updateBookEntry(String bookID, byte[] data) throws SolrServerException, IOException {
@@ -161,7 +162,6 @@ public class BookeryMailService {
     }
     
     public void sendTestMail(String receiver) throws AddressException, MessagingException {
-        System.out.println("Sending Email");
         MimeMessage message = new MimeMessage(mailSession);
         InternetAddress[] address = {new InternetAddress(receiver)};
         message.setRecipients(Message.RecipientType.TO, address);

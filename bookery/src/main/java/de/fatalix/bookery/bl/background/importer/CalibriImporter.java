@@ -25,13 +25,13 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.inject.Inject;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -42,6 +42,8 @@ import org.joda.time.DateTimeZone;
  */
 @Stateless
 public class CalibriImporter implements BatchJobInterface{
+    
+    @Inject private Logger logger;
     
     @Inject private SolrHandler solrHandler;
     
@@ -63,15 +65,16 @@ public class CalibriImporter implements BatchJobInterface{
             });
             for (File zipFile : zipFiles) {
                 try {
-                    System.out.println("Processing file " + zipFile.getName());
                     processArchive(zipFile.toPath(),config.getBatchSize());
+                    logger.info("Processed file " + zipFile.getName());
                 } catch (IOException ex) {
-                    Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error("Cannot process " + zipFile.getName(),ex);
+                    
                 }
             }
         }
         else {
-            Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, "Import folder cannot read!",importFolder.getAbsolutePath());
+            logger.error("Import folder: " + importFolder.getAbsolutePath() + " cannot be read!");
         }
     }
     
@@ -114,33 +117,32 @@ public class CalibriImporter implements BatchJobInterface{
                         if (bookEntry.getMobi()!=null || bookEntry.getEpub()!=null) {
                             bookEntries.add(bookEntry);
                             if (bookEntries.size()>batchSize) {
-                                System.out.println("Adding " + bookEntries.size() + " Books...");
+                                logger.info("Adding " + bookEntries.size() + " Books...");
                                 try {
                                     solrHandler.addBeans(bookEntries);
                                 } catch (SolrServerException ex) {
-                                    Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                                    logger.error(ex,ex);
                                 }
                                 bookEntries.clear();
                             }
                         }
                     } catch (IOException ex) {
-                        Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.error(ex,ex);
                     }
                     return super.preVisitDirectory(dir, attrs);
                 }
             });
             try {
                 if (!bookEntries.isEmpty()) {
-                    System.out.println("Adding " + bookEntries.size() + " Books...");
+                    logger.info("Adding " + bookEntries.size() + " Books...");
                     solrHandler.addBeans(bookEntries);
                 }
             } catch (SolrServerException ex) {
-                Logger.getLogger(CalibriImporter.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(ex,ex);
             }  
         } finally {
             Files.delete(zipFile);
         }       
-        
     }
     
     private static BookEntry parseOPF(Path pathToOPF, BookEntry bmd) throws IOException {

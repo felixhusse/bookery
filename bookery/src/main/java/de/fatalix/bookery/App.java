@@ -10,11 +10,7 @@ import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import de.fatalix.bookery.bl.AppUserService;
@@ -25,6 +21,7 @@ import de.fatalix.bookery.view.login.UserLoggedInEvent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.joda.time.DateTime;
@@ -39,10 +36,10 @@ import org.joda.time.Duration;
 @Title("Bookery")
 public class App extends UI{
 
-    
+    @Inject
+    private Logger logger;
     @Inject
     private AppUserService userService;
-    
     @Inject
     private AppLayout appLayout;
     @Inject
@@ -50,12 +47,9 @@ public class App extends UI{
 
     @Override
     protected void init(VaadinRequest request) {
-        
         Navigator navigator = new Navigator(this, appLayout.getMainContent());
-        
         navigator.addProvider(viewProvider);
         setContent(appLayout);
-
         getNavigator().addViewChangeListener(new ViewChangeListener() {
 
             @Override
@@ -102,7 +96,7 @@ public class App extends UI{
     private boolean isLoggedIn() {
         Subject subject = SecurityUtils.getSubject();
         if (subject == null) {
-            System.err.println("Could not find subject");
+            logger.error("Could not find subject");
             return false;
         }
 
@@ -159,7 +153,7 @@ public class App extends UI{
             Notification.show("Welcome " + event.getUsername());
         }
         
-        
+        logger.info("User " + event.getUsername() + " logged in.");
         getNavigator().navigateTo(HomeView.id);
         appLayout.getAppHeader().setLoginName(SecurityUtils.getSubject().getPrincipal().toString());
         appLayout.getAppHeader().setVisible(isLoggedIn());

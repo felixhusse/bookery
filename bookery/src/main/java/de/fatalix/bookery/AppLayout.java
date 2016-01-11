@@ -8,13 +8,9 @@ package de.fatalix.bookery;
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.view.BookDetailDialog;
 import de.fatalix.bookery.view.BookDetailLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 
 /**
@@ -25,19 +21,20 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 public class AppLayout extends MVerticalLayout{
     @Inject private AppHeader appHeader;
     private CssLayout content;
-    @Inject private BookDetailLayout detailLayout;
+
     
     @PostConstruct
     private void postInit() {
         setSpacing(false);
         setMargin(false);
         setSizeFull();
-        addStyleName("crud-view");
+
         content = new CssLayout();
         content.setPrimaryStyleName("valo-content");
         content.addStyleName("v-scrollable");
         content.setWidth(100, Unit.PERCENTAGE);
-        addComponents(appHeader,content,detailLayout);
+        
+        addComponents(appHeader,content);
         expand(content);
         addAttachListener(new AttachListener() {
 

@@ -36,7 +36,6 @@ public class SearchView extends AbstractView implements View {
     @PostConstruct
     private void postInit() {
         
-        
         this.setCompositionRoot(searchLayout);
     }
     

@@ -9,6 +9,7 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -54,23 +55,25 @@ public class BookSearchLayout extends CustomComponent {
     @Inject private Instance<BookDetailDialog> bookDetail;
     
     @Inject
-    protected Instance<BookDetailLayout> bookDetailLayoutInstances;
+    protected BookDetailLayout bookDetailLayout;
+
     protected HorizontalLayout resultLayout;
     protected Button showMore;
     protected SolrQuery query;
     
     @PostConstruct
     private void postInit() {
-        VerticalLayout rootLayout = new VerticalLayout();
-        rootLayout.setWidth(100, Unit.PERCENTAGE);
-        rootLayout.setMargin(true);
-        rootLayout.addStyleName("bookery-content");
-        resultText = new Label(" 0 Ergebnisse gefunden");
-        rootLayout.addComponents(resultText,createSearchResultLayout());
+        
+        CssLayout rootLayout = new CssLayout();
+        rootLayout.setSizeFull();
+        rootLayout.addStyleName("crud-view");
+        rootLayout.addComponents(createSearchResultLayout(),bookDetailLayout);
+        bookDetailLayout.setLayoutVisible(false);
         setCompositionRoot(rootLayout);
     }
 
     private VerticalLayout createSearchResultLayout() {
+        resultText = new Label(" 0 Ergebnisse gefunden");
         resultLayout = new HorizontalLayout();
         resultLayout.setSpacing(true);
         resultLayout.addStyleName("wrapping");
@@ -147,9 +150,11 @@ public class BookSearchLayout extends CustomComponent {
 
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                BookDetailDialog dialogInstance = bookDetail.get();
-                dialogInstance.loadData(bookEntry);
-                UI.getCurrent().addWindow(dialogInstance);
+                bookDetailLayout.loadData(bookEntry);
+                bookDetailLayout.setLayoutVisible(true);
+                //BookDetailDialog dialogInstance = bookDetail.get();
+                //dialogInstance.loadData(bookEntry);
+                //UI.getCurrent().addWindow(dialogInstance);
             }
         });
         return result;

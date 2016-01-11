@@ -33,23 +33,23 @@ $login-info-width: 300px !default;
 
 @mixin bluebooks {
     @include valo;
-    
+
     .bookery-lane {
-        
+
         border-top: 1px solid;
         @include valo-animate-in-fade($duration: 1s);
     }
-    
+
     .bookery-header {
         color: $bookery-panel-text-color;
         background-color: $bookery-panel-background;
         padding: 8px;
         .v-label-h3 {
-           color: $bookery-panel-text-color; 
+            color: $bookery-panel-text-color; 
         }
         @include valo-animate-in-fade($duration: 1s);
     }
-    
+
     .bookery-detail {
         @include valo-panel-style;
         border: none;
@@ -61,17 +61,17 @@ $login-info-width: 300px !default;
             height: 200px;
         }
         .v-label-h3 {
-           color: $bookery-panel-text-color; 
+            color: $bookery-panel-text-color; 
         }
         .bookery-italic {
             font-style:italic;
         }
     }
-    
+
     .book-cover {
         border: 1px solid grey;
     }
-    
+
     .pointer-cursor {
         cursor: pointer;
         &:hover {
@@ -79,7 +79,7 @@ $login-info-width: 300px !default;
             border-width: 1px;
         }
     }
-    
+
     .login-screen {
         background: $editor-background-color;
 
@@ -129,60 +129,55 @@ $login-info-width: 300px !default;
             height: 100%;
         }
     }
-    
-     
-    .crud-view {
-      position: relative;
+}
 
-      .filter-textfield {
-        width: round($v-unit-size * 9);
-      }
-    }
-    
-    .product-form-wrapper {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        z-index: 100;
-        width: round($v-unit-size * 9);
-        height: 100%;
-        overflow: auto;
-        padding: $v-layout-spacing-vertical $v-layout-spacing-horizontal;
-        background-color: $editor-background-color;
-        color: valo-font-color($editor-background-color, 0.8);
+.crud-view {
+    position: relative;
+}
 
-        // Set the context color for the style mixins
-        $temp: $v-app-background-color;
-        $v-app-background-color: $editor-background-color;
+.product-form-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    width: round($v-unit-size * 9);
+    height: 100%;
+    overflow: auto;
+    padding: $v-layout-spacing-vertical $v-layout-spacing-horizontal;
+    background-color:#eee;
+    color: valo-font-color($editor-background-color, 0.8);
 
-        // Restore variable
-        $v-app-background-color: $temp;
+    // Set the context color for the style mixins $editor-background-color
+    $temp: $v-app-background-color;
+    $v-app-background-color: #eee;
 
-        .v-button {
-          display: block;
-        }
+    // Restore variable
+    $v-app-background-color: $temp;
 
-        .v-caption {
-          color: $editor-caption-font-color;
-        }
-
-        // try to ensure there is space under the last button also on small displays (does not work on IE8)
-        .form-layout > .v-expand > .v-slot:last-child {
-          padding-bottom: $v-layout-spacing-vertical;
-        }
-  }
-  
-    .product-form {
-        right: 0;
-        @include transition(all 300ms);
-        @include transform(translatex(100%));
+    .v-button {
+        display: block;
     }
 
-    // Enables animation for opening CRUD editor
-    .visible {
-        @include transform(none);
-        @include box-shadow($editor-shadow);
+    .v-caption {
+        color: $editor-caption-font-color;
     }
+
+    // try to ensure there is space under the last button also on small displays (does not work on IE8)
+    .form-layout > .v-expand > .v-slot:last-child {
+        padding-bottom: $v-layout-spacing-vertical;
+    }
+}
+
+.product-form {
+    right: 0;
+    @include transition(all 300ms);
+    @include transform(translatex(100%));
+}
+
+// Enables animation for opening CRUD editor
+.visible {
+    @include transform(none);
+    @include box-shadow($editor-shadow);
 }
 
 .v-ui[width-range~="0-800px"] {

@@ -5,6 +5,7 @@
  */
 package de.fatalix.bookery.view;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
@@ -32,6 +33,7 @@ import org.apache.solr.client.solrj.SolrServerException;
  *
  * @author Fatalix
  */
+
 public class BookDetailDialog extends Window{
     
     @Inject private BookDetailPresenter presenter;

@@ -66,8 +66,8 @@ public class BookSearchLayout extends CustomComponent {
         
         CssLayout rootLayout = new CssLayout();
         rootLayout.setSizeFull();
-        rootLayout.addStyleName("crud-view");
-        rootLayout.addComponents(createSearchResultLayout(),bookDetailLayout);
+        //rootLayout.addStyleName("crud-view");
+        rootLayout.addComponents(createSearchResultLayout());
         bookDetailLayout.setLayoutVisible(false);
         setCompositionRoot(rootLayout);
     }

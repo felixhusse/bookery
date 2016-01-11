@@ -4,6 +4,7 @@
  */
 package de.fatalix.bookery.view;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -25,6 +26,7 @@ import org.apache.shiro.SecurityUtils;
  *
  * @author Fatalix
  */
+@UIScoped
 public class BookDetailLayout extends CssLayout {
 
     @Inject private Logger logger;

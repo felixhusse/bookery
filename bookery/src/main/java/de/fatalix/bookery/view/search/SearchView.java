@@ -36,12 +36,8 @@ public class SearchView extends AbstractView implements View {
     @PostConstruct
     private void postInit() {
         
-        VerticalLayout root = new VerticalLayout();
-        root.setSpacing(true);
-        root.setMargin(true);
-        root.addComponents(searchLayout);
         
-        this.setCompositionRoot(root);
+        this.setCompositionRoot(searchLayout);
     }
     
     

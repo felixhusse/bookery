@@ -18,6 +18,7 @@ import de.fatalix.bookery.view.common.AbstractView;
 import de.fatalix.bookery.view.common.SuggestLaneLayout;
 import de.fatalix.bookery.view.search.SearchView;
 import de.fatalix.bookery.view.watchlist.WatchListView;
+import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.apache.log4j.Logger;
@@ -91,6 +92,9 @@ public class HomeView extends AbstractView implements View {
                 query.setRows(6);
                 response = presenter.searchBooks(query);
                 watchListLane.loadLane("Deine Merkliste", response.getBeans(BookEntry.class), WatchListView.id);
+            }
+            else {
+                watchListLane.loadLane("Deine Merkliste", Collections.EMPTY_LIST, WatchListView.id);
             }
             
         } catch (SolrServerException ex) {

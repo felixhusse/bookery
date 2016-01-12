@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Felix Husse under MIT License
  * see LICENSE file
  */
-package de.fatalix.bookery.view;
+package de.fatalix.bookery.view.common;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.navigator.View;

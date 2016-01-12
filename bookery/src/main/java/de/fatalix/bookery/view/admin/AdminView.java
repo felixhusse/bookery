@@ -18,7 +18,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.bl.model.AppUser;
-import de.fatalix.bookery.view.AbstractView;
+import de.fatalix.bookery.view.common.AbstractView;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.PostConstruct;

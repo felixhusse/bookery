@@ -16,7 +16,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.model.AppUser;
-import de.fatalix.bookery.view.BookDetailLayout;
+import de.fatalix.bookery.view.common.BookDetailLayout;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.login.LoginView;
 import de.fatalix.bookery.view.login.UserLoggedInEvent;

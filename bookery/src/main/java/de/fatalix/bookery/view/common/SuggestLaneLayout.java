@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Felix Husse under MIT License
  * see LICENSE file
  */
-package de.fatalix.bookery.view;
+package de.fatalix.bookery.view.common;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.StreamResource;
@@ -21,8 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 
 /**
  *
@@ -30,11 +30,13 @@ import javax.inject.Inject;
  */
 public class SuggestLaneLayout extends VerticalLayout{
     
+    @Inject private BookDetailLayout bookDetailLayout;
+    
     private Label titleLabel;
     private Button moreLink;
     private HorizontalLayout layout;
     private String searchLink;
-    @Inject private Instance<BookDetailDialog> bookDetail;
+
     
     
     @PostConstruct
@@ -44,7 +46,6 @@ public class SuggestLaneLayout extends VerticalLayout{
         searchLink = SearchView.id;
         titleLabel = new Label("Your Title here..");
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
-        
         moreLink = new Button("mehr", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -53,10 +54,10 @@ public class SuggestLaneLayout extends VerticalLayout{
         });
         moreLink.addStyleName(ValoTheme.BUTTON_LINK);
         moreLink.addStyleName(ValoTheme.BUTTON_LARGE);
-        
-        //topLayout.setComponentAlignment(moreLink, Alignment.BOTTOM_CENTER);
+
         layout = new HorizontalLayout();
         layout.setSpacing(true);
+        bookDetailLayout.setLayoutVisible(false);
         addComponents(titleLabel,layout);
     }
     
@@ -99,9 +100,8 @@ public class SuggestLaneLayout extends VerticalLayout{
 
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                BookDetailDialog dialogInstance = bookDetail.get();
-                dialogInstance.loadData(bookEntry);
-                UI.getCurrent().addWindow(dialogInstance);
+                bookDetailLayout.loadData(bookEntry);
+                bookDetailLayout.setLayoutVisible(true);
             }
         });
         return result;

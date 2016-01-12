@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Felix Husse under MIT License
  * see LICENSE file
  */
-package de.fatalix.bookery.view;
+package de.fatalix.bookery.view.common;
 
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;

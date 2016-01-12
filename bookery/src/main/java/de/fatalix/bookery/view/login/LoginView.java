@@ -22,7 +22,7 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.view.AbstractView;
+import de.fatalix.bookery.view.common.AbstractView;
 import javax.inject.Inject;
 import org.apache.shiro.authc.AuthenticationException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;

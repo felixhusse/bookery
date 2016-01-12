@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Felix Husse under MIT License
  * see LICENSE file
  */
-package de.fatalix.bookery.view;
+package de.fatalix.bookery.view.common;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.StreamResource;
@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -47,8 +46,6 @@ public class BookSearchLayout extends CustomComponent {
     protected AppHeader appHeader;
     @Inject
     protected BookSearchPresenter presenter;
-    
-    @Inject private Instance<BookDetailDialog> bookDetail;
     
     @Inject
     protected BookDetailLayout bookDetailLayout;
@@ -107,8 +104,6 @@ public class BookSearchLayout extends CustomComponent {
             List<BookEntry> bookEntries = queryResponse.getBeans(BookEntry.class);
             
             for (BookEntry bookEntry : bookEntries) {
-//                BookDetailLayout detailLayout = bookDetailLayoutInstances.get();
-//                detailLayout.loadData(bookEntry);
                 resultLayout.addComponent(createBookCoverLayout(bookEntry));
             }
             showMore.setEnabled(queryResponse.getResults().getNumFound() > resultLayout.getComponentCount());

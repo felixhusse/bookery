@@ -14,8 +14,8 @@ import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.solr.model.BookEntry;
-import de.fatalix.bookery.view.AbstractView;
-import de.fatalix.bookery.view.SuggestLaneLayout;
+import de.fatalix.bookery.view.common.AbstractView;
+import de.fatalix.bookery.view.common.SuggestLaneLayout;
 import de.fatalix.bookery.view.search.SearchView;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -36,7 +36,6 @@ public class HomeView extends AbstractView implements View {
 
     public static final String id = "home";
     @Inject private HomePresenter presenter;
-    @Inject private AppHeader appHeader;
     @Inject private SuggestLaneLayout newBooksLane;
     @Inject private SuggestLaneLayout mostLikedLane;
     @Inject private SuggestLaneLayout mostLoadedLane;

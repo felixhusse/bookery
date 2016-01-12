@@ -5,7 +5,7 @@
  */
 package de.fatalix.bookery.view;
 
-import com.vaadin.cdi.UIScoped;
+
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;

@@ -68,7 +68,6 @@ public class BookSearchLayout extends CustomComponent {
         
         CssLayout rootLayout = new CssLayout();
         rootLayout.setSizeFull();
-        //rootLayout.addStyleName("crud-view");
         rootLayout.addComponents(createSearchResultLayout());
         bookDetailLayout.setLayoutVisible(false);
         
@@ -78,6 +77,7 @@ public class BookSearchLayout extends CustomComponent {
 
     private VerticalLayout createSearchResultLayout() {
         resultText = new Label(" 0 Ergebnisse gefunden");
+        resultText.addStyleName(ValoTheme.LABEL_BOLD);
         resultLayout = new HorizontalLayout();
         resultLayout.setSpacing(true);
         resultLayout.addStyleName("wrapping");
@@ -95,7 +95,7 @@ public class BookSearchLayout extends CustomComponent {
         VerticalLayout root = new VerticalLayout();
         root.setSpacing(true);
         root.setMargin(true);
-        root.addComponents(resultLayout, showMore);
+        root.addComponents(resultText,resultLayout, showMore);
         return root;
     }
 

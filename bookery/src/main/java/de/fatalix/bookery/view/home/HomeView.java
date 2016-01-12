@@ -53,6 +53,7 @@ public class HomeView extends AbstractView implements View {
         root.setSpacing(true);
         root.setMargin(true);
         root.addComponents(bookCount,watchListLane,newBooksLane,mostLikedLane,mostLoadedLane);
+        root.addStyleName("bookery-view");
         bookCount.addStyleName(ValoTheme.LABEL_BOLD);
         this.setCompositionRoot(root);
     }

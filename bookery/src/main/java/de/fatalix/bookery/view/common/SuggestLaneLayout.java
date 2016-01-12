@@ -43,6 +43,8 @@ public class SuggestLaneLayout extends VerticalLayout{
     private void postInit() {
         setSpacing(true);
         addStyleName("bookery-lane");
+
+        
         searchLink = SearchView.id;
         titleLabel = new Label("Your Title here..");
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
@@ -57,6 +59,7 @@ public class SuggestLaneLayout extends VerticalLayout{
 
         layout = new HorizontalLayout();
         layout.setSpacing(true);
+
         bookDetailLayout.setLayoutVisible(false);
         addComponents(titleLabel,layout);
     }
@@ -69,8 +72,17 @@ public class SuggestLaneLayout extends VerticalLayout{
             layout.addComponent(createEmptyDummy());
         }
         else {
+            boolean firstBookCover = true;
             for (BookEntry bookEntry : bookEntries) {
-                layout.addComponent(createBookCoverLayout(bookEntry));
+                VerticalLayout bookCoverLayout = createBookCoverLayout(bookEntry);
+                if (firstBookCover) {
+                    bookCoverLayout.addStyleName("mobile");
+                    firstBookCover = false;
+                }
+                else {
+                    bookCoverLayout.addStyleName("desktop");
+                }
+                layout.addComponent(bookCoverLayout);
             }
             layout.addComponent(moreLink);
             layout.setComponentAlignment(moreLink, Alignment.MIDDLE_CENTER);
@@ -81,6 +93,7 @@ public class SuggestLaneLayout extends VerticalLayout{
         Image image = new Image();
         image.setDescription(bookEntry.getTitle() + " von " + bookEntry.getAuthor());
         image.setHeight("200px");
+        image.setWidth("130px");
         image.setImmediate(true);
         if(bookEntry.getThumbnail() != null) {
             StreamResource.StreamSource source = new ByteStreamResource(bookEntry.getThumbnail());

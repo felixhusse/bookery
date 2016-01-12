@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Felix Husse under MIT License
+ * Copyright (c) 2016 Felix Husse under MIT License
  * see LICENSE file
  */
 package de.fatalix.bookery.view.watchlist;
@@ -10,7 +10,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import de.fatalix.bookery.AppHeader;
-import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.view.common.AbstractView;
 import de.fatalix.bookery.view.common.BookSearchLayout;
 import javax.annotation.PostConstruct;

@@ -56,11 +56,8 @@ public class BookSearchLayout extends CustomComponent {
     
     @PostConstruct
     private void postInit() {
-        CssLayout rootLayout = new CssLayout();
-        rootLayout.setSizeFull();
-        rootLayout.addComponents(createSearchResultLayout());
         bookDetailLayout.setLayoutVisible(false);
-        setCompositionRoot(rootLayout);
+        setCompositionRoot(createSearchResultLayout());
     }
 
     private VerticalLayout createSearchResultLayout() {
@@ -81,6 +78,7 @@ public class BookSearchLayout extends CustomComponent {
         showMore.addStyleName(ValoTheme.BUTTON_HUGE);
         showMore.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         VerticalLayout root = new VerticalLayout();
+        root.addStyleName("bookery-view");
         root.setSpacing(true);
         root.setMargin(true);
         root.addComponents(resultText,resultLayout, showMore);

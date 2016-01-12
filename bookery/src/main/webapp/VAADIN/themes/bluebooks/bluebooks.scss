@@ -236,7 +236,15 @@ $login-info-width: 300px !default;
             }
         }
     }
-
+    .desktop {
+        width: 0px;
+        padding: 0px;
+        visibility: hidden;
+    }
+    
+    .bookery-view {
+        padding: 15px;
+    }
 }
 
 

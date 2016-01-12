@@ -11,12 +11,13 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.SolrSearchUtil;
+import de.fatalix.bookery.bl.model.WatchList;
 import de.fatalix.bookery.solr.model.BookEntry;
 import de.fatalix.bookery.view.common.AbstractView;
 import de.fatalix.bookery.view.common.SuggestLaneLayout;
 import de.fatalix.bookery.view.search.SearchView;
+import de.fatalix.bookery.view.watchlist.WatchListView;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.apache.log4j.Logger;
@@ -36,7 +37,9 @@ public class HomeView extends AbstractView implements View {
 
     public static final String id = "home";
     @Inject private HomePresenter presenter;
+    
     @Inject private SuggestLaneLayout newBooksLane;
+    @Inject private SuggestLaneLayout watchListLane;
     @Inject private SuggestLaneLayout mostLikedLane;
     @Inject private SuggestLaneLayout mostLoadedLane;
     @Inject private Logger logger;
@@ -49,7 +52,7 @@ public class HomeView extends AbstractView implements View {
         VerticalLayout root = new VerticalLayout();
         root.setSpacing(true);
         root.setMargin(true);
-        root.addComponents(bookCount,newBooksLane,mostLikedLane,mostLoadedLane);
+        root.addComponents(bookCount,watchListLane,newBooksLane,mostLikedLane,mostLoadedLane);
         bookCount.addStyleName(ValoTheme.LABEL_BOLD);
         this.setCompositionRoot(root);
     }
@@ -69,7 +72,6 @@ public class HomeView extends AbstractView implements View {
             query.setSort(SolrQuery.SortClause.desc("likes"));
             query.setFields(SolrSearchUtil.DEFAULT_FIELDS);
             
-            
             QueryResponse response = presenter.searchBooks(query);
             mostLikedLane.loadLane("Beliebteste Bücher", response.getBeans(BookEntry.class),SearchView.id + "/likes");
             
@@ -82,6 +84,14 @@ public class HomeView extends AbstractView implements View {
             query.setSort(SolrQuery.SortClause.asc("author"));
             response = presenter.searchBooks(query);
             newBooksLane.loadLane("Neue Bücher", response.getBeans(BookEntry.class),SearchView.id + "/auhtor/true");
+            
+            query = presenter.getWatchListQuery(SecurityUtils.getSubject().getPrincipal().toString());
+            if (query != null) {
+                query.setRows(6);
+                response = presenter.searchBooks(query);
+                watchListLane.loadLane("Deine Merkliste", response.getBeans(BookEntry.class), WatchListView.id);
+            }
+            
         } catch (SolrServerException ex) {
             logger.error(ex,ex);
         }

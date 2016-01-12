@@ -10,10 +10,8 @@ import de.fatalix.bookery.bl.BookeryMailService;
 import de.fatalix.bookery.bl.BookeryService;
 import de.fatalix.bookery.bl.background.BatchJobService;
 import de.fatalix.bookery.bl.background.BatchJobType;
-import de.fatalix.bookery.bl.background.thumbnail.ThumbnailBatchConfiguration;
 import de.fatalix.bookery.bl.dao.AppSettingDAO;
 import de.fatalix.bookery.bl.solr.SolrHandler;
-import de.fatalix.bookery.bl.fileimport.FileImportService;
 import de.fatalix.bookery.bl.model.AppSetting;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.bl.model.BatchJobConfiguration;
@@ -37,7 +35,6 @@ public class AdminPresenter {
     @Inject private BookeryService bookeryService;
     @Inject private AppUserService service;
     @Inject private AppSettingDAO settingDAO;
-    @Inject private FileImportService fileImportService;
     @Inject private SolrHandler solrHandler;
     @Inject private BookeryMailService mailService;
     @Inject private BatchJobService batchJobService;
@@ -84,10 +81,7 @@ public class AdminPresenter {
     public void resetIndex() throws IOException, SolrServerException {
         solrHandler.resetSolrIndex();
     }
-    
-    public void doFileImport(String folder, String username) {
-        fileImportService.invoke(folder, username);
-    }
+
     
     public void sendEmail(String receiver) throws MessagingException {
         mailService.sendTestMail(receiver);

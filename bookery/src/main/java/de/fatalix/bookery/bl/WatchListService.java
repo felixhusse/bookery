@@ -43,6 +43,16 @@ public class WatchListService {
         watchListDAO.save(watchList);
     }
     
+    public boolean isOnWatchList(String username, String bookID) {
+        return watchListDAO.findByUserNameAndBookID(username, bookID)!=null;
+    }
+    
+    public void removeFromWatchList(String username, String bookID) {
+        if (isOnWatchList(username, bookID)) {
+            removeFromWatchList(watchListDAO.findByUserNameAndBookID(username, bookID));
+        }
+    }
+    
     public void removeFromWatchList(WatchList watchList) {
         watchListDAO.delete(watchList.getId());
     }
@@ -66,5 +76,24 @@ public class WatchListService {
         
         return bookService.searchBooks(query).getBeans(BookEntry.class);
         
+    }
+    
+    public SolrQuery getSolrQuery(List<WatchList> watchList) {
+        if (watchList.isEmpty()) {
+            return null;
+        }
+        String searchString = "id:(";
+        for (WatchList watchListItem : watchList) {
+            searchString = searchString + "\"" +watchListItem.getBookId() +"\",";
+        }
+        searchString = searchString.substring(0, searchString.length()-1) + ")";
+        
+        SolrQuery query = new SolrQuery();
+        query.setRows(20);
+        query.setStart(0);
+        query.setQuery(searchString);
+        query.setSort(SolrQuery.SortClause.asc("author"));
+        query.setFields(SolrSearchUtil.DEFAULT_FIELDS);
+        return query;
     }
 }

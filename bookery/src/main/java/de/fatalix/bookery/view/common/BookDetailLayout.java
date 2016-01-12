@@ -49,6 +49,7 @@ public class BookDetailLayout extends CssLayout {
     private Button downloadButton;
     private Button sendToKindleButton;
     
+    private Button watchListButton;
     private Button likeButton;
     private Label downloadCount;
     
@@ -137,9 +138,19 @@ public class BookDetailLayout extends CssLayout {
                 }
             }
         });
+        
+        watchListButton = new Button("merken", FontAwesome.STAR_O);
+        watchListButton.addStyleName(ValoTheme.BUTTON_LINK);
+        watchListButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.addRemoveFromWatchList(bookEntry, SecurityUtils.getSubject().getPrincipal().toString());
+                loadData(bookEntry);
+            }
+        });
         downloadCount = new Label("0 downloads");
         
-        VerticalLayout rightLayout = new VerticalLayout(sendToKindleButton,downloadButton,likeButton,downloadCount);
+        VerticalLayout rightLayout = new VerticalLayout(sendToKindleButton,downloadButton,watchListButton,likeButton,downloadCount);
         rightLayout.setComponentAlignment(downloadCount, Alignment.MIDDLE_CENTER);
         rightLayout.setSpacing(true);
         
@@ -162,6 +173,15 @@ public class BookDetailLayout extends CssLayout {
             fileDownloader.setFileDownloadResource(new StreamResource(new BookStreamSource(data), bookEntry.getTitle() + "-" + bookEntry.getAuthor()+".epub"));
         } catch(SolrServerException ex) {
             logger.error(ex, ex);
+        }
+        
+        if (presenter.isOnWatchList(bookEntry, SecurityUtils.getSubject().getPrincipal().toString())) {
+            watchListButton.setCaption("vergessen");
+            watchListButton.setIcon(FontAwesome.STAR);
+        }
+        else {
+            watchListButton.setCaption("merken");
+            watchListButton.setIcon(FontAwesome.STAR_O);
         }
         
     }

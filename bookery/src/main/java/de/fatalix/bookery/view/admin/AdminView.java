@@ -26,7 +26,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
 
@@ -128,16 +127,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
             }
         });
         resetIndex.addStyleName(ValoTheme.BUTTON_DANGER);
-        final TextField path = new TextField("Path", "C:\\ebooks\\calibre-export");
-        Button importFiles = new Button("import Files", new Button.ClickListener() {
 
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.doFileImport(path.getValue(), SecurityUtils.getSubject().getPrincipal().toString());
-                Notification.show("FileImport Started!", Notification.Type.HUMANIZED_MESSAGE);
-            }
-        });
-        importFiles.setEnabled(false);
         final TextField eMailAdress = new TextField(null, "felix.husse@medavis.de");
         eMailAdress.setColumns(35);
         Button testMail = new Button("Test Mail", new Button.ClickListener() {
@@ -154,7 +144,7 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
         });
         testMail.setEnabled(true);
         HorizontalLayout mailLayout = new HorizontalLayout(eMailAdress,testMail);
-        layout.addComponents(resetIndex,path,importFiles,mailLayout);
+        layout.addComponents(resetIndex,mailLayout);
         
         return layout;
     }

@@ -29,6 +29,13 @@ public class WatchListDAO extends DAOBean<WatchList>{
         super.init(entityManager, WatchList.class);
     }
     
+    public WatchList findByUserNameAndBookID(String username, String bookId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("username", username);
+        params.put("bookId", bookId);
+        return getFirstEntity(params, WatchList.FIND_BY_USERNAME_BOOKID);
+    }
+    
     public List<WatchList> findByUserName(String username) {
         Map<String, Object> params = new HashMap<>();
         params.put("username", username);

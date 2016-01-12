@@ -6,6 +6,7 @@ package de.fatalix.bookery.view.home;
 
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.BookService;
+import de.fatalix.bookery.bl.WatchListService;
 import javax.inject.Inject;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -18,6 +19,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 @UIScoped
 public class HomePresenter {
     @Inject private BookService bookService;
+    @Inject private WatchListService watchListService;
 
     public long getBookCount() throws SolrServerException {
         return bookService.getTotalCount();
@@ -27,5 +29,8 @@ public class HomePresenter {
         return bookService.searchBooks(solrQuery);
     }
     
+    public SolrQuery getWatchListQuery(String username) {
+        return watchListService.getSolrQuery(watchListService.getUserWatchList(username));
+    }
     
 }

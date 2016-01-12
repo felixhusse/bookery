@@ -24,13 +24,14 @@ import javax.persistence.Temporal;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name=WatchList.FIND_BY_USERNAME, query="SELECT s FROM WatchList s WHERE s.user.username =:username")
+    @NamedQuery(name=WatchList.FIND_BY_USERNAME, query="SELECT s FROM WatchList s WHERE s.user.username =:username"),
+    @NamedQuery(name=WatchList.FIND_BY_USERNAME_BOOKID, query="SELECT s FROM WatchList s WHERE s.user.username =:username AND s.bookId =:bookId")
     
 })
 public class WatchList implements EntityIntf, Serializable{
     
     public static final String FIND_BY_USERNAME = "WatchList.findByUser";
-    
+    public static final String FIND_BY_USERNAME_BOOKID = "WatchList.findByUserAndBookID";
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

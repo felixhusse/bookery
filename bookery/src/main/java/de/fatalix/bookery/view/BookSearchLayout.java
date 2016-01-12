@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2016 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.bookery.view;
 
@@ -15,14 +14,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.solr.model.BookEntry;
-import de.fatalix.bookery.view.home.HomeView;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -63,15 +59,10 @@ public class BookSearchLayout extends CustomComponent {
     
     @PostConstruct
     private void postInit() {
-        
-        
-        
         CssLayout rootLayout = new CssLayout();
         rootLayout.setSizeFull();
         rootLayout.addComponents(createSearchResultLayout());
         bookDetailLayout.setLayoutVisible(false);
-        
-        
         setCompositionRoot(rootLayout);
     }
 

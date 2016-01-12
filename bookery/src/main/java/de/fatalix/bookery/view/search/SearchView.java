@@ -8,7 +8,6 @@ import com.vaadin.cdi.CDIView;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.VerticalLayout;
 import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.SolrSearchUtil;
 import de.fatalix.bookery.view.AbstractView;
@@ -35,7 +34,6 @@ public class SearchView extends AbstractView implements View {
     
     @PostConstruct
     private void postInit() {
-        
         this.setCompositionRoot(searchLayout);
     }
     

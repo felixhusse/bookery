@@ -15,13 +15,10 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrInputDocument;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -44,16 +41,13 @@ public class BookService {
     public void addBooks(List<BookEntry> bookEntries) throws SolrServerException, IOException {
         solrHandler.addBeans(bookEntries);
     }
-
-    public long getTotalCount(String searchword, TimeRange timeRange) throws SolrServerException {
-        String queryString = "*:*";
-        if (searchword != null && !searchword.isEmpty()) {
-            queryString = "author:*" + searchword + "* OR title:*" + searchword + "*";
-        }
-
-        String fields = "id";
-        return solrHandler.searchSolrIndex(queryString, fields, 1, 0).getResults().getNumFound();
+    
+    public long getTotalCount() throws SolrServerException {
+        return solrHandler.searchSolrIndex("*:*", "id", 1, 0).getResults().getNumFound();
     }
+    
+    /**
+    
 
     public QueryResponse searchBooks(String searchword, int rows, int startOffset, TimeRange timeRange) throws SolrServerException {
         String queryString = "*:*";
@@ -120,7 +114,8 @@ public class BookService {
 
         return result;
     }
-
+    **/
+    
     public BookEntry updateShared(BookEntry bookEntry, String shared) throws SolrServerException, IOException {
         List<SolrInputDocument> solrDocs = new ArrayList<>();
 

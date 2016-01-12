@@ -23,7 +23,6 @@ import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -45,7 +44,6 @@ public class BookDetailLayout extends CssLayout {
     
     private FileDownloader fileDownloader;
    
-    
     private Label titleLabel;
     private Image image;
     private Button downloadButton;

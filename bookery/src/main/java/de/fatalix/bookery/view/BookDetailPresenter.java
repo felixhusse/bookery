@@ -1,21 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2016 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.bookery.view;
 
 import com.vaadin.cdi.UIScoped;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.BookService;
-import de.fatalix.bookery.bl.TimeRange;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
 
 /**
  *
@@ -25,12 +22,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 public class BookDetailPresenter {
     @Inject private BookService bookService;
     @Inject private AppUserService userService;
-    
-    public QueryResponse searchBooks(String search,int rows,int startOffset, TimeRange timeRange,String viewer) throws SolrServerException, IOException {
-        QueryResponse response = bookService.searchBooks(search,rows,startOffset,timeRange);
-        bookService.updateViewed(response.getBeans(BookEntry.class),viewer);
-        return response;
-    }
     
     
     public BookEntry getBookDetail(String id) throws SolrServerException {

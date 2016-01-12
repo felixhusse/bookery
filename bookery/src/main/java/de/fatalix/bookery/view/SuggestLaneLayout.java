@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2016 Felix Husse under MIT License
+ * see LICENSE file
  */
 package de.fatalix.bookery.view;
 
@@ -14,7 +13,6 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.App;
 import de.fatalix.bookery.solr.model.BookEntry;

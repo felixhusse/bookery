@@ -17,6 +17,7 @@ import com.vaadin.ui.UI;
 import de.fatalix.bookery.bl.AppUserService;
 import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.view.common.BookDetailLayout;
+import de.fatalix.bookery.view.common.BookMenuLayout;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.login.LoginView;
 import de.fatalix.bookery.view.login.UserLoggedInEvent;
@@ -47,6 +48,8 @@ public class App extends UI{
     @Inject
     private CDIViewProvider viewProvider;
     @Inject private BookDetailLayout bookDetailLayout;
+    @Inject private BookMenuLayout bookMenuLayout;
+    
     @Override
     protected void init(VaadinRequest request) {
         Navigator navigator = new Navigator(this, appLayout.getMainContent());
@@ -56,7 +59,7 @@ public class App extends UI{
         contentWrapper.addStyleName("crud-view");
 
         contentWrapper.setSizeFull();
-        contentWrapper.addComponents(appLayout,bookDetailLayout);
+        contentWrapper.addComponents(appLayout,bookMenuLayout,bookDetailLayout);
         
         setContent(contentWrapper);
         getNavigator().addViewChangeListener(new ViewChangeListener() {

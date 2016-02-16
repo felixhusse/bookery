@@ -49,6 +49,7 @@ public class CalibriImporter implements BatchJobInterface{
     
     @Override
     public void executeJob(Timer timer) {
+        logger.debug("Starting batch job...");
         DateTimeZone.setDefault(DateTimeZone.UTC);
         BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
         Gson gson = new Gson();

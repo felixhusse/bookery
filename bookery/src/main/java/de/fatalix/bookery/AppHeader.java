@@ -16,11 +16,13 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import de.fatalix.bookery.view.common.BookMenuLayout;
 import de.fatalix.bookery.view.home.HomeView;
 import de.fatalix.bookery.view.search.SearchView;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 
@@ -33,6 +35,8 @@ public class AppHeader extends MVerticalLayout{
     
     private TextField searchText;
     private Button logoutButton;
+    
+    @Inject private BookMenuLayout bookMenuLayout;
     
     private Map<String,Button> navbarButtons = new HashMap<>();
     
@@ -99,7 +103,8 @@ public class AppHeader extends MVerticalLayout{
         Button homeButton = new Button("Home", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                ((App)UI.getCurrent()).getNavigator().navigateTo(HomeView.id);
+                //((App)UI.getCurrent()).getNavigator().navigateTo(HomeView.id);
+                bookMenuLayout.setLayoutVisible(true);
             }
         });
         homeButton.addStyleName(ValoTheme.BUTTON_TINY);

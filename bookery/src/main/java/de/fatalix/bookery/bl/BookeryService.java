@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
@@ -22,6 +23,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
  */
 @ApplicationScoped
 public class BookeryService {
+    @Inject private Logger logger;
     @Inject private BatchJobService batchJobService;
     @Inject private AppSettingDAO settingDAO;
     private SolrServer solrServer;
@@ -29,6 +31,7 @@ public class BookeryService {
     public void fireUpBatchJobs() {
         List<BatchJobConfiguration> batchJobs = batchJobService.getAllJobs();
         for (BatchJobConfiguration batchJob : batchJobs) {
+            logger.debug("Fire up Timer for Batch Job " + batchJob.getType().getDisplayName());
             batchJobService.fireUpTimer(batchJob);
         }
     }
@@ -36,9 +39,9 @@ public class BookeryService {
     public void destroyAllBatchJobs() {
         List<BatchJobConfiguration> batchJobs = batchJobService.getAllJobs();
         for (BatchJobConfiguration batchJob : batchJobs) {
+            logger.debug("Delete Timer for Batch Job " + batchJob.getType().getDisplayName());
             batchJobService.deleteJob(batchJob);
-        }
-        
+        }   
     }
     
     public void updateConfiguration() throws SolrServerException, IOException {

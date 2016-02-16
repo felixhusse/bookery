@@ -29,9 +29,7 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class BatchJobService {
-    
-    
-    
+
     @Resource
     private TimerService timerService;	//Resource Injection
     
@@ -43,8 +41,11 @@ public class BatchJobService {
     @Timeout
     public void timeout(Timer timer) {
         try {
+            logger.debug("Executing Timer ");
             BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
+            logger.debug("Executing Batch Job " + jobConfig.getType().getDisplayName());
             BatchJobInterface batchJob = (BatchJobInterface)InitialContext.doLookup(jobConfig.getType().getModuleName());
+            
             batchJob.executeJob(timer); //Asynchronous method
         } catch(NamingException ex) {
             logger.error(ex,ex);
@@ -60,6 +61,8 @@ public class BatchJobService {
     public BatchJobConfiguration updateJob(BatchJobConfiguration batchJobConfiguration) {
         Timer timer = getTimer(batchJobConfiguration);
         if (timer != null) {
+            BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
+            logger.debug("Canceling Timer " + jobConfig.getType().getDisplayName());
             timer.cancel();
         }
         BatchJobConfiguration result = batchJobConfigurationDAO.update(batchJobConfiguration);
@@ -70,9 +73,22 @@ public class BatchJobService {
     public void deleteJob(BatchJobConfiguration batchJobConfiguration) {
         Timer timer = getTimer(batchJobConfiguration);
         if (timer != null) {
+            BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
+            logger.debug("Delete Timer " + jobConfig.getType().getDisplayName());
             timer.cancel();
         }
         batchJobConfigurationDAO.delete(batchJobConfiguration.getId());
+    }
+    
+    public void cancelJob(BatchJobConfiguration batchJobConfiguration) {
+        Timer timer = getTimer(batchJobConfiguration);
+        if (timer != null) {
+            BatchJobConfiguration jobConfig = (BatchJobConfiguration)timer.getInfo();
+            logger.debug("Canceling Timer " + jobConfig.getType().getDisplayName());
+            timer.cancel();
+        }
+        batchJobConfiguration.setActive(false);
+        batchJobConfigurationDAO.update(batchJobConfiguration);
     }
     
     public List<BatchJobConfiguration> getAllJobs() {
@@ -89,6 +105,7 @@ public class BatchJobService {
     
     public BatchJobConfiguration fireUpTimer(BatchJobConfiguration jobConfig) {
         if (jobConfig.isActive()) {
+            logger.debug("Configured batch job " + jobConfig.getType().getDisplayName());
             TimerConfig timerConf = new TimerConfig(jobConfig, false);
             String[] splittedCronJob = jobConfig.getCronJobExpression().split(" ");
             ScheduleExpression schedExp = new ScheduleExpression();
@@ -115,5 +132,9 @@ public class BatchJobService {
             }
         }
         return null;
+    }
+    
+    public Collection<Timer> getAllTimer() {
+        return timerService.getTimers();
     }
 }

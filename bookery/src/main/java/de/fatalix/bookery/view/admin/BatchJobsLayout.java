@@ -37,7 +37,7 @@ public class BatchJobsLayout extends CustomComponent implements BatchJobCard.Lis
         batchJobLayout.addStyleName("wrapping"); 
         batchJobLayout.setSpacing(true);
         batchJobLayout.setMargin(true);
-        batchJobLayout.addComponent(createEmptyLayout());
+
         this.setCompositionRoot(batchJobLayout);
     }
     
@@ -67,6 +67,8 @@ public class BatchJobsLayout extends CustomComponent implements BatchJobCard.Lis
     }
     
     public void enter() {
+        batchJobLayout.removeAllComponents();
+        batchJobLayout.addComponent(createEmptyLayout());
         List<BatchJobConfiguration> jobConfigs = presenter.getAllJobs();
         for (BatchJobConfiguration jobConfig : jobConfigs) {
             BatchJobCard batchJobCard = batchJobCardInstances.get();

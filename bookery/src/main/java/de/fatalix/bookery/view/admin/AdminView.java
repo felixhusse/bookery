@@ -35,57 +35,61 @@ import org.vaadin.cdiviewmenu.ViewMenuItem;
  */
 @CDIView(AdminView.id)
 @RolesAllowed({"admin"})
-@ViewMenuItem(title = "Admin",icon = FontAwesome.GEARS,order = ViewMenuItem.END)
-public class AdminView extends AbstractView implements AppUserCard.Listener{
-    
+@ViewMenuItem(title = "Admin", icon = FontAwesome.GEARS, order = ViewMenuItem.END)
+public class AdminView extends AbstractView implements AppUserCard.Listener {
+
     public static final String id = "admin";
-    
-    @Inject private AdminPresenter presenter;
-    
-    @Inject private Instance<AppUserCard> appUserCardInstances;
-    @Inject private ServerSettingsLayout serverSettingsLayout;
-    @Inject private BatchJobsLayout batchJobsLayout;
-    
+
+    @Inject
+    private AdminPresenter presenter;
+
+    @Inject
+    private Instance<AppUserCard> appUserCardInstances;
+    @Inject
+    private ServerSettingsLayout serverSettingsLayout;
+    @Inject
+    private BatchJobsLayout batchJobsLayout;
+
     private HorizontalLayout userManagementLayout;
-    
+
     @PostConstruct
     private void postInit() {
         TabSheet tabSheet = new TabSheet();
         tabSheet.setStyleName("admin-screen");
-        tabSheet.addTab(createServerSettings(),"Server Settings");
+        tabSheet.addTab(createServerSettings(), "Server Settings");
         tabSheet.addTab(createUserManagement(), "User Management");
-        tabSheet.addTab(batchJobsLayout,"Batch Jobs");
+        tabSheet.addTab(batchJobsLayout, "Batch Jobs");
         this.setCompositionRoot(tabSheet);
     }
-    
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         serverSettingsLayout.loadData();
         batchJobsLayout.enter();
         loadUser();
     }
-    
+
     private void loadUser() {
         List<AppUser> userList = presenter.loadUserList();
         for (AppUser appUser : userList) {
             AppUserCard appUserCard = appUserCardInstances.get();
             appUserCard.loadAppUser(appUser);
             appUserCard.addAppUserCardListener(this);
-            userManagementLayout.addComponent(appUserCard,userManagementLayout.getComponentCount()-1);
-            
+            userManagementLayout.addComponent(appUserCard, userManagementLayout.getComponentCount() - 1);
+
         }
     }
-    
+
     public HorizontalLayout createUserManagement() {
         userManagementLayout = new HorizontalLayout();
-        userManagementLayout.addStyleName("wrapping"); 
+        userManagementLayout.addStyleName("wrapping");
         userManagementLayout.setSpacing(true);
         userManagementLayout.setMargin(true);
 
         Label label = new Label("Add new user...");
         label.setSizeUndefined();
         label.addStyleName(ValoTheme.LABEL_LARGE);
-        VerticalLayout  emptyLayout = new VerticalLayout(label);
+        VerticalLayout emptyLayout = new VerticalLayout(label);
         emptyLayout.addStyleName("dashed-border");
         emptyLayout.setWidth(380, Unit.PIXELS);
         emptyLayout.setHeight(220, Unit.PIXELS);
@@ -98,30 +102,30 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
                 AppUserCard appUserCard = appUserCardInstances.get();
                 appUserCard.loadAppUser(appUser);
                 appUserCard.addAppUserCardListener(AdminView.this);
-                userManagementLayout.addComponent(appUserCard, userManagementLayout.getComponentCount()-1);
+                userManagementLayout.addComponent(appUserCard, userManagementLayout.getComponentCount() - 1);
             }
         });
         userManagementLayout.addComponent(emptyLayout);
         return userManagementLayout;
     }
-    
+
     public VerticalLayout createServerSettings() {
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
         Label titleLabel = new Label("General Settings");
         titleLabel.addStyleName(ValoTheme.LABEL_H2);
-        
+
         //layout.addComponent(titleLabel);
         layout.addComponent(serverSettingsLayout);
         Button resetIndex = new Button("reset Index", new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                
+
                 try {
                     presenter.resetIndex();
                     Notification.show("Succesfully reset Index", Notification.Type.HUMANIZED_MESSAGE);
-                } catch(IOException | SolrServerException ex) {
+                } catch (IOException | SolrServerException ex) {
                     Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }
             }
@@ -143,15 +147,27 @@ public class AdminView extends AbstractView implements AppUserCard.Listener{
             }
         });
         testMail.setEnabled(true);
-        HorizontalLayout mailLayout = new HorizontalLayout(eMailAdress,testMail);
-        layout.addComponents(resetIndex,mailLayout);
-        
+
+        Button resetBatchJobs = new Button("reset BatchJobs", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                presenter.resetBatchJobs();
+                Notification.show("Succesfully reset Batchjobs", Notification.Type.HUMANIZED_MESSAGE);
+
+            }
+        });
+        resetBatchJobs.addStyleName(ValoTheme.BUTTON_DANGER);
+
+        HorizontalLayout mailLayout = new HorizontalLayout(eMailAdress, testMail, resetBatchJobs);
+        layout.addComponents(resetIndex, mailLayout);
+
         return layout;
     }
-    
+
     @Override
     public void userDeleted(AppUserCard appUserCard) {
         userManagementLayout.removeComponent(appUserCard);
     }
-    
+
 }

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -31,6 +32,8 @@ import javax.inject.Inject;
 public class BatchJobCard extends CssLayout{
     
     private final List<Listener> listeners = new ArrayList<>();
+    
+    @Inject private Logger logger;
     
     @Inject
     private AdminPresenter presenter;
@@ -116,6 +119,7 @@ public class BatchJobCard extends CssLayout{
                 updateBean();
                 jobConfig = presenter.updateBatchJob(jobConfig);
                 setFields();
+                logger.debug("Updated Batch Job...");
             }
         });
         updateButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);

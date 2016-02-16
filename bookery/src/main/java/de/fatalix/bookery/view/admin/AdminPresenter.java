@@ -17,7 +17,9 @@ import de.fatalix.bookery.bl.model.AppUser;
 import de.fatalix.bookery.bl.model.BatchJobConfiguration;
 import de.fatalix.bookery.bl.model.SettingKey;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import javax.ejb.Timer;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -38,6 +40,7 @@ public class AdminPresenter {
     @Inject private SolrHandler solrHandler;
     @Inject private BookeryMailService mailService;
     @Inject private BatchJobService batchJobService;
+    
     
     public List<AppUser> loadUserList() {
         return service.getAllAppUser();
@@ -80,6 +83,21 @@ public class AdminPresenter {
     
     public void resetIndex() throws IOException, SolrServerException {
         solrHandler.resetSolrIndex();
+    }
+    
+    public void resetBatchJobs() {
+        
+        Collection<Timer> timers = batchJobService.getAllTimer();
+        logger.debug("found " + timers.size() + " running timers");
+        for (Timer timer : timers) {
+            BatchJobConfiguration batchJob = (BatchJobConfiguration)timer.getInfo();
+            logger.debug("Canceling " + batchJob.getType().getDisplayName() + " ("+batchJob.getId()+")");
+            batchJobService.cancelJob(batchJob);
+        }
+    }
+    
+    public void getBatchJobCount() {
+        
     }
 
     

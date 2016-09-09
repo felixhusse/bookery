@@ -6,6 +6,7 @@ package de.fatalix.bookery.view.login;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
@@ -18,11 +19,13 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.view.common.AbstractView;
+import javafx.scene.input.KeyCharacterCombination;
 import javax.inject.Inject;
 import org.apache.shiro.authc.AuthenticationException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;
@@ -51,6 +54,7 @@ public class LoginView extends AbstractView implements View{
         rootLayout.addStyleName("login-screen");
 
         Component loginForm = buildLoginForm();
+        
         VerticalLayout centeringLayout = new VerticalLayout();
         centeringLayout.setStyleName("centering-layout");
         centeringLayout.addComponent(loginForm);
@@ -62,6 +66,7 @@ public class LoginView extends AbstractView implements View{
         rootLayout.addComponent(loginInformation);
         
         setCompositionRoot(rootLayout);
+        
     }
     
     @Override
@@ -75,19 +80,19 @@ public class LoginView extends AbstractView implements View{
         loginForm.addStyleName("login-form");
         loginForm.setSizeUndefined();
         loginForm.setMargin(false);
-
+        
         loginForm.addComponent(username = new TextField("Username", "admin"));
         username.setWidth(15, Unit.EM);
         loginForm.addComponent(password = new PasswordField("Password"));
         password.setWidth(15, Unit.EM);
         password.setDescription("");
         
+        
         CssLayout buttons = new CssLayout();
         buttons.setStyleName("buttons");
         loginForm.addComponent(buttons);
-
-        buttons.addComponent(login = new Button("Login"));
-        login.setDisableOnClick(true);
+        login = new Button("login");
+        buttons.addComponent(login);
         login.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -100,7 +105,6 @@ public class LoginView extends AbstractView implements View{
                 }
             }
         });
-        login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 
         buttons.addComponent(forgotPassword = new Button("Forgot password?"));
@@ -111,7 +115,19 @@ public class LoginView extends AbstractView implements View{
             }
         });
         forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
-        return loginForm;
+        Panel loginPanel = new Panel(loginForm);
+        loginPanel.addStyleName(ValoTheme.PANEL_BORDERLESS);
+        loginPanel.addAction(new ShortcutListener("commit", ShortcutAction.KeyCode.ENTER, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                try {
+                    presenter.doLogin(username.getValue(), password.getValue());
+                } catch (AuthenticationException ex) {
+                    LoginView.this.showNotification(new Notification("Wrong login",Notification.Type.ERROR_MESSAGE),ValoTheme.NOTIFICATION_FAILURE);
+                } 
+            }
+        });
+        return loginPanel;
     }
     
     private CssLayout buildLoginInformation() {

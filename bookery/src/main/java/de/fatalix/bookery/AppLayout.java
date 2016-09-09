@@ -7,7 +7,6 @@ package de.fatalix.bookery;
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.CssLayout;
-import de.fatalix.bookery.view.common.BookDetailLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.vaadin.viritin.layouts.MVerticalLayout;

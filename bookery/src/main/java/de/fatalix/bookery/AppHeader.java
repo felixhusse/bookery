@@ -80,8 +80,7 @@ public class AppHeader extends MVerticalLayout{
             public void buttonClick(Button.ClickEvent event) {
                 Navigator navigator = ((App)UI.getCurrent()).getNavigator();
                 if (navigator.getState().contains("search")) {
-                    String[] path = navigator.getState().split("/");
-                    navigator.navigateTo(path[0]+"/"+path[1]);
+                    navigator.navigateTo(navigator.getState());
                 }
                 else {
                     navigator.navigateTo(SearchView.id);

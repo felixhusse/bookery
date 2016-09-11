@@ -116,6 +116,7 @@ public class LoginView extends AbstractView implements View{
         });
         forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
         Panel loginPanel = new Panel(loginForm);
+        loginPanel.setWidthUndefined();
         loginPanel.addStyleName(ValoTheme.PANEL_BORDERLESS);
         loginPanel.addAction(new ShortcutListener("commit", ShortcutAction.KeyCode.ENTER, null) {
             @Override

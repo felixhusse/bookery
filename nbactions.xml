@@ -13,5 +13,8 @@
             <goals>
                 <goal>release:perform</goal>
             </goals>
+            <properties>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+            </properties>
         </action>
     </actions>

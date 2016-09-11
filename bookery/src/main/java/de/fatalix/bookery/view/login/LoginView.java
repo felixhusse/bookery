@@ -25,7 +25,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.view.common.AbstractView;
-import javafx.scene.input.KeyCharacterCombination;
 import javax.inject.Inject;
 import org.apache.shiro.authc.AuthenticationException;
 import org.vaadin.cdiviewmenu.ViewMenuItem;

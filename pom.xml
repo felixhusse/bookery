@@ -194,7 +194,7 @@
         <repository>
             <id>release</id>
             <name>release</name>
-            <url>file:C:/release/</url>
+            <url>file:/Users/felixhusse1/projects/releases</url>
         </repository>
     </distributionManagement>
     

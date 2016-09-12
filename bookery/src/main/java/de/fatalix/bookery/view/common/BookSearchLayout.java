@@ -5,7 +5,9 @@
 package de.fatalix.bookery.view.common;
 
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
@@ -19,8 +21,10 @@ import com.vaadin.ui.themes.ValoTheme;
 import de.fatalix.bookery.AppHeader;
 import de.fatalix.bookery.solr.model.BookEntry;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -29,6 +33,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.vaadin.viritin.button.MButton;
 
 /**
  *
@@ -127,8 +132,48 @@ public class BookSearchLayout extends CustomComponent {
             image.setSource(new StreamResource(source, bookEntry.getId() + ".png"));
         }
         
-        VerticalLayout result = new VerticalLayout(image);
-        result.setHeight("210px");
+        final MButton watchListButton= new MButton()
+                .withIcon(presenter.isOnWatchList(bookEntry, SecurityUtils.getSubject().getPrincipal().toString())?FontAwesome.STAR:FontAwesome.STAR_O)
+                .withStyleName(ValoTheme.BUTTON_LINK);
+        watchListButton.addStyleName("quick-action");
+        
+        watchListButton.addClickListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        watchListButton.setIcon(presenter.addRemoveFromWatchList(bookEntry, SecurityUtils.getSubject().getPrincipal().toString())?FontAwesome.STAR:FontAwesome.STAR_O);
+                    }
+                });
+        
+        final MButton likeButton = new MButton()
+                .withCaption(""+bookEntry.getLikes())
+                .withIcon(FontAwesome.THUMBS_O_UP)
+                .withStyleName(ValoTheme.BUTTON_LINK);
+        likeButton.addStyleName("quick-action");
+        
+        likeButton.addClickListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        try {
+                            BookEntry updatedBook = presenter.updateLike(bookEntry, SecurityUtils.getSubject().getPrincipal().toString());
+                            bookEntry.setLikes(updatedBook.getLikes());
+                            bookEntry.setLikedby(updatedBook.getLikedby());
+                            likeButton.setCaption(""+bookEntry.getLikes());
+                        } catch (SolrServerException | IOException ex) {
+                            java.util.logging.Logger.getLogger(BookSearchLayout.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    }
+                });
+        final MButton downloadsButton = new MButton()
+                .withCaption(""+bookEntry.getDownloads())
+                .withIcon(FontAwesome.DOWNLOAD)
+                .withStyleName(ValoTheme.BUTTON_LINK);
+        downloadsButton.addStyleName("quick-action");
+        HorizontalLayout quickActionLayout = new HorizontalLayout(watchListButton,likeButton,downloadsButton);
+        quickActionLayout.addStyleName("quick-action-layout");
+        
+        VerticalLayout result = new VerticalLayout(image,quickActionLayout);
+        //result.setHeight("210px");
         result.setWidth("140px");
         result.addStyleName("pointer-cursor");
         result.addStyleName("book-cover");

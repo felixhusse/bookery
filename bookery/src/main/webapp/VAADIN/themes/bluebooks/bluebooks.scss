@@ -1,7 +1,7 @@
 
 $v-app-loading-text: "Metro Valo";
 
-$v-font-family: "Roboto","Open Sans","Source Sans Pro", sans-serif;
+$v-font-family: "Open Sans","Source Sans Pro","Roboto", sans-serif;
 $v-app-background-color: #fff;
 $v-background-color: #eee;
 $v-focus-color: #0072C6;
@@ -27,6 +27,8 @@ $v-panel-border: 2px solid v-shade;
 $bookery-panel-background: rgba(35,47,62,0.85) !default;
 $bookery-panel-text-color: valo-font-color($v-selection-color, 0.9) !default;
 $login-info-width: 300px !default;
+$login-background-image: "img/books_small_reduced.jpg" !default;
+
 
 @import "../valo/valo.scss";
 
@@ -47,6 +49,7 @@ $login-info-width: 300px !default;
         .v-label-h3 {
             color: $bookery-panel-text-color; 
         }
+        box-shadow: 0 2px 5px rgba(0,0,0,0.26);
         @include valo-animate-in-fade($duration: 1s);
     }
 
@@ -70,8 +73,17 @@ $login-info-width: 300px !default;
 
     .book-cover {
         border: 1px solid grey;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+        .quick-action {
+            padding: 0 10px;
+        }
+        .quick-action-layout {
+            background:#eee; 
+        }
     }
-
+    
+    
+    
     .pointer-cursor {
         cursor: pointer;
         &:hover {

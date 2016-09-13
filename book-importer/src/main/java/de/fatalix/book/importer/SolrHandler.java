@@ -19,6 +19,7 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
  * @author felix.husse
  */
 public class SolrHandler {
+    
     public static SolrServer createConnection(String solrURL, String solrCore) throws SolrServerException, IOException {
         if (!solrURL.endsWith("/")) {
             solrURL = solrURL + "/";

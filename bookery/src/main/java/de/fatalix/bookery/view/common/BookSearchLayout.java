@@ -174,9 +174,9 @@ public class BookSearchLayout extends CustomComponent {
         
         VerticalLayout result = new VerticalLayout(image,quickActionLayout);
         //result.setHeight("210px");
-        result.setWidth("140px");
+        //result.setWidth("140px");
         result.addStyleName("pointer-cursor");
-        result.addStyleName("book-cover");
+        result.addStyleName("book-card");
         result.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
 
         result.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {

@@ -5,8 +5,12 @@
  */
 package de.fatalix.book.importer;
 
+import com.google.gson.Gson;
 import de.fatalix.bookery.solr.model.BookEntry;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,7 +27,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.joda.time.DateTime;
 
 /**
@@ -32,71 +39,92 @@ import org.joda.time.DateTime;
  */
 public class CalibriImporter {
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        readArchive(new File("/Users/felixhusse1/Documents/books-a.zip"));
-    }
+    public static void main(String[] args) throws IOException, URISyntaxException, SolrServerException {
+        Gson gson = new Gson();
+        CalibriImporterConfiguration config = gson.fromJson(args[0], CalibriImporterConfiguration.class);
+        File importFolder = new File(config.getImportFolder());
+        if (importFolder.isDirectory()) {
+            File[] zipFiles = importFolder.listFiles(new FilenameFilter() {
 
-    public static void readArchive(File archive) throws IOException, URISyntaxException {
-        Path zipFile = archive.toPath();
-        FileSystem zipFileSystem = FileSystems.newFileSystem(zipFile, null);
-        Path root = zipFileSystem.getPath("/");
-        final List<BookEntry> bookEntries = new ArrayList<>();
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                //System.out.println(file.toString());
-
-                return super.visitFile(file, attrs);
-            }
-
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                if (dir.toString().contains("__MACOSX")) {
-                    return FileVisitResult.SKIP_SUBTREE;
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".zip");
                 }
-                try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
-                    BookEntry bookEntry = new BookEntry().setUploader("admin");
-                    for (Path path : directoryStream) {
-                        if (!Files.isDirectory(path)) {
-                            if (path.toString().contains(".opf")) {
-                                bookEntry = parseOPF(path, bookEntry);
-                            }
-                            if (path.toString().contains(".mobi")) {
-                                bookEntry.setMobi(Files.readAllBytes(path))
-                                        .setMimeType("MOBI");
-                            }
-                            if (path.toString().contains(".epub")) {
-                                bookEntry.setEpub(Files.readAllBytes(path));
-                            }
-                            if (path.toString().contains(".jpg")) {
-                                bookEntry.setCover(Files.readAllBytes(path));
-                            }
-                        }
-                    }
-                    if (bookEntry.getMobi()!=null) {
-                        bookEntries.add(bookEntry);
-                        if (bookEntries.size()>10) {
-                            System.out.println("Adding " + bookEntries.size() + " Books...");
-                            bookEntries.clear();
-                        }
-                    }
+            });
+            for (File zipFile : zipFiles) {
+                try {
+                    processBooks(zipFile.toPath(),config.getSolrCore(),config.getSolrCore(),config.getBatchSize());
+                    System.out.println("Processed file " + zipFile.getName());
                 } catch (IOException ex) {
                     ex.printStackTrace();
+                    
                 }
-                return super.preVisitDirectory(dir, attrs); //To change body of generated methods, choose Tools | Templates.
             }
-
-        });
-        
-        System.out.println("Adding " + bookEntries.size() + " Books...");
-        bookEntries.clear();
-        System.out.println("MÖP");
-
+        }
+        else {
+           System.out.println("Import folder: " + importFolder.getAbsolutePath() + " cannot be read!");
+        }
     }
+    
+    public static void processBooks(Path root, String solrURL, String solrCore,final int batchSize) throws IOException, SolrServerException {
+        final SolrServer solrServer = SolrHandler.createConnection(solrURL, solrCore);
+        final List<BookEntry> bookEntries = new ArrayList<>();
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+                
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    if (dir.toString().contains("__MACOSX")) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                        BookEntry bookEntry = new BookEntry().setUploader("admin");
+                        for (Path path : directoryStream) {
+                            if (!Files.isDirectory(path)) {
+                                if (path.toString().contains(".opf")) {
+                                    bookEntry = parseOPF(path, bookEntry);
+                                }
+                                if (path.toString().contains(".mobi")) {
+                                    bookEntry.setMobi(Files.readAllBytes(path))
+                                            .setMimeType("MOBI");
+                                }
+                                if (path.toString().contains(".epub")) {
+                                    bookEntry.setEpub(Files.readAllBytes(path));
+                                }
+                                if (path.toString().contains(".jpg")) {
+                                    bookEntry.setCover(Files.readAllBytes(path));
+                                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                    Thumbnails.of(new ByteArrayInputStream(bookEntry.getCover()))
+                                                .size(130, 200)
+                                                .toOutputStream(output);
+                                    bookEntry.setThumbnail(output.toByteArray());
+                                    bookEntry.setThumbnailGenerated("done");
+                                }
+                            }
+                        }
+                        if (bookEntry.getMobi()!=null || bookEntry.getEpub()!=null) {
+                            bookEntries.add(bookEntry);
+                            if (bookEntries.size()> batchSize) {
+                                System.out.println("Adding " + bookEntries.size() + " Books...");
+                                try {
+                                    SolrHandler.addBeans(solrServer,bookEntries);
+                                } catch (SolrServerException ex) {
+                                    System.out.println(ex.getMessage());
+                                    ex.printStackTrace();
+                                }
+                                bookEntries.clear();
+                            }
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    return super.preVisitDirectory(dir, attrs);
+                }
+            });
+    }
+    
+    
 
     private static BookEntry parseOPF(Path pathToOPF, BookEntry bmd) throws IOException {
-        System.out.println("Path: " + pathToOPF.toString());
         List<String> lines = Files.readAllLines(pathToOPF, Charset.forName("UTF-8"));
         boolean multiLineDescription = false;
         String description = "";
@@ -143,6 +171,7 @@ public class CalibriImporter {
                 } else if (line.contains("opf:scheme=\"ISBN\"")) {
                     String value = line.split(">")[1].split("<")[0];
                     bmd.setIsbn(value);
+                    
                 }
             }
         }

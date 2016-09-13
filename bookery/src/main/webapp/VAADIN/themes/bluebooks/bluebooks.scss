@@ -71,14 +71,16 @@ $login-background-image: "img/books_small_reduced.jpg" !default;
         }
     }
 
-    .book-cover {
-        border: 1px solid grey;
+    .book-card {
+        //border: 1px solid grey;
         box-shadow: 0 2px 5px rgba(0,0,0,0.26);
-        .quick-action {
-            padding: 0 10px;
-        }
+        
         .quick-action-layout {
-            background:#eee; 
+            background:#eee;
+            width: 100%;
+            .quick-action {
+                padding: 0 10px;
+            }
         }
     }
     
